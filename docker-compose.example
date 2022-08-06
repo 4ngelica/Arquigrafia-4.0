@@ -1,0 +1,47 @@
+version: "3"
+services:
+  arquigrafia:
+    container_name: arquigrafia
+    build:
+      context: ./
+      dockerfile: dev-Dockerfile
+    tty: true
+    working_dir: /var/www/html
+    environment:
+      APP_ENV: local
+      APP_URL:
+      APP_DEBUG: '1'
+      APP_KEY: base64:aMBAux1sv6sZyZdi0M0pMUEvlcysYFxExsjpkHWwALo=
+      DB_CONNECTION:
+      DB_DATABASE:
+      DB_HOST:
+      DB_PASSWORD:
+      DB_PORT:
+      DB_USERNAME:
+      BROADCAST_DRIVER: log
+      CACHE_DRIVER: file
+      REDIS_HOST: redis
+      REDIS_PASSWORD:
+      REDIS_PORT:
+      SESSION_DRIVER:
+      SESSION_LIFETIME:
+    dns:
+    - 8.8.8.8
+    command:  /bin/bash -c "cd /var/www/html &&  chmod -R 777 ./storage && composer install && npm install && apachectl -D FOREGROUND"
+    ports:
+    - "80:80"
+    volumes:
+    - ./:/var/www/html
+    networks:
+    - arquigrafia_network
+  redis:
+    container_name: redis
+    image: redis
+    command: redis-server --requirepass {redis_password}
+    environment:
+      - ALLOW_EMPTY_PASSWORD=
+      - REDIS_PASSWORD=
+    networks:
+      - arquigrafia_network
+networks:
+    arquigrafia_network:
