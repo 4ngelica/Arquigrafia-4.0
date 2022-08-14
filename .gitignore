@@ -16,6 +16,6 @@ yarn-error.log
 /storage/*.key
 .env.backup
 .phpunit.result.cache
-./composer.lock
-./package-lock.json
+composer.lock
+package-lock.json
 docker-compose.yml
