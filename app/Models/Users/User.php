@@ -112,7 +112,6 @@ class User extends Eloquent {
 	}
 
 
-
 	protected $hidden = array('password', 'remember_token');
 
 	public static function checkOldAccount( $user, $password)

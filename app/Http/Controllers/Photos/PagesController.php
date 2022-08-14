@@ -6,7 +6,7 @@
  */
 namespace App\Http\Controllers\Photos;
 
-use lib\log\EventLogger;
+use App\lib\log\EventLogger;
 use lib\date\Date;
 use modules\institutions\models\Institution as Institution;
 use modules\collaborative\models\Comment as Comment;
@@ -15,6 +15,8 @@ use modules\evaluations\models\Binomial as Binomial;
 use modules\evaluations\models\Evaluation as Evaluation;
 use modules\collaborative\models\Tag as Tag;
 use App\Http\Controllers\Controller;
+use App\Models\Photos\Photo;
+use Session;
 
 class PagesController extends Controller {
   protected $date;
@@ -33,7 +35,7 @@ class PagesController extends Controller {
     } else {
       App::setLocale('pt');
     }
-    return View::make('landing');
+    return view('landing');
   }
 
   public function home() {
@@ -53,12 +55,12 @@ class PagesController extends Controller {
 
     EventLogger::printEventLogs(null, "home", null, "Web");
 
-    return View::make('index', ['photos' => $photos, 'institution' => $institution ]);
+    return view('index', ['photos' => $photos, 'institution' => $institution ]);
   }
 
   public function panel() {
     $photos = Photo::orderByRaw("RAND()")->take(150)->get();
-    return View::make('api.panel', ['photos' => $photos]);
+    return view('api.panel', ['photos' => $photos]);
   }
 
   public static function userPhotosSearch($needle) {
@@ -139,7 +141,7 @@ class PagesController extends Controller {
     $bi_opt = $option == 1 ? $bin->firstOption : $bin->secondOption;
     $photos = Evaluation::getPhotosByBinomial($bin, $option, $value);
     $value = $option == 1 ? 100 - $value : $value;
-    return View::make('/search',
+    return view('/search',
       [
         'tags' => [], 'photos' => $photos, 'query' => '',
         'city' => '', 'dateFilter' => [], 'binomial_option' => $bi_opt,
@@ -294,16 +296,16 @@ class PagesController extends Controller {
         Session::forget('paginationSession');
       }
 
-      return View::make('/search',['tags' => $tags, 'photos' => $photosPages,
+      return view('/search',['tags' => $tags, 'photos' => $photosPages,
         'query'=>$needle, 'city'=>$txtcity,'dateFilter'=>$dateFilter,
         'authors' => $allAuthors ,'needle' => $needle,'url' => $url,
         'photosTotal' => $photosTotal , 'maxPage' => $maxPage, 'page' => $pageRetrieved,
         'photosAll' => $photosAll,'pageVisited'=> $pageVisited, 'users' => $users ]);
     }else {
       if(Session::has('last_search') && Input::has('pg')) {
-        return View::make('/search', Session::get('last_search'));
+        return view('/search', Session::get('last_search'));
       }else{// busca vazia
-        return View::make('/search',['tags' => [], 'photos' => [], 'query' => "", 'city'=>"",
+        return view('/search',['tags' => [], 'photos' => [], 'query' => "", 'city'=>"",
           'dateFilter'=>[], 'authors' =>[],
           'url'=>null,'photosTotal'=> 1,'maxPage' => 1, 'page' => 1, 'photosAll' => 0 , 'pageVisited'=> $pageVisited ]);
       }
@@ -346,11 +348,11 @@ class PagesController extends Controller {
 
     if (count($fields) == 0) { // busca vazia
       if(Session::has('last_advanced_search')){
-        return View::make('/advanced-search', Session::get('last_advanced_search'));
+        return view('/advanced-search', Session::get('last_advanced_search'));
 
       }else {  // busca vazia
 
-        return View::make('/advanced-search',
+        return view('/advanced-search',
           ['tags' => [], 'photos' => [], 'query' => "", 'binomials' => Binomial::all(),'authorsArea' => [],
           'url'=> null,'photosTotal'=> 1,'maxPage' => 1, 'page' => $pageRetrieved,
           'photosAll' => 0 , 'pageVisited'=> $pageVisited,'typeSearch'=> 'advance', 'institutions' => $institutions  ]);
@@ -414,7 +416,7 @@ class PagesController extends Controller {
     }
 
 
-    return View::make('/advanced-search',
+    return view('/advanced-search',
       ['tags' => $tags, 'photos' => $photosPages, //'photos' => $photos,
       'binomials' => Binomial::all(), 'authorsArea' => $authorsArea, 'message' => $message,
       'url' => $url,'photosTotal' => $photosTotal , 'maxPage' => $maxPage, 'page' => $pageRetrieved,
@@ -466,7 +468,7 @@ class PagesController extends Controller {
     Session::put('CurrPage', $page);
 
     $response = [];
-    $response['content'] = View::make('photos.includes.searchResult_include')
+    $response['content'] = view('photos.includes.searchResult_include')
       ->with(['photos' => $photos, 'page' => $page, 'type' => $type])
       ->render();
     $response['maxPage'] = $photos->getLastPage();

@@ -40,7 +40,7 @@
    @endif
  @endif
 
-    <!--   PAINEL DE IMAGENS - GALERIA - CARROSSEL   -->  
+    <!--   PAINEL DE IMAGENS - GALERIA - CARROSSEL   -->
     <div class="wrap">
       <div id="panel">
         @include('includes.panel')

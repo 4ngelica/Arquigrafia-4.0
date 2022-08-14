@@ -1,8 +1,11 @@
 <?php
 
+namespace App\Models\Photos;
+
 use modules\draft\traits\DraftingTrait;
 use lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use modules\gamification\traits\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
@@ -13,9 +16,9 @@ use modules\moderation\models\Suggestion as Suggestion;
 
 class Photo extends Eloquent {
 
-	use DraftingTrait;
-	use SoftDeletingTrait;
-	use LikableGamificationTrait;
+	// use DraftingTrait;
+	// use SoftDeletingTrait;
+	// use LikableGamificationTrait;
 
 	protected $softDelete = true;
 
@@ -125,10 +128,10 @@ class Photo extends Eloquent {
 
 	protected $date;
 
-	public function __construct($attributes = array(), Date $date = null) {
-		parent::__construct($attributes);
-		$this->date = $date ?: new Date;
-	}
+	// public function __construct($attributes = array(), Date $date = null) {
+	// 	parent::__construct($attributes);
+	// 	$this->date = $date ?: new Date;
+	// }
 
 	public function user()
 	{

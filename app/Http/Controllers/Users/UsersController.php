@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Redirect;
 use App\Models\Users\Occupation;
 use Illuminate\Support\Facades\Mail;
+use Session;
 
 
 class UsersController extends Controller {
@@ -252,26 +253,27 @@ class UsersController extends Controller {
     if (Auth::check())
         return Redirect::to('/home');
 
-    session_start();
-    $fb_config = Config::get('facebook');
-    FacebookSession::setDefaultApplication($fb_config["id"], $fb_config["secret"]);
-    $helper = new FacebookRedirectLoginHelper(url('/users/login/fb/callback'));
-    $fburl = $helper->getLoginUrl(array(
-          'scope' => 'email',
-    ));
 
-    $institutions = Institution::institutionsList();
+    // session_start();
+    // $fb_config = Config::get('facebook');
+    // FacebookSession::setDefaultApplication($fb_config["id"], $fb_config["secret"]);
+    // $helper = new FacebookRedirectLoginHelper(url('/users/login/fb/callback'));
+    // $fburl = $helper->getLoginUrl(array(
+    //       'scope' => 'email',
+    // ));
 
-    if (!Session::has('filter.login') && !Session::has('login.message')) //nao foi acionado pelo filtro, retornar para pagina anterior
-         Session::put('url.previous', URL::previous());
+    // $institutions = Institution::institutionsList();
 
-    return view('/modal/login')->with(['fburl' => $fburl,'institutions' => $institutions]);
+    // if (!Session::has('filter.login') && !Session::has('login.message')) //nao foi acionado pelo filtro, retornar para pagina anterior
+    //      Session::put('url.previous', URL::previous());
+
+    return view('/modal/login');
   }
 
    // validacao do login
-  public function login()
+  public function login(Request $request)
   {
-    $input = Input::all();
+    $input = $request->all();
     $user = User::userInformation($input["login"]);
     if (isset($user)) {
       $integration_message = $this->integrateAccounts($user->email);
