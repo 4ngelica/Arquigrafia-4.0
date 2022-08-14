@@ -1,5 +1,5 @@
-<?php 
-namespace lib\utils;
+<?php
+namespace App\lib\utils;
 use Occupation;
 use UsersRole;
 use Carbon\Carbon;
@@ -15,14 +15,14 @@ class ActionUser {
         $numElement = count($array);
         $i = 1;
         $separator = ', ';
-        if(!empty($array)) {             
+        if(!empty($array)) {
             foreach ($array as $value) {
                 if($numElement == $i) {
                     $separator = '';
                 }
                 $string = $string.''.$value->$atribute.$separator;
                 $i++;
-            }           
+            }
         }
         return $string;
     }
@@ -36,7 +36,7 @@ class ActionUser {
         $user_roles = ActionUser::convertArrayObjectToString($roles_array,'name');
         $date_and_time = Carbon::now('America/Sao_Paulo')->toDateTimeString();
         $info = sprintf('[%s] Acesso do usuário de ID nº: [%d], com ocupação [%s] e role [%s], a partir de [%s].', $date_and_time, $user_id, $user_occupation, $user_roles, $source_page);
-        
+
         $log = new Logger('Access_logger');
         ActionUser::addInfoToLog($log, $file_path, $info);
     }
@@ -47,7 +47,7 @@ class ActionUser {
             $file_path = storage_path() . '/logs/' . $date . '/' . 'user_' . $user_id . '.log';
         }
         elseif ($user_or_visitor == "visitor") {
-            $file_path = storage_path() . '/logs/' . $date . '/' . 'visitor_' . $user_id . '.log';   
+            $file_path = storage_path() . '/logs/' . $date . '/' . 'visitor_' . $user_id . '.log';
         }
 
         $filesystem = new Filesystem();
@@ -185,7 +185,7 @@ class ActionUser {
         $info = sprintf('[%s] Acessou a home page, pela página %s', $date_and_time, $source_page);
 
         $log = new Logger('Home logger');
-        ActionUser::addInfoToLog($log, $file_path, $info);        
+        ActionUser::addInfoToLog($log, $file_path, $info);
     }
 
     public static function printNewAccount($user_id, $source_page, $arquigrafia_or_facebook, $user_or_visitor) {
@@ -240,7 +240,7 @@ class ActionUser {
         $info = sprintf('[%s] Acessou a página de avaliação %s da página %s', $date_and_time, $local, $source_page);
 
         $log = new Logger('EvaluationAccess logger');
-        ActionUser::addInfoToLog($log, $file_path, $info);   
+        ActionUser::addInfoToLog($log, $file_path, $info);
     }
 
     public static function printNotification($user_id, $source_page, $user_or_visitor) {
@@ -264,20 +264,20 @@ class ActionUser {
             $userType = 'visitor';
 
         $filePath = ActionUser::createDirectoryAndFile($date_only, $userId, $sourcePage, $userType);
-        
+
         ActionUser::verifyTimeout($filePath, $userId, $sourcePage);
 
         foreach($actionContent as $action=>$content)
           {
               switch ($action) {
-                case "upload":  
+                case "upload":
                     $info = sprintf('[%s] ' . $action . ' da foto de ID nº: %d, pela página %s', $date_and_time, $photoId, $sourcePage);
                     ActionUser::generalAddInfoLogs('UpOrDownload_logger', $filePath, $info);
                     break;
-                case "tags_insert":                       
-                    $info = sprintf('[%s] Inseriu as tags: ' . $content . '. Pertencentes a foto de ID nº: %d', $date_and_time, $photoId);                  
+                case "tags_insert":
+                    $info = sprintf('[%s] Inseriu as tags: ' . $content . '. Pertencentes a foto de ID nº: %d', $date_and_time, $photoId);
                     ActionUser::generalAddInfoLogs('Tags logger', $filePath, $info);
-                    break;                
+                    break;
               }
           }
 
@@ -285,7 +285,7 @@ class ActionUser {
 
     public static function generalAddInfoLogs($titleLog, $filePath, $info) {
         $log = new Logger($titleLog);
-        ActionUser::addInfoToLog($log, $filePath, $info);            
+        ActionUser::addInfoToLog($log, $filePath, $info);
     }
 
 }

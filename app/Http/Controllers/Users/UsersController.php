@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use lib\log\EventLogger;
+use App\lib\log\EventLogger;
 use lib\utils\HelpTool;
 use Carbon\Carbon;
 use Facebook\FacebookSession;
@@ -13,7 +13,7 @@ use Facebook\FacebookAuthorizationException;
 use Facebook\FacebookRequestException;
 use modules\institutions\models\Institution as Institution;
 use Illuminate\Database\Eloquent\Collection as Collection;
-use modules\gamification\models\Gamified as Gamified;
+use App\modules\gamification\models\Gamified;
 use Illuminate\Support\Facades\Config;
 use Auth;
 use Illuminate\Http\Request;
@@ -22,6 +22,10 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
+use App\Models\Users\Occupation;
+use Illuminate\Support\Facades\Mail;
+
+
 
 class UsersController extends Controller {
 
