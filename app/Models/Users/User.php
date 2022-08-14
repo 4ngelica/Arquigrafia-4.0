@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Models\Users;
+
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
@@ -7,16 +9,16 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 use lib\date\Date;
 use lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
-
-use modules\gamification\traits\UserGamificationTrait;
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use App\modules\gamification\traits\UserGamificationTrait;
 use modules\institutions\models\Institution;
 use modules\collaborative\models\Comment;
 use modules\collaborative\models\Like;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
+class User extends Eloquent {
 
-	use UserTrait, RemindableTrait;
-	
+	// use UserTrait, RemindableTrait;
+
 	use UserGamificationTrait;
 
 	use Messagable;
@@ -25,10 +27,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	protected $date;
 
-	public function __construct($attributes = array(), Date $date = null) {
-		parent::__construct($attributes);
-		$this->date = $date ?: new Date;
-	}
+	// public function __construct($attributes = array(), Date $date = null) {
+	// 	parent::__construct($attributes);
+	// 	$this->date = $date ?: new Date;
+	// }
 
 	public function news()
     {
@@ -60,7 +62,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return $this->hasMany('modules\collaborative\models\Like');
 	}
-	
+
 	public function albums()
 	{
 		return $this->hasMany('Album');
@@ -170,11 +172,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public static function userInformation($login){
-		
+
 		$user = User::whereRaw('((login = ?) or (email = ?)) and (id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)', array($login, $login))->first();
           return $user;
 	}
-	
+
 
 	public static function userInformationObtain($email){
 		$user = User::where('email','=',$email)->whereRaw('(id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)')->first();
@@ -182,7 +184,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public static function userVerifyCode($verify_code){
-		$newUser = User::where('verify_code','=',$verify_code)->first();			
+		$newUser = User::where('verify_code','=',$verify_code)->first();
         return $newUser;
 	}
 
@@ -198,13 +200,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      			->where('users.login',$login)
      			->orWhere('users.email',$login)
      			->get();
-     			
+
      			if (!empty($employees)){
      				return true;
      			}else{
      				return false;
      			}
-     			
+
 
 	}
 

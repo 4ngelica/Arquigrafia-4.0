@@ -19,12 +19,11 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\User;
+use App\Models\Users\User;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
 use App\Models\Users\Occupation;
 use Illuminate\Support\Facades\Mail;
-
 
 
 class UsersController extends Controller {

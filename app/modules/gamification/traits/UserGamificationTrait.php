@@ -1,5 +1,5 @@
-<?php 
-namespace modules\gamification\traits;
+<?php
+namespace App\modules\gamification\traits;
 
 use modules\gamification\models\Score;
 
