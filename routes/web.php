@@ -83,7 +83,7 @@ Route::get('/users/forget', [UsersController::class, 'forgetForm']);
 Route::post('/users/forget', [UsersController::class, 'forget']);
 Route::get('/getPicture', [UsersController::class, 'getFacebookPicture']);
 
-Route::resource('/users','UsersController');
+Route::resource('/users',UsersController::class);
 // Route::resource('/users/stoaLogin',[UsersController::class, 'stoaLogin']);
 
 // Route::resource('/users/institutionalLogin',[UsersController::class, 'institutionalLogin']);

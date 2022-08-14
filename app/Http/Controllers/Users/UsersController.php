@@ -1,4 +1,8 @@
 <?php
+
+namespace App\Http\Controllers\Users;
+
+use App\Http\Controllers\Controller;
 use lib\log\EventLogger;
 use lib\utils\HelpTool;
 use Carbon\Carbon;
@@ -11,21 +15,27 @@ use modules\institutions\models\Institution as Institution;
 use Illuminate\Database\Eloquent\Collection as Collection;
 use modules\gamification\models\Gamified as Gamified;
 use Illuminate\Support\Facades\Config;
+use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Redirect;
 
-
-class UsersController extends \BaseController {
+class UsersController extends Controller {
 
   public function __construct()
   {
-    $this->beforeFilter('auth',
-      array('only' => ['follow', 'unfollow']));
+    // $this->beforeFilter('auth',
+    //   array('only' => ['follow', 'unfollow']));
   }
 
   public function index()
   {
     $users = User::all();
 
-    return View::make('/users/index',['users' => $users]);
+    return view('/users/index',['users' => $users]);
   }
 
 
@@ -78,7 +88,7 @@ class UsersController extends \BaseController {
 
     EventLogger::printEventLogs(null, "select_user", ["target_userId" => $id], "Web");
 
-    return View::make('/users/show',['user' => $user, 'photos' => $photos, 'follow' => $follow,
+    return view('/users/show',['user' => $user, 'photos' => $photos, 'follow' => $follow,
       'evaluatedPhotos' => Photo::getEvaluatedPhotosByUser($user),
       'lastDateUpdatePhoto' => Photo::getLastUpdatePhotoByUser($id),
       'lastDateUploadPhoto' => Photo::getLastUploadPhotoByUser($id),
@@ -98,16 +108,16 @@ class UsersController extends \BaseController {
   public function account()
   {
     if (Auth::check()) return Redirect::to('/home');
-    return View::make('/modal/account');
+    return view('/modal/account');
   }
 
 
   // register of user with email
-  public function store()
+  public function store(Request $request)
   {
     // put input into flash session for form repopulation
-    Input::flash();
-    $input = Input::all();
+    $request->flash();
+    $input = $request->all();
 
     // validate data
     $rules = array(
@@ -126,7 +136,8 @@ class UsersController extends \BaseController {
        $name = $input["name"];
        $email =$input["email"];
        $login =$input["login"];
-       $verify_code = str_random(30);
+       $verify_code = Str::random(30);
+       // dd($login);
       //create user with a verify code
       $user = User::create([
       'name' => $name,
@@ -153,7 +164,7 @@ class UsersController extends \BaseController {
   public function emailRegister(){
 
     $msgType = "sendEmail";
-    return View::make('/modal/register')->with(['msgType'=>$msgType]);
+    return view('/modal/register')->with(['msgType'=>$msgType]);
 
 
   }
@@ -181,7 +192,7 @@ class UsersController extends \BaseController {
   public function verifyError(){
 
       $msgType = "verify";
-      return View::make('/modal/register')->with(['msgType'=>$msgType]);
+      return view('/modal/register')->with(['msgType'=>$msgType]);
   }
 
 
@@ -189,7 +200,7 @@ class UsersController extends \BaseController {
   {
     $message = false;
     $existEmail = true;
-    return View::make('/modal/forget')->with(['message'=>$message, 'existEmail'=>$existEmail]);
+    return view('/modal/forget')->with(['message'=>$message, 'existEmail'=>$existEmail]);
   }
 
   public function forget(){
@@ -224,7 +235,7 @@ class UsersController extends \BaseController {
         $existEmail = false;
         $message = null;
       }
-      return View::make('/modal/forget')->with(['message'=>$message,'email'=>$email, 'existEmail'=>$existEmail]);
+      return view('/modal/forget')->with(['message'=>$message,'email'=>$email, 'existEmail'=>$existEmail]);
     }
 
 
@@ -251,7 +262,7 @@ class UsersController extends \BaseController {
     if (!Session::has('filter.login') && !Session::has('login.message')) //nao foi acionado pelo filtro, retornar para pagina anterior
          Session::put('url.previous', URL::previous());
 
-    return View::make('/modal/login')->with(['fburl' => $fburl,'institutions' => $institutions]);
+    return view('/modal/login')->with(['fburl' => $fburl,'institutions' => $institutions]);
   }
 
    // validacao do login
@@ -569,7 +580,7 @@ class UsersController extends \BaseController {
       return Redirect::action('PagesController@home');
     }
     elseif ($logged_user->id == $user->id) {
-      return View::make('users.edit')->with( ['user' => $user] );
+      return view('users.edit')->with( ['user' => $user] );
     }
     return Redirect::action('PagesController@home');
   }
