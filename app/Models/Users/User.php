@@ -6,14 +6,14 @@ use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
-use lib\date\Date;
-use lib\log\EventLogger;
+use App\lib\date\Date;
+use App\lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use App\modules\gamification\traits\UserGamificationTrait;
-use modules\institutions\models\Institution;
-use modules\collaborative\models\Comment;
-use modules\collaborative\models\Like;
+use App\modules\institutions\models\Institution;
+use App\modules\collaborative\models\Comment;
+use App\modules\collaborative\models\Like;
 
 class User extends Eloquent {
 
@@ -95,15 +95,15 @@ class User extends Eloquent {
 	//seguindo
 	public function following()
 	{
-		return $this->belongsToMany('User', 'friendship', 'following_id', 'followed_id');
+		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'following_id', 'followed_id');
 	}
 
 	public function institutions(){
-		return $this->belongsToMany('modules\institutions\models\Institution', 'friendship_institution','institution_id', 'following_user_id');
+		return $this->belongsToMany('App\modules\institutions\models\Institution', 'friendship_institution','institution_id', 'following_user_id');
 	}
 
 	public function followingInstitution(){
-		return $this->belongsToMany('modules\institutions\models\Institution', 'friendship_institution','following_user_id', 'institution_id');
+		return $this->belongsToMany('App\modules\institutions\models\Institution', 'friendship_institution','following_user_id', 'institution_id');
 	}
 
 	public function roles()

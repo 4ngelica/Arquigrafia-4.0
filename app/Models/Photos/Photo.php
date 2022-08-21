@@ -2,23 +2,23 @@
 
 namespace App\Models\Photos;
 
-use modules\draft\traits\DraftingTrait;
-use lib\date\Date;
+use App\modules\draft\traits\DraftingTrait;
+use App\lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-
-use modules\gamification\traits\LikableGamificationTrait;
+use Illuminate\Support\Facades\Log;
+use App\modules\gamification\traits\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
-use modules\institutions\models\Institution;
-use modules\collaborative\models\Like as Like;
-use modules\evaluations\models\Evaluation as Evaluation;
-use modules\moderation\models\Suggestion as Suggestion;
+use App\modules\institutions\models\Institution;
+use App\modules\collaborative\models\Like as Like;
+use App\modules\evaluations\models\Evaluation as Evaluation;
+use App\modules\moderation\models\Suggestion as Suggestion;
 
 class Photo extends Eloquent {
 
 	// use DraftingTrait;
 	// use SoftDeletingTrait;
-	// use LikableGamificationTrait;
+	use LikableGamificationTrait;
 
 	protected $softDelete = true;
 
@@ -135,27 +135,27 @@ class Photo extends Eloquent {
 
 	public function user()
 	{
-		return $this->belongsTo('User');
+		return $this->belongsTo('App\Models\Users\User');
 	}
 
 	public function institution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution');
+		return $this->belongsTo('App\modules\institutions\models\Institution');
 	}
 
 	public function tags()
 	{
-		return $this->belongsToMany('modules\collaborative\models\Tag', 'tag_assignments');
+		return $this->belongsToMany('App\modules\collaborative\models\Tag', 'tag_assignments');
 	}
 
 	public function authors()
 	{
-		return $this->belongsToMany('Author', 'photo_author');
+		return $this->belongsToMany('App\Models\Photos\Author', 'photo_author');
 	}
 
 	public function comments()
 	{
-		return $this->hasMany('modules\collaborative\models\Comment');
+		return $this->hasMany('App\modules\collaborative\models\Comment');
 	}
 
 	public function albums()
@@ -165,7 +165,7 @@ class Photo extends Eloquent {
 
 	public function evaluations()
 	{
-		return $this->hasMany('modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\modules\evaluations\models\Evaluation');
 	}
 
 	public function evaluators()
@@ -175,7 +175,7 @@ class Photo extends Eloquent {
 
 	public function suggestions()
 	{
-		return $this->hasMany('modules\moderation\models\Suggestion');
+		return $this->hasMany('App\modules\moderation\models\Suggestion');
 	}
 
 	public static function extractVideoId($url){
@@ -271,14 +271,14 @@ class Photo extends Eloquent {
 		$array = explode(" ", $name);
 		$architectureName = "";
 		if (!is_null($array) && !is_null($array[0])) {
-			if (ends_with($array[0], 'a') || ends_with($array[0], 'dade')
-				|| ends_with($array[0], 'ção') || ends_with($array[0], 'ase')
-				|| ends_with($array[0], 'ede') || ends_with($array[0], 'dral')
-				|| ends_with($array[0], 'agem') || $array[0] == "fonte"
+			if (str_ends_with($array[0], 'a') || str_ends_with($array[0], 'dade')
+				|| str_ends_with($array[0], 'ção') || str_ends_with($array[0], 'ase')
+				|| str_ends_with($array[0], 'ede') || str_ends_with($array[0], 'dral')
+				|| str_ends_with($array[0], 'agem') || $array[0] == "fonte"
 				|| $array[0] == "Fonte" || $array[0] == "ponte"
 				|| $array[0] == "Ponte")
 				$architectureName = 'a ';
-			else if (ends_with($array[0], 's'))
+			else if (str_ends_with($array[0], 's'))
 				$architectureName = 'a arquitetura de ';
 			else
 				$architectureName = 'o ';
@@ -519,7 +519,9 @@ class Photo extends Eloquent {
 	}
 
 	public function getDataUploadAttribute($value) {
+		if($this->date){
 		return $this->date->formatDatePortugues($this->attributes['dataUpload']);
+	}
 	}
 
 
@@ -531,7 +533,9 @@ class Photo extends Eloquent {
 
 
 	public function getFormatWorkdateAttribute($dateWork,$type) {
+		if($this->date){
 		return  $this->date->formatToWorkDate($dateWork,$type);
+	}
 	}
 
 	public function getFormatDataCriacaoAttribute($dataCriacao,$type) {

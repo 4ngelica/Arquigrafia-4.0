@@ -1,5 +1,6 @@
 <?php
-namespace modules\collaborative\models;
+namespace App\modules\collaborative\models;
+
 use modules\institutions\models\Institution;
 use Photo;
 use Session;
@@ -28,20 +29,20 @@ class Tag extends \Eloquent {
     return $photos;
   }
 
-  public static function allTagsPhoto($photo_id){     
+  public static function allTagsPhoto($photo_id){
     $photosTagAssignment = \DB::table('tag_assignments')
       ->select('tag_id')
       ->where('photo_id',$photo_id)
       ->lists('tag_id');
 
     $listTags = array();
-    
-     $tags = Tag::wherein('id',$photosTagAssignment)->get(); 
-     
+
+     $tags = Tag::wherein('id',$photosTagAssignment)->get();
+
      return $tags;
   }
 
-  public static function allTagsPhotoByType($photo_id,$type){     
+  public static function allTagsPhotoByType($photo_id,$type){
 
     $photosTagType = \DB::table('tag_assignments')
             ->join('tags', 'tag_assignments.tag_id', '=', 'tags.id')
@@ -51,8 +52,8 @@ class Tag extends \Eloquent {
             ->lists('tags.id');
 
 
-     $tags = Tag::wherein('id',$photosTagType)->get(); 
-     
+     $tags = Tag::wherein('id',$photosTagType)->get();
+
      return $tags;
   }
 
@@ -79,8 +80,8 @@ class Tag extends \Eloquent {
   /*usado por institutions*/
   public static function formatTags($tagsType){
     $tagsType = array_map('trim', $tagsType);
-    $tagsType = array_map('mb_strtolower', $tagsType); 
-    $tagsType = array_unique($tagsType);    
+    $tagsType = array_map('mb_strtolower', $tagsType);
+    $tagsType = array_unique($tagsType);
     return $tagsType;
   }
 
@@ -105,63 +106,63 @@ class Tag extends \Eloquent {
       $saved = true;
 
     } catch (PDOException $e) {
-      Log::error("Logging exception, error to register tags");           
-      $saved = false;  
-    } 
+      Log::error("Logging exception, error to register tags");
+      $saved = false;
+    }
     return $saved;
   }
 
   public static function updateTags($newTags,$photo){
-  
+
       $photo_tags = $photo->tags;
-      $allTags = Tag::allTagsPhoto($photo->id); 
-      foreach ($allTags as $tag){   
+      $allTags = Tag::allTagsPhoto($photo->id);
+      foreach ($allTags as $tag){
         $tag->count--;
-        $tag->save();                
+        $tag->save();
       }
 
       foreach ($allTags as $alltag) {
         $photo->tags()->detach($alltag->id);
       }
       try{
-        foreach ($newTags as $t) {            
-            $t = strtolower($t);           
-             
+        foreach ($newTags as $t) {
+            $t = strtolower($t);
+
             $tag = Tag::where('name', $t)
                      ->whereIn('type', array('Acervo','Livre'))->first();
-    
+
             if(is_null($tag)){
                 $tag = new Tag();
                 $tag->name = $t;
                 $tag->type = 'Livre';
                 $tag->save();
-            }  
+            }
             $photo->tags()->attach($tag->id);
 
             if($tag->count == null)
                 $tag->count = 0;
             $tag->count++;
-            $tag->save(); 
+            $tag->save();
         }
         $saved = true;
 
       }catch(PDOException $e){
-          Log::error("Logging exception, error to register tags");           
+          Log::error("Logging exception, error to register tags");
           $saved = false;
       }
-      return $saved;  
+      return $saved;
   }
 
   public static function filterTagByType($photo,$tagType){
       $tagsArea = $photo->tags->toJson();
-      $jsonTagsArea=json_decode($tagsArea);      
+      $jsonTagsArea=json_decode($tagsArea);
       $arrayTags = array_filter($jsonTagsArea,function($item) use ($tagType){
         return $item->type == $tagType;
       });
-      $tagsTypeList = array(); 
+      $tagsTypeList = array();
       foreach ($arrayTags as $value) {
         array_push($tagsTypeList, $value->name);
       }
       return $tagsTypeList;
-  } 
+  }
 }

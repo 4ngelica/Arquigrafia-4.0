@@ -1,8 +1,9 @@
 <?php
 
-namespace modules\collaborative\models;
-use User;
-use modules\gamification\traits\LikableGamificationTrait;
+namespace App\modules\collaborative\models;
+
+use App\Models\Users\User;
+use App\modules\gamification\traits\LikableGamificationTrait;
 
 
 class Like extends \Eloquent {
@@ -10,17 +11,17 @@ class Like extends \Eloquent {
 	use LikableGamificationTrait;
 	protected $table = "likes";
 	protected $fillable = [ 'user_id', 'likable_id', 'likable_type' ];
-	
+
 	public function user()
 	{
 		return $this->belongsTo('User');
 	}
 
 	public function likable()
-	{	
+	{
 		return $this->morphTo();
 	}
-	
+
 	public static function getFirstOrCreate($likable, $user) {
 		return self::firstOrCreate([
 				'user_id' => $user->id,
@@ -30,7 +31,7 @@ class Like extends \Eloquent {
 	}
 
 	public function scopeFromUser($query, $user) {
-		$a = $query->where('user_id', $user->id);		
+		$a = $query->where('user_id', $user->id);
 		return $a;
 	}
 

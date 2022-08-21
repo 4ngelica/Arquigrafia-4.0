@@ -1,10 +1,10 @@
 <?php
-namespace modules\evaluations\models;
+namespace App\modules\evaluations\models;
 use modules\evaluations\models\Binomial;
 use User;
 use Photo;
 class Evaluation extends \Eloquent {
-	
+
 	protected $softDelete = true;
 	protected $fillable = ['photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];
 
@@ -46,9 +46,9 @@ class Evaluation extends \Eloquent {
 		   }else{
 		   		return false;
 		   }
-		   	
+
 	}
-    
+
     public static function userAreArchitecture($photoId,$userId){
         $result = \DB::table('binomial_evaluation')
             ->select('areArchitecture')
@@ -84,8 +84,8 @@ class Evaluation extends \Eloquent {
 					}
 				}
 			}
-		}		
-		return $evaluations;			
+		}
+		return $evaluations;
 	}
 
 	public static function getPhotosByBinomial( $binomial, $option, $value ) {

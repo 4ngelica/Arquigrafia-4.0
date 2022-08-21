@@ -1,9 +1,11 @@
 <?php
-namespace modules\collaborative\models;
+namespace App\modules\collaborative\models;
+
 use modules\collaborative\models\Tag;
-use Photo;
-use User;
-use modules\gamification\traits\LikableGamificationTrait;
+use App\Models\Photos\Photo;
+use App\Models\Users\User;
+use App\modules\gamification\traits\LikableGamificationTrait;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
 
 class Comment extends \Eloquent {

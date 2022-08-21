@@ -1,5 +1,5 @@
 <?php
-namespace modules\moderation\models;
+namespace App\modules\moderation\models;
 
 class Suggestion extends \Eloquent {
 	protected $fillable = ['user_id', 'photo_id', 'attribute_type', 'text' , 'accepted', 'moderator_id'];

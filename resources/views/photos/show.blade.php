@@ -107,8 +107,8 @@
             <span class="right" title="{{ $commentsMessage }}">
               <i id="comments"></i><small>{{ $commentsCount }}</small>
             </span>
-            <span class="right" title="{{ $photos->likes->count() }} pessoas curtiram essa imagem">
-              <i id="likes"></i> <small>{{ $photos->likes->count() }}</small>
+            <span class="right" title="{{ $photos->likes ? $photos->likes->count() : '0' }} pessoas curtiram essa imagem">
+              <i id="likes"></i> <small>{{ $photos->likes ? $photos->likes->count() : '0' }}</small>
             </span>
             @if ($institutionId == NULL && $owner->equal(Auth::user()))
               <span class="right">

@@ -3,33 +3,40 @@
 
 namespace App\Http\Controllers\Photos;
 
-use lib\log\EventLogger;
+use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
+use App\lib\log\EventLogger;
 use Carbon\Carbon;
-use lib\date\Date;
-use modules\gamification\models\Badge;
-use modules\institutions\models\Institution as Institution;
-use modules\collaborative\models\Tag as Tag;
-use modules\collaborative\models\Comment as Comment;
-use modules\collaborative\models\Like as Like;
-use modules\evaluations\models\Evaluation as Evaluation;
-use modules\evaluations\models\Binomial as Binomial;
-use modules\gamification\models\Gamified as Gamified;
+use App\Models\Photos\Photo;
+use App\Models\Photos\Author;
+use Auth;
+use App\Models\Users\User;
+use App\modules\gamification\models\Badge;
+use App\modules\institutions\models\Institution as Institution;
+use App\modules\collaborative\models\Tag as Tag;
+use App\modules\collaborative\models\Comment as Comment;
+use App\modules\collaborative\models\Like as Like;
+use App\modules\evaluations\models\Evaluation as Evaluation;
+use App\modules\evaluations\models\Binomial as Binomial;
+use App\modules\gamification\models\Gamified as Gamified;
+use Session;
 
-class PhotosController extends \BaseController {
+
+class PhotosController extends Controller {
   protected $date;
 
-  public function __construct(Date $date = null)
-  {
-    // Filtering if user is logged out, redirect to login page
-    $this->beforeFilter('auth',
-      array( 'except' => ['index', 'show', 'showCompleteness', 'getCompletenessPhotos']));
-    $this->date = $date ?: new Date;
-  }
+  // public function __construct(Date $date = null)
+  // {
+  //   // Filtering if user is logged out, redirect to login page
+  //   $this->beforeFilter('auth',
+  //     array( 'except' => ['index', 'show', 'showCompleteness', 'getCompletenessPhotos']));
+  //   $this->date = $date ?: new Date;
+  // }
 
   public function index()
   {
     $photos = Photo::all();
-    return View::make('/photos/index',['photos' => $photos]);
+    return view('/photos/index',['photos' => $photos]);
   }
 
   public function show($id)
@@ -47,7 +54,6 @@ class PhotosController extends \BaseController {
     $user = null;
     $user = Auth::user();
     $photo_owner = $photos->user;
-
     $photo_institution = $photos->institution;
 
     $tags = $photos->tags;
@@ -71,23 +77,26 @@ class PhotosController extends \BaseController {
         $institution = Institution::find(Session::get('institutionId'));
       } else{
         $hasInstitution = Institution::belongSomeInstitution($photos->id);
-        //dd($hasInstitution);
-        if(!is_null($photo_institution) && $user->followingInstitution->contains($photo_institution->id)){
 
-           $followInstitution = false;
+        if($user->followingInstitution){
+          if(!is_null($photo_institution) && $user->followingInstitution->contains($photo_institution->id)){
+
+             $followInstitution = false;
+          }}
         }
-      }
       $evaluations =  Evaluation::where("user_id", $user->id)->where("photo_id", $id)->orderBy("binomial_id", "asc")->get();
 
-      if ($user->following->contains($photo_owner->id)) {
-        $follow = false;
+      if($user->following){
+        if ($user->following->contains($photo_owner->id)) {
+          $follow = false;
+        }
       }
     }
 
     EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
     $license = Photo::licensePhoto($photos);
-    $authorsList = $photos->authors->lists('name');
+    $authorsList = $photos->authors->pluck('name');
 
     $querySearch = "";
     $typeSearch = "";
@@ -224,7 +233,7 @@ class PhotosController extends \BaseController {
     $completeness['present'] = round(10 * ($completeness['present'] / $total)) * 10;
     $completeness['reviewing'] = round(10 * ($completeness['reviewing'] / $total)) * 10;
 
-    return View::make('/photos/show',
+    return view('/photos/show',
       ['photos' => $photos, 'owner' => $photo_owner, 'follow' => $follow, 'tags' => $tags,
       'commentsCount' => $photos->comments->count(),
       'commentsMessage' => Comment::createCommentsMessage($photos->comments->count()),
@@ -302,7 +311,7 @@ class PhotosController extends \BaseController {
 
     $input['autoOpenModal'] = null;
 
-    return View::make('/photos/form')->with(['tags'=>$tags,'pageSource'=>$pageSource,
+    return view('/photos/form')->with(['tags'=>$tags,'pageSource'=>$pageSource,
       'user'=>Auth::user(),
       'centuryInput'=> $centuryInput,
       'decadeInput' =>  $decadeInput,
@@ -597,7 +606,7 @@ class PhotosController extends \BaseController {
          $centuryImageInput = $photo->dataCriacao;
       }
 
-      return View::make('photos.edit')
+      return view('photos.edit')
         ->with(['photo' => $photo, 'tags' => $tags,
             'dateYear' => $dateYear,
             'centuryInput'=> $centuryInput,
@@ -829,7 +838,7 @@ class PhotosController extends \BaseController {
   }
 
   public function showCompleteness() {
-    return View::make('/photos/completeness', []);
+    return view('/photos/completeness', []);
   }
 
   public function getCompletenessPhotos() {
