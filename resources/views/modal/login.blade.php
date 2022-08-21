@@ -16,7 +16,7 @@
       <div class="container">
         <div class="twelve columns">
          <div class="four columns offset-by-four">
-          <div class="message">{{ Session::get('msgRegister') }}</div>
+          <div class="message">{!! Session::get('msgRegister') !!}</div>
         </div>
        </div>
       </div>

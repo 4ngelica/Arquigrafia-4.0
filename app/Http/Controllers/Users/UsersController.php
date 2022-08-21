@@ -188,7 +188,7 @@ class UsersController extends Controller {
           $newUser->verify_code = null;
           $newUser->save();
 
-          return Redirect::to('/users/login')->with('msgRegister', "<strong>Conta ativada com sucesso!.</strong>");
+          return Redirect::to('/users/login')->with('msgRegister', "<strong>Conta ativada com sucesso!</strong>");
 
       }
   }
