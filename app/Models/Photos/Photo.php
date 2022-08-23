@@ -15,6 +15,7 @@ use App\modules\evaluations\models\Evaluation as Evaluation;
 use App\modules\moderation\models\Suggestion as Suggestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use DateTime;
 use Session;
 
 class Photo extends Eloquent {
