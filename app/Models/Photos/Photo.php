@@ -13,6 +13,9 @@ use App\modules\institutions\models\Institution;
 use App\modules\collaborative\models\Like as Like;
 use App\modules\evaluations\models\Evaluation as Evaluation;
 use App\modules\moderation\models\Suggestion as Suggestion;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
+use Session;
 
 class Photo extends Eloquent {
 
@@ -539,7 +542,9 @@ class Photo extends Eloquent {
 	}
 
 	public function getFormatDataCriacaoAttribute($dataCriacao,$type) {
-		return  $this->date->formatToDataCriacao($dataCriacao,$type);
+		if($this->date){
+		return $this->date->formatToDataCriacao($dataCriacao,$type);
+	}
 	}
 
 	public static function import($attributes, $basepath) {
@@ -596,7 +601,7 @@ class Photo extends Eloquent {
 		$this->tags()->sync($tags);
 	}
 
-	public static function search($input, $tags, $binomials, $authorsArea) {
+	public static function search($request, $input, $tags, $binomials, $authorsArea) {
 
 		if(Session::has('CurrPage') && Session::get('CurrPage')!= 1){
 		   Session::forget('CurrPage');
@@ -616,8 +621,8 @@ class Photo extends Eloquent {
 				$query->where($license, array_pull($input, $license) );
 			}
 		}
-		if(Input::has('workAuthor_area')){
-			$input = array_except($input, 'workAuthor_area');
+		if($request->has('workAuthor_area')){
+			$input = Arr::except($input, 'workAuthor_area');
 		}
 		foreach ( $input as $column => $value) {
 			$query->where('photos.'.$column, 'LIKE', '%' . $value . '%');

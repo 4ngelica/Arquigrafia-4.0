@@ -14,7 +14,8 @@
       <div id="first_menu" class="eight-xs four columns">
         <!--   MENU DE BUSCA   -->
         <form id="search_buttons_area" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8">
-          <input type="text" class="search_bar" id="search_bar" name="q" value=""/>
+					@csrf
+					<input type="text" class="search_bar" id="search_bar" name="q" value=""/>
           <input type="hidden" value="8" name="perPage" />
           <input type="submit" class="search_bar_button cursor" value="" />
           <!--   BOTÃO DE BUSCA AVANÇADA   -->

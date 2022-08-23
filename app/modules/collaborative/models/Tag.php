@@ -1,8 +1,8 @@
 <?php
 namespace App\modules\collaborative\models;
 
-use modules\institutions\models\Institution;
-use Photo;
+use \App\modules\institutions\models\Institution;
+use App\Models\Photos\Photo;
 use Session;
 class Tag extends \Eloquent {
 
@@ -11,7 +11,7 @@ class Tag extends \Eloquent {
   protected $fillable = ['name'];
 
   public function photos() {
-    return $this->belongsToMany('Photo', 'tag_assignments', 'tag_id', 'photo_id');
+    return $this->belongsToMany('App\Models\Photos\Photo', 'tag_assignments', 'tag_id', 'photo_id');
   }
 
   public function photosTags($tags){

@@ -30,7 +30,7 @@ class Institution extends \Eloquent {
 
 	public static function institutionsList()
 	{
-		return \DB::table('institutions')->orderBy('name', 'asc')->lists('name','id');
+		return \DB::table('institutions')->orderBy('name', 'asc')->pluck('name','id');
 	}
 
 	public static function belongInstitution($photo_id,$institution_id) {

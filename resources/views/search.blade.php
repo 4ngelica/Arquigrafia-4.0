@@ -51,18 +51,7 @@
           @endif
         </h1>
        <!-- To data search  -->
-        @if( count($dateFilter) != 0 )
-          <p>
-            Data:
-            @foreach ($dateFilter as $k => $date)
-              @if ( $k != "do" )
-                <a href="{{ URL::to("/search?q=".$query."&d=".$k)}}"> {{ $date }} </a>,
-              @else
-                <a href="{{ URL::to("/search?q=".$query."&d=".$k)}}"> {{ $date }} </a>
-              @endif
-            @endforeach
-          </p>
-        @endif
+
        <!-- -->
         @if( count($tags) != 0 )
           <p style="display: inline">

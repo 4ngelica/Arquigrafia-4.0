@@ -91,7 +91,7 @@
                       {{ Form::label('name', 'Título da imagem:') }}
                     </td>
                     <td>
-                      {{ Form::text('name', Input::get("name"), array('style' => "width: 90%")) }}
+                      {{ Form::text('name', Request::get("name"), array('style' => "width: 90%")) }}
                     </td>
                   </tr>
                   <tr>
@@ -101,7 +101,7 @@
                   </tr>
                   <tr>
                     <td colspan="2">
-                      {{ Form::textarea('description', Input::get("description"),
+                      {{ Form::textarea('description', Request::get("description"),
                         array('style' => "width: 95.5%", 'rows' => 3)) }}
                     </td>
                   </tr>
@@ -141,7 +141,7 @@
                       {{ Form::label('workdate', 'Data da obra:') }}
                     </td>
                     <td>
-                      {{ Form::text('workdate',Input::get("workdate"),
+                      {{ Form::text('workdate',Request::get("workdate"),
                         array('id' => 'datePickerWorkDate')) }}
                     </td>
                   </tr>
@@ -150,7 +150,7 @@
                       {{ Form::label('dataCriacao', 'Data da imagem:') }}
                     </td>
                     <td>
-                      {{ Form::text('dataCriacao',Input::get("dataCriacao"),
+                      {{ Form::text('dataCriacao',Request::get("dataCriacao"),
                         array('id' => 'datePickerdataCriacao')) }}
                     </td>
                   </tr>
@@ -159,7 +159,7 @@
                       {{ Form::label('dataUpload', 'Data de upload:') }}
                     </td>
                     <td>
-                      {{ Form::text('dataUpload',Input::get("dataUpload"),
+                      {{ Form::text('dataUpload',Request::get("dataUpload"),
                         array('id' => 'datePickerdataUpload')) }}
                     </td>
                   </tr>
@@ -168,7 +168,7 @@
                       {{ Form::label('tombo', 'Número de Tombo:') }}
                     </td>
                     <td>
-                      {{ Form::text('tombo', Input::get("tombo") ) }}
+                      {{ Form::text('tombo', Request::get("tombo") ) }}
                     </td>
                   </tr>
                   <tr>
@@ -176,7 +176,7 @@
                       {{ Form::label('imageAuthor', 'Autor da imagem:') }}
                     </td>
                     <td>
-                      {{ Form::text('imageAuthor', Input::get("imageAuthor") ) }}
+                      {{ Form::text('imageAuthor', Request::get("imageAuthor") ) }}
                     </td>
                   </tr>
                   <tr>
@@ -222,7 +222,7 @@
                       {{ Form::label('state', 'Estado:') }}
                     </td>
                     <td>
-                      {{ Form::select('state', [""=>"Escolha o Estado", "AC"=>"Acre", "AL"=>"Alagoas", "AM"=>"Amazonas", "AP"=>"Amapá", "BA"=>"Bahia", "CE"=>"Ceará", "DF"=>"Distrito Federal", "ES"=>"Espirito Santo", "GO"=>"Goiás", "MA"=>"Maranhão", "MG"=>"Minas Gerais", "MS"=>"Mato Grosso do Sul", "MT"=>"Mato Grosso", "PA"=>"Pará", "PB"=>"Paraíba", "PE"=>"Pernambuco", "PI"=>"Piauí", "PR"=>"Paraná", "RJ"=>"Rio de Janeiro", "RN"=>"Rio Grande do Norte", "RO"=>"Rondônia", "RR"=>"Roraima", "RS"=>"Rio Grande do Sul", "SC"=>"Santa Catarina", "SE"=>"Sergipe", "SP"=>"São Paulo", "TO"=>"Tocantins"], Input::get("state"), array('style' => "width: 168px") ) }}
+                      {{ Form::select('state', [""=>"Escolha o Estado", "AC"=>"Acre", "AL"=>"Alagoas", "AM"=>"Amazonas", "AP"=>"Amapá", "BA"=>"Bahia", "CE"=>"Ceará", "DF"=>"Distrito Federal", "ES"=>"Espirito Santo", "GO"=>"Goiás", "MA"=>"Maranhão", "MG"=>"Minas Gerais", "MS"=>"Mato Grosso do Sul", "MT"=>"Mato Grosso", "PA"=>"Pará", "PB"=>"Paraíba", "PE"=>"Pernambuco", "PI"=>"Piauí", "PR"=>"Paraná", "RJ"=>"Rio de Janeiro", "RN"=>"Rio Grande do Norte", "RO"=>"Rondônia", "RR"=>"Roraima", "RS"=>"Rio Grande do Sul", "SC"=>"Santa Catarina", "SE"=>"Sergipe", "SP"=>"São Paulo", "TO"=>"Tocantins"], Request::get("state"), array('style' => "width: 168px") ) }}
                     </td>
                   </tr>
                   <tr>
@@ -230,7 +230,7 @@
                       {{ Form::label('city', 'Cidade:') }}
                     </td>
                     <td>
-                      {{ Form::text('city', Input::get("city"), array('style' => "width: 160px") ) }}
+                      {{ Form::text('city', Request::get("city"), array('style' => "width: 160px") ) }}
                     </td>
                   </tr>
                   <tr>
@@ -238,7 +238,7 @@
                       {{ Form::label('district', 'Bairro:') }}
                     </td>
                     <td>
-                      {{ Form::text('district', Input::get("district"), array('style' => "width: 160px") ) }}
+                      {{ Form::text('district', Request::get("district"), array('style' => "width: 160px") ) }}
                     </td>
                   </tr>
                   <tr>
@@ -247,7 +247,7 @@
                       {{ Form::label('street', 'Endereço:') }}
                     </td>
                     <td>
-                      {{ Form::text('street', Input::get("street"), array('style' => "width: 160px") ) }}
+                      {{ Form::text('street', Request::get("street"), array('style' => "width: 160px") ) }}
                     </td>
                   </tr>
                 </table>
@@ -262,7 +262,7 @@
                     <td>
                       {{ Form::select('allowCommercialUses',
                         [""=>"Escolha", "YES"=>"Sim", "NO"=>"Não"],
-                        Input::get("allowCommercialUses") ) }}
+                        Request::get("allowCommercialUses") ) }}
                     </td>
                   </tr>
                   <tr>
@@ -272,7 +272,7 @@
                     <td>
                       {{ Form::select('allowModifications',
                         [""=>"Escolha", "YES"=>"Sim", "NO"=>"Não"],
-                        Input::get("allowModifications") ) }}
+                        Request::get("allowModifications") ) }}
                     </td>
                   </tr>
                 </table>
@@ -285,7 +285,7 @@
                     </td>
                     <td>
                       @if(!is_null($institutions))
-                        {{ Form::select('institution_id', array(""=>"Escolha") + $institutions , Input::get('institution_id')) }}
+                        {{ Form::select('institution_id', array(""=>"Escolha") + $institutions->toArray() , Request::get('institution_id')) }}
                       @else
                         {{ Form::select('institution_id', [""=>"Escolha o acervo institutional"], "",array('class' => 'left')) }}
                       @endif
@@ -335,7 +335,7 @@
                         </td>
                       </tr>
                     </table>
-                    {{ Form::input('range', 'value-'.$binomial->id, $diff,
+                    {{ Request::get('range', 'value-'.$binomial->id, $diff,
                       [ 'min' => '0',
                         'max' => '100',
                         'oninput' => 'outputUpdate(' . $binomial->id . ', value)',
@@ -354,8 +354,7 @@
       {{ Form::hidden('pgVisited', $pageVisited, array('id'  => 'pgVisited') ) }}
       {{ Form::hidden('pageCurrent1', $page, array('id'  => 'pageCurrent1') ) }}
       {{ Form::hidden('urlType', "advance", array('id'  => 'urlType') ) }}
-
-      @if (count($photos))
+      @if ($photos)
         <!--   PAINEL DE IMAGENS - GALERIA - CARROSSEL   -->
         <!--<div class="wrap">
           <div id="panel">
