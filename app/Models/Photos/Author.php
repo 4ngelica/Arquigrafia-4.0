@@ -4,6 +4,7 @@ namespace App\Models\Photos;
 
 use App\Models\Photos\Author;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\DB;
 
 class Author extends Eloquent {
 
@@ -50,7 +51,7 @@ class Author extends Eloquent {
     $allAuthors = DB::table('photo_author')
       ->select('author_id')
       ->where('photo_id',$photo_id)
-      ->lists('author_id');
+      ->pluck('author_id');
      $authorsList = Author::wherein('id',$allAuthors)->get();
 
      return $authorsList;

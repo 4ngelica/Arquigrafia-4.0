@@ -22,6 +22,8 @@ use App\modules\gamification\models\Gamified as Gamified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Session;
 
 
@@ -562,7 +564,7 @@ class PhotosController extends Controller {
         $tags = Session::pull('tags');
         $tags = explode(',', $tags);
       } else {
-        $tags = $photo->tags->lists('name');
+        $tags = $photo->tags->pluck('name');
       }
 
       if( Session::has('work_authors'))
@@ -570,7 +572,7 @@ class PhotosController extends Controller {
         $work_authors = Session::pull('work_authors');
         $work_authors = explode(';', $work_authors);
       } else{
-        $work_authors = $photo->authors->lists('name');
+        $work_authors = $photo->authors->pluck('name');
       }
 
       $dateYear = "";
@@ -621,10 +623,11 @@ class PhotosController extends Controller {
             'video' => $photo->video
           ] );
     }
-    return Redirect::action('PagesController@home');
+    $tags = $photo->tags;
+    return Redirect::action('PagesController@home')->with(['tags'=>$tags]);
   }
 
-  public function update($id) {
+  public function update(Request $request,$id) {
       $photo = Photo::find($id);
       // Input::flashExcept('tags', 'photo');
       $input = $request->all();
@@ -672,9 +675,9 @@ class PhotosController extends Controller {
         'tags' => 'required',
         'type' => 'required',
         'photo_country' => 'required',
-        'photo_imageDate' => 'date_format:d/m/Y|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
+        'photo_imageDate' => 'nullable|date_format:d/m/Y|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
         'photo' => 'max:10240|mimes:jpeg,jpg,png,gif',
-         'video' => array('regex:'.$regexVideo)
+         'video' => array('regex:'.$regexVideo, 'nullable')
           );
 
       if($input["type"] == "photo"){
@@ -685,7 +688,7 @@ class PhotosController extends Controller {
 
       if ($validator->fails()) {
         $messages = $validator->messages();
-        return Redirect::to('/photos/' . $photo->id . '/edit')->with(['tags' => $input['tags'],
+        return redirect()->to('/photos/' . $photo->id . '/edit')->with(['tags' => $input['tags'],
           'decadeInput' => $decadeInput,
           'centuryInput' => $centuryInput,
           'workDate' => $workDate,
@@ -822,22 +825,24 @@ class PhotosController extends Controller {
 
 
 
-        return Redirect::to("/photos/{$photo->id}")->with('message', '<strong>Edição de informações da imagem</strong><br>Dados alterados com sucesso');
+        return redirect()->to("/photos/{$photo->id}")->with('message', '<strong>Edição de informações da imagem</strong><br>Dados alterados com sucesso');
       }
   }
 
   public function destroy($id) {
     $photo = Photo::find($id);
-    foreach($photo->tags as $tag) {
-      $tag->count = $tag->count - 1;
-      $tag->save();
+    if($photo){
+      foreach($photo->tags as $tag) {
+        $tag->count = $tag->count - 1;
+        $tag->save();
+      }
     }
     DB::table('tag_assignments')->where('photo_id', '=', $photo->id)->delete();
 
     $photo->delete();
 
     EventLogger::printEventLogs($id, "delete", null, "Web");
-    return Redirect::to('/users/' . $photo->user_id);
+    return redirect()->to('/users/' . $photo->user_id);
   }
 
   public function showCompleteness() {

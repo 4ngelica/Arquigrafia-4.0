@@ -3,6 +3,7 @@ namespace App\modules\collaborative\models;
 
 use \App\modules\institutions\models\Institution;
 use App\Models\Photos\Photo;
+use Illuminate\Support\Facades\DB;
 use Session;
 class Tag extends \Eloquent {
 
@@ -17,13 +18,13 @@ class Tag extends \Eloquent {
   public function photosTags($tags){
     $query = Tag::whereIn('name', $tags);
     $tagsResult = $query->get();
-    $listTags= $tagsResult->lists('id');
+    $listTags= $tagsResult->pluck('id');
     $photosTagAssignment = \DB::table('tag_assignments')
       ->select('photo_id')
       ->whereIn('tag_id',$listTags)
       ->get();
 
-    $listPhotos=$photosTagAssignment->lists('photo_id');
+    $listPhotos=$photosTagAssignment->pluck('photo_id');
     $photos = Photo::wherein('id',$listPhotos);
 
     return $photos;
@@ -33,7 +34,7 @@ class Tag extends \Eloquent {
     $photosTagAssignment = \DB::table('tag_assignments')
       ->select('tag_id')
       ->where('photo_id',$photo_id)
-      ->lists('tag_id');
+      ->pluck('tag_id');
 
     $listTags = array();
 
@@ -49,7 +50,7 @@ class Tag extends \Eloquent {
             ->select('tags.id')
             ->where('tag_assignments.photo_id',$photo_id)
             ->where('tags.type',$type)
-            ->lists('tags.id');
+            ->pluck('tags.id');
 
 
      $tags = Tag::wherein('id',$photosTagType)->get();
