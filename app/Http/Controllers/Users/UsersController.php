@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\Users\User;
+use App\Models\Photos\Photo;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
 use App\Models\Users\Occupation;
@@ -63,26 +64,32 @@ class UsersController extends Controller {
     // If you're logged in
     if (Auth::check()) {
       // Marking if you're following the user
-      if (Auth::user()->following->contains($user->id)) $follow = false;
-      else $follow = true;
+      if (Auth::user()->following) {
+        if (Auth::user()->following->contains($user->id)){
+          $follow = false;
+        }else {
+          $follow = true;
+        }
 
-      // If the current user is the user that we wanna show the profile
-      if ($user->equal(Auth::user())) {
-        // Getting the acceptedSuggestions for user
-        $acceptedSuggestions = $user->suggestions()->where('accepted', '=', 1)->get();
-        foreach ($acceptedSuggestions as $suggestion) {
-          // Adding the suggestion numPoints to user points
-          $userPoints += $suggestion->numPoints();
+        // If the current user is the user that we wanna show the profile
+        if ($user->equal(Auth::user())) {
+          // Getting the acceptedSuggestions for user
+          $acceptedSuggestions = $user->suggestions()->where('accepted', '=', 1)->get();
+          foreach ($acceptedSuggestions as $suggestion) {
+            // Adding the suggestion numPoints to user points
+            $userPoints += $suggestion->numPoints();
+          }
+          // Getting waiting points for user
+          $waitingSuggestions = $user->suggestions()->where('accepted', '=', null)->get();
+          foreach ($waitingSuggestions as $suggestion) {
+            // Adding the suggestions numPoints to the waiting points
+            $userWaitingPoints += $suggestion->numPoints();
+          }
+          // Getting refused suggestions
+          $refusedSuggestions = $user->suggestions()->where('accepted', '=', 0)->get();
         }
-        // Getting waiting points for user
-        $waitingSuggestions = $user->suggestions()->where('accepted', '=', null)->get();
-        foreach ($waitingSuggestions as $suggestion) {
-          // Adding the suggestions numPoints to the waiting points
-          $userWaitingPoints += $suggestion->numPoints();
-        }
-        // Getting refused suggestions
-        $refusedSuggestions = $user->suggestions()->where('accepted', '=', 0)->get();
       }
+
     } else {
       $follow = true;
       $followInstitution = true;
@@ -92,7 +99,7 @@ class UsersController extends Controller {
 
     EventLogger::printEventLogs(null, "select_user", ["target_userId" => $id], "Web");
 
-    return view('/users/show',['user' => $user, 'photos' => $photos, 'follow' => $follow,
+    return view('/users/show',['user' => $user, 'photos' => $photos, 'follow' => $follow ?? '',
       'evaluatedPhotos' => Photo::getEvaluatedPhotosByUser($user),
       'lastDateUpdatePhoto' => Photo::getLastUpdatePhotoByUser($id),
       'lastDateUploadPhoto' => Photo::getLastUploadPhotoByUser($id),
@@ -207,8 +214,8 @@ class UsersController extends Controller {
     return view('/modal/forget')->with(['message'=>$message, 'existEmail'=>$existEmail]);
   }
 
-  public function forget(){
-    $input = Input::all();
+  public function forget(Request $request){
+    $input = $request->all();
     $email = $input["email"];
     $rules = array('email' => 'required|email');
 
@@ -590,11 +597,11 @@ class UsersController extends Controller {
     return Redirect::action('PagesController@home');
   }
 
-  public function update($id) {
+  public function update(Request $request, $id) {
     $user = User::find($id);
 
-    Input::flash();
-    $input = Input::only('name', 'login', 'email', 'scholarity', 'lastName', 'site', 'birthday', 'country', 'state', 'city',
+    // Input::flash();
+    $input =  $request->only('name', 'login', 'email', 'scholarity', 'lastName', 'site', 'birthday', 'country', 'state', 'city',
       'photo', 'gender', 'institution', 'occupation', 'visibleBirthday', 'visibleEmail','old_password','user_password','user_password_confirmation');
 
     $rules = array(
@@ -658,13 +665,13 @@ class UsersController extends Controller {
       }
 
 
-      if (Input::hasFile('photo') and Input::file('photo')->isValid())  {
-        $file = Input::file('photo');
+      if ( $request->hasFile('photo') and  $request->file('photo')->isValid())  {
+        $file =  $request->file('photo');
         $ext = $file->getClientOriginalExtension();
 
         $user->photo = "/arquigrafia-avatars/".$user->id.".jpg";
         //$user->save();
-        $image = Image::make(Input::file('photo'))->encode('jpg', 80);
+        $image = Image::make( $request->file('photo'))->encode('jpg', 80);
         $image->save(public_path().'/arquigrafia-avatars/'.$user->id.'.jpg');
         $file->move(public_path().'/arquigrafia-avatars', $user->id."_original.".strtolower($ext));
       }

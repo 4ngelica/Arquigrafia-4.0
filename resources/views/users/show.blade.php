@@ -314,10 +314,10 @@
 	</div>
 
 	<!-- MEUS PONTOS -->
-	@include('user_points')
-	
+	@include('gamification.user_points')
+
 	<!-- MINHAS CONQUISTAS -->
-	@include('user_badges')
+	@include('gamification.user_badges')
 
 	<br>
 	<br>

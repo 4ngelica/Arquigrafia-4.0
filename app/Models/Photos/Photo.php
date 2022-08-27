@@ -292,7 +292,7 @@ class Photo extends Eloquent {
 
 	public static function getEvaluatedPhotosByUser($user) {
 		$evaluations = Evaluation::where("user_id", $user->id)->groupBy('photo_id')->distinct()->get();
-		return Photo::whereIn('id', $evaluations->lists('photo_id'))->get();
+		return Photo::whereIn('id', $evaluations->pluck('photo_id'))->get();
 	}
 
 

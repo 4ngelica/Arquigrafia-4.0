@@ -1,6 +1,9 @@
 <?php
 
-class Album extends \BaseModel {
+namespace App\Models\Albums;
+use Illuminate\Database\Eloquent\Model;
+
+class Album extends Model {
 
 	public $timestamps = false;
 
@@ -16,7 +19,7 @@ class Album extends \BaseModel {
 	}
 
 	public function user()
-	{	
+	{
 		return $this->belongsTo('User');
 	}
 
@@ -46,19 +49,19 @@ class Album extends \BaseModel {
 		if (isset($cover)) {
 			$this->cover()->associate($cover);
 		}
-		
+
 	}
 
-	public static function create(array $attr) 
+	public static function create(array $attr)
 	{
 		$album = new Album;
 		$album->updateInfo($attr['title'], $attr['description'], $attr['cover']);
 		$album->creationDate = date('Y-m-d H:i:s');
 		$album->user()->associate($attr['user']);
-		 
+
 		if ( array_key_exists('institution',$attr) && !empty($attr['institution']) ) {
 			$album->institution()->associate($attr['institution']);
-		}		
+		}
 		$album->save();
 		return $album;
 	}

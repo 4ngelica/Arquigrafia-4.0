@@ -34,7 +34,7 @@ class User extends Eloquent {
 
 	public function news()
     {
-        return $this->hasMany('modules\news\models\News');
+        return $this->hasMany('App\modules\news\models\News');
     }
 
 	public function notifications()
@@ -44,52 +44,52 @@ class User extends Eloquent {
 
 	public function photos()
 	{
-		return $this->hasMany('Photo')->whereNull('institution_id');
+		return $this->hasMany('App\Models\Photos\Photo')->whereNull('institution_id');
 	}
 	public function userPhotos($user_id){
-		return $this->hasMany('Photo')->where('user_id', $user_id)->whereNull('institution_id');
+		return $this->hasMany('App\Models\Photos\Photo')->where('user_id', $user_id)->whereNull('institution_id');
 	}
 	public function comments()
 	{
-		return $this->hasMany('modules\collaborative\models\Comment');
+		return $this->hasMany('App\modules\collaborative\models\Comment');
 	}
 	public function evaluations()
 	{
-		return $this->hasMany('modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\modules\evaluations\models\Evaluation');
 	}
 
 	public function likes()
 	{
-		return $this->hasMany('modules\collaborative\models\Like');
+		return $this->hasMany('App\modules\collaborative\models\Like');
 	}
 
 	public function albums()
 	{
-		return $this->hasMany('Album');
+		return $this->hasMany('App\Models\Albums\Album');
 	}
 	public function userAlbums()
 	{
-		return $this->hasMany('Album')->whereNull('institution_id');
+		return $this->hasMany('App\Models\Albums\Album')->whereNull('institution_id');
 	}
 	public function occupation()
 	{
-		return $this->hasOne('Occupation');
+		return $this->hasOne('App\Models\Users\Occupation');
 	}
 
 	public function suggestions()
 	{
-		return $this->hasMany('modules\moderation\models\Suggestion');
+		return $this->hasMany('App\modules\moderation\models\Suggestion');
 	}
 
 	public function moderator()
 	{
-		return $this->belongsTo('modules\moderation\models\Suggestion');
+		return $this->belongsTo('App\modules\moderation\models\Suggestion');
 	}
 
 	//seguidores
 	public function followers()
 	{
-		return $this->belongsToMany('User', 'friendship', 'followed_id', 'following_id');
+		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'followed_id', 'following_id');
 	}
 
 	//seguindo
