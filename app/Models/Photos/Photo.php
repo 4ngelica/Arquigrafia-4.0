@@ -15,6 +15,7 @@ use App\modules\evaluations\models\Evaluation as Evaluation;
 use App\modules\moderation\models\Suggestion as Suggestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use App\lib\metadata\Exiv2;
 use DateTime;
 use Session;
 
@@ -221,11 +222,13 @@ class Photo extends Eloquent {
 		$h200_path = public_path() . '/arquigrafia-images/' . $this->id . '_200h.jpg';
 		$home_path = public_path() . '/arquigrafia-images/' . $this->id . '_home.jpg';
 		$micro_path = public_path() . '/arquigrafia-images/' . $this->id . '_micro.jpg';
-		Exiv2::saveMetadata($original_path, $this, $metadata);
-		Exiv2::saveMetadata($view_path, $this, $metadata);
-		Exiv2::saveMetadata($h200_path, $this, $metadata);
-		Exiv2::saveMetadata($home_path, $this, $metadata);
-		Exiv2::saveMetadata($micro_path, $this, $metadata);
+		$exiv2 = new Exiv2($original_path, $this, $metadata);
+		// $file_path, $photo, $metadata
+		$exiv2->saveMetadata($original_path, $this, $metadata);
+		$exiv2->saveMetadata($view_path, $this, $metadata);
+		$exiv2->saveMetadata($h200_path, $this, $metadata);
+		$exiv2->saveMetadata($home_path, $this, $metadata);
+		$exiv2->saveMetadata($micro_path, $this, $metadata);
 	}
 
 	public static function paginateUserPhotos($user, $perPage = 24) {

@@ -18,9 +18,9 @@ RUN pecl install redis && docker-php-ext-enable redis
 
 RUN pecl install imagick && docker-php-ext-enable imagick
 
-# RUN apt-get update -y && apt-get install -y libpng-dev
-
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype && docker-php-ext-install gd
+
+RUN docker-php-ext-configure exif --enable-exif && docker-php-ext-install exif
 
 RUN a2enmod headers && sed -ri -e 's/^([ \t])(<\/VirtualHost>)/\1\tHeader set Access-Control-Allow-Origin ""\n\1\2/g' /etc/apache2/sites-available/*.conf
 

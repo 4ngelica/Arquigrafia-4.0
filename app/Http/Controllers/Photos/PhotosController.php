@@ -19,6 +19,9 @@ use App\modules\collaborative\models\Like as Like;
 use App\modules\evaluations\models\Evaluation as Evaluation;
 use App\modules\evaluations\models\Binomial as Binomial;
 use App\modules\gamification\models\Gamified as Gamified;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManagerStatic as Image;
 use Session;
 
 
@@ -263,12 +266,12 @@ class PhotosController extends Controller {
   }
 
   // upload form
-  public function form()
+  public function form(Request $request)
   {
     if (Session::has('institutionId') ) {
       return Redirect::to('/home');
     }
-    $pageSource = Request::header('referer');
+    $pageSource = $request->header('referer');
     if(empty($pageSource)) $pageSource = '';
     $tags = null;
     $work_authors = null;
@@ -328,17 +331,17 @@ class PhotosController extends Controller {
   }
 
 
-  public function store()
+  public function store(Request $request)
   {
-      Input::flashExcept('tags', 'photo','work_authors');
-      $input = Input::all();
+      // Input::flashExcept('tags', 'photo','work_authors');
+      $input = $request->all();
 
-      if (Input::has('tags'))
+      if ($request->has('tags'))
         $input["tags"] = str_replace(array('\'', '"', '[', ']'), '', $input["tags"]);
       else
         $input["tags"] = '';
 
-      if (Input::has('work_authors')){
+      if ($request->has('work_authors')){
           $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
           $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
       }else $input["work_authors"] = '';
@@ -352,8 +355,8 @@ class PhotosController extends Controller {
         'photo_country' => 'required',
         'photo_authorization_checkbox' => 'required',
         'photo' => 'max:10240|required_without_all:video|mimes:jpeg,jpg,png,gif',
-        'photo_imageDate' => 'date_format:d/m/Y|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
-        'video' => array('regex:'.$regexVideo,'required_without_all:photo')
+        'photo_imageDate' => 'nullable|date_format:d/m/Y|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
+        'video' => array('regex:'.$regexVideo,'required_without_all:photo', 'nullable')
       );
 
       if($input["type"] == "photo"){
@@ -365,7 +368,7 @@ class PhotosController extends Controller {
       if ($validator->fails()) {
           $messages = $validator->messages();
 
-          return Redirect::to('/photos/upload')->with(['tags' => $input['tags'],
+          return redirect()->to('/photos/upload')->with(['tags' => $input['tags'],
           'decadeInput'=>$input["decade_select"],
           'centuryInput'=>(!empty($input["century"])) ? $input["century"] : null,
           'decadeImageInput'=>$input["decade_select_image"],
@@ -376,8 +379,8 @@ class PhotosController extends Controller {
           ])->withErrors($messages);
       } else {
 
-        if ( ( Input::hasFile('photo') and Input::file('photo')->isValid() ) || !empty($input["video"]) ) {
-            $file = Input::file('photo');
+        if ( ( $request->hasFile('photo') and $request->file('photo')->isValid() ) || !empty($input["video"]) ) {
+            $file = $request->file('photo');
             $photo = new Photo();
 
             if ( !empty($input["photo_aditionalImageComments"]) )
@@ -481,9 +484,9 @@ class PhotosController extends Controller {
                 $angle = (float)$input['rotate'];
               else
                 $angle = 0;
-              $metadata       = Image::make(Input::file('photo'))->exif();
-              $public_image   = Image::make(Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-              $original_image = Image::make(Input::file('photo'))->rotate($angle);
+              $metadata       = Image::make($request->file('photo'))->exif();
+              $public_image   = Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
+              $original_image = Image::make($request->file('photo'))->rotate($angle);
 
               $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
               $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
@@ -505,7 +508,7 @@ class PhotosController extends Controller {
             $input['dates'] = true;
             $input['dateImage'] = true;
 
-            return Redirect::back()->withInput($input);
+            return redirect()->back()->withInput($input);
 
         } else {
             $messages = $validator->messages();
@@ -545,7 +548,7 @@ class PhotosController extends Controller {
 
   public function edit($id) {
     if (Session::has('institutionId') ) {
-      return Redirect::to('/home');
+      return redirect()->to('/home');
     }
     $photo = Photo::find($id);
     $logged_user = Auth::User();
@@ -623,17 +626,17 @@ class PhotosController extends Controller {
 
   public function update($id) {
       $photo = Photo::find($id);
-      Input::flashExcept('tags', 'photo');
-      $input = Input::all();
+      // Input::flashExcept('tags', 'photo');
+      $input = $request->all();
 
-      if (Input::has('tags'))
+      if ($request->has('tags'))
         $input["tags"] = str_replace(array('\'', '"', '[', ']'), '', $input["tags"]);
       else
         $input["tags"] = '';
 
 
       Log::info("auth =>".$input["work_authors"] );
-      if (Input::has('work_authors') && !empty($input["work_authors"])){
+      if ($request->has('work_authors') && !empty($input["work_authors"])){
 
         $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
         $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
@@ -646,19 +649,19 @@ class PhotosController extends Controller {
       $decadeImageInput = "";
       $centuryImageInput = "";
 
-      if(Input::has('photo_imageDate')){
+      if($request->has('photo_imageDate')){
         $imageDateCreated = $input["photo_imageDate"];
-      }elseif(Input::has('decade_select_image')){
+      }elseif($request->has('decade_select_image')){
          $decadeImageInput = $input["decade_select_image"];
-      }elseif(Input::has('century_image')){
+      }elseif($request->has('century_image')){
          $centuryImageInput = $input["century_image"];
       }
 
-      if(Input::has('workDate')){
+      if($request->has('workDate')){
         $workDate = $input["workDate"];
-      }elseif(Input::has('decade_select')){
+      }elseif($request->has('decade_select')){
          $decadeInput = $input["decade_select"];
-      }elseif(Input::has('century')){
+      }elseif($request->has('century')){
          $centuryInput = $input["century"];
       }
 
@@ -747,8 +750,8 @@ class PhotosController extends Controller {
 
           $photo->type = "video";
         }else{
-          if (Input::hasFile('photo') and Input::file('photo')->isValid() and $input["type"] == "photo") {
-              $file = Input::file('photo');
+          if ($request->hasFile('photo') and $request->file('photo')->isValid() and $input["type"] == "photo") {
+              $file = $request->file('photo');
               $ext = $file->getClientOriginalExtension();
               $photo->nome_arquivo = $photo->id.".".$ext;
               $photo->type = "photo";
@@ -781,14 +784,14 @@ class PhotosController extends Controller {
         }
 
         $create = false;
-        if (Input::hasFile('photo') and Input::file('photo')->isValid() and $input["type"] == "photo") {
+        if ($request->hasFile('photo') and $request->file('photo')->isValid() and $input["type"] == "photo") {
           if(array_key_exists('rotate', $input))
               $angle = (float)$input['rotate'];
           else
               $angle = 0;
-          $metadata       = Image::make(Input::file('photo'))->exif();
-          $public_image   = Image::make(Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-          $original_image = Image::make(Input::file('photo'))->rotate($angle);
+          $metadata       = Image::make($request->file('photo'))->exif();
+          $public_image   = Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
+          $original_image = Image::make($request->file('photo'))->rotate($angle);
           $create = true;
         }elseif ($input["type"] == "photo") {
           list($photo_id, $ext) = explode(".", $photo->nome_arquivo);

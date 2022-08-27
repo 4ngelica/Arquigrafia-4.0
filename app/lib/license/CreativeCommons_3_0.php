@@ -1,4 +1,5 @@
-<?php namespace lib\license;
+<?php
+namespace App\lib\license;
 
 class CreativeCommons_3_0 {
 
@@ -13,7 +14,7 @@ class CreativeCommons_3_0 {
 	public function getLongLicenseName() {
 		return 'Creative Commons 3.0 ' . $this->getShortLicenseName();
 	}
-	
+
 	public function getShortLicenseName() {
 		$result = 'BY';
 		switch ($this->allowCommercialUses) {
@@ -37,7 +38,7 @@ class CreativeCommons_3_0 {
 		}
 		return $result;
 	}
-	
+
 	public function getURIString() {
 		return sprintf('http://creativecommons.org/licenses/%s/3.0/deed.pt_BR', strtolower($this->getShortLicenseName()));
 	}
