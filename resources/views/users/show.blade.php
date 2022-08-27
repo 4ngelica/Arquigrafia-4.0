@@ -26,7 +26,7 @@
   @if (Session::get('message'))
         <div class="container">
           <div class="twelve columns">
-              <div class="message">{{ Session::get('message') }}</div>
+              <div class="message">{!! Session::get('message') !!}</div>
           </div>
         </div>
     @endif

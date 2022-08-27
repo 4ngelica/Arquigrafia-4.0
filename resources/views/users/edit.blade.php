@@ -120,7 +120,7 @@
           <div class="two columns omega">
             <p>{{ Form::text('email', $user->email) }} <br>
               <div class="error">{{ $errors->first('email') }} </div>
-            <input name="visibleEmail" type="checkbox" value="yes" {{$user->visibleEmail == 'yes' ? "checked" : ""}}>Visível no perfil público<br>
+            <input name="visibleEmail" type="checkbox" value="yes" {{$user->visibleEmail == 'yes' ? "checked" : null}}>Visível no perfil público<br>
             </p>
           </div>
 
@@ -139,9 +139,9 @@
          @if (($user->birthday)!= null )
           <p>{{ Form::text('birthday',date("d/m/Y",strtotime($user->birthday)),array('id' => 'datePickerBirthday','placeholder'=>'dd/mm/yyyy')) }}
          @else
-          <p>{{ Form::text('birthday','',array('id' => 'datePickerBirthday','placeholder'=>'dd/mm/yyyy')) }}
+          <p>{{ Form::text('birthday',null,array('id' => 'datePickerBirthday','placeholder'=>'dd/mm/yyyy')) }}
          @endif
-         <input name="visibleBirthday" type="checkbox" value="yes" {{$user->visibleBirthday == 'yes' ? "checked" : ""}}>Visível no perfil público <br>
+         <input name="visibleBirthday" type="checkbox" value="yes" {{$user->visibleBirthday == 'yes' ? "checked" : null}}>Visível no perfil público <br>
          <div class="error">{{ $errors->first('birthday') }}</div>
          </p>
         </div>
@@ -151,9 +151,9 @@
             <p>Sexo: </p>
           </div>
           <div class="two columns omega">
-              <input type="radio" name="gender" value="female" id="gender" {{$user->gender == 'female' ? "checked" : ""}}>
+              <input type="radio" name="gender" value="female" id="gender" {{$user->gender == 'female' ? "checked" : null}}>
               <label for="gender">Feminino</label><br class="clear">
-              <input type="radio" name="gender" value="male" id="gender" {{$user->gender == 'male' ? "checked" : ""}}>
+              <input type="radio" name="gender" value="male" id="gender" {{$user->gender == 'male' ? "checked" : null}}>
               <label for="gender">Masculino</label><br class="clear">
           </div>
 

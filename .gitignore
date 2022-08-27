@@ -19,3 +19,7 @@ yarn-error.log
 composer.lock
 package-lock.json
 docker-compose.yml
+/public/arquigrafia-images/*
+!/public/arquigrafia-images/.gitkeep
+/public/arquigrafia-avatars/*
+!/public/arquigrafia-avatars/.gitkeep

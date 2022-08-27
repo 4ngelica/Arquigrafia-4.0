@@ -21,11 +21,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\Users\User;
 use App\Models\Photos\Photo;
+
 use Illuminate\Support\Facades\Hash;
 use Redirect;
 use App\Models\Users\Occupation;
 use Illuminate\Support\Facades\Mail;
 use Session;
+use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManagerStatic as Image;
 
 
 class UsersController extends Controller {
@@ -599,6 +602,7 @@ class UsersController extends Controller {
 
   public function update(Request $request, $id) {
     $user = User::find($id);
+    // dd($request);
 
     // Input::flash();
     $input =  $request->only('name', 'login', 'email', 'scholarity', 'lastName', 'site', 'birthday', 'country', 'state', 'city',
@@ -608,8 +612,8 @@ class UsersController extends Controller {
         'name' => 'required',
         'login' => 'required',
         'email' => 'required|email',
-        'user_password' => 'min:6|regex:/^[a-z0-9-@_]{6,10}$/|confirmed',
-        'birthday' => 'date_format:"d/m/Y"',
+        'user_password' => 'nullable|min:6|regex:/^[a-z0-9-@_]{6,10}$/|confirmed',
+        'birthday' => 'nullable|date|date_format:"d/m/Y"',
         'photo' => 'max:2048|mimes:jpeg,jpg,png,gif'
     );
     if ($input['email'] !== $user->email)
@@ -634,9 +638,9 @@ class UsersController extends Controller {
       $user->country = $input['country'];
       $user->state = $input['state'];
       $user->city = $input['city'];
-      $user->gender = $input['gender'];
-      $user->visibleBirthday = $input['visibleBirthday'];
-      $user->visibleEmail = $input['visibleEmail'];
+      $user->gender = $input['gender'] ?? null;
+      $user->visibleBirthday = $input['visibleBirthday'] ?? 'no';
+      $user->visibleEmail = $input['visibleEmail'] ?? 'no';
 
       Log::info("check=".Hash::check($input["old_password"], $user->password)."autenticar =".Auth::attempt(array('login' => $user->login,'password' => $input["old_password"])));
 
