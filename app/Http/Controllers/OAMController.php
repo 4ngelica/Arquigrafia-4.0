@@ -2,7 +2,15 @@
 
 namespace App\Http\Controllers;
 
-class OAMController extends \BaseController {
+use App\Http\Controllers\Controller;
+use App\Models\Photos\Photo;
+use App\Models\Photos\Audio;
+use Response;
+use Illuminate\Http\Request;
+use Auth;
+use Arr;
+
+class OAMController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -12,19 +20,19 @@ class OAMController extends \BaseController {
 	public function index()
 	{
 		//
-		return View::make('oam.index');
+		return view('oam.index');
 	}
 
-	public function place()
+	public function place(Request $request)
 	{
 		//
-		$street = Input::get('street');
+		$street = $request->get('street');
 		$photos = Photo::where('street', 'LIKE', $street . '%')->orderBy('id', 'desc')->limit(50)->get();
 
-		$ids = array_pluck($photos, 'id');
+		$ids = Arr::pluck($photos, 'id');
 		$audios = Audio::whereIn('photo_id', $ids)->with(['user','photo'])->orderBy('id', 'desc')->get();
 
-		return View::make('oam.place', [
+		return view('oam.place', [
 			'place' => $street,
 			'photos' => $photos,
 			'audios' => $audios,
@@ -37,13 +45,13 @@ class OAMController extends \BaseController {
 		if (Auth::check()) {
 			$user = Auth::user();
 		} else {
-			return Redirect::to('/home');
+			return redirect()->to('/home');
 		}
 
 		$photo = Photo::find($id);
 		$audios = Audio::where('photo_id', $id)->with(['user','photo'])->orderBy('id', 'desc')->get();
 
-		return View::make('oam.photo', [
+		return view('oam.photo', [
 			'photo' => $photo,
 			'user' => $user,
 			'audios' => $audios,
