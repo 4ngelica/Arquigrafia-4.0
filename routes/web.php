@@ -16,6 +16,7 @@ use App\Http\Controllers\AudiosController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAMController;
+use App\Http\Controllers\EvaluationsController;
 
 
 /*
@@ -133,3 +134,12 @@ Route::get('oam/photo/{id}', [OAMController::class, 'photo']);
 
 /* AUDIO */
 Route::post('oam/audios', [OAMController::class, 'storeAudio']);
+
+/* Evaluations */
+Route::get('/evaluations', [EvaluationsController::class, 'index']);
+Route::get('/evaluations/{photo_id}/evaluate',[EvaluationsController::class, 'evaluate']);
+Route::get('/evaluations/{photo_id}/viewEvaluation/{user_id}',[EvaluationsController::class, 'viewEvaluation']);
+Route::get('/evaluations/{photo_id}/showSimilarAverage/', [EvaluationsController::class, 'showSimilarAverage']);
+//Route::post('/evaluations/{photo_id}/saveEvaluation','modules\evaluations\controllers\EvaluationsController@saveEvaluation');
+Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
+// Route::resource('/evaluations',[EvaluationsController::class]);

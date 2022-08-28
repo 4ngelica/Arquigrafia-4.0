@@ -74,7 +74,7 @@
         </div>
         <div class="form-row">
           <input type="radio" name="type" value="video" id="type_video">
-          <label for="type_video">Vídeo</label><br> class="clear">
+          <label for="type_video">Vídeo</label><br class="clear">
         </div>
       </div>
       <div id="divPhoto" class="six columns alpha">
@@ -449,7 +449,7 @@ $(document).ready(function() {
 
     @if (isset($tags) && $tags !=null)
       @foreach ( $tags as $tag )
-          $('#tags').textext()[0].tags().addTags([ {{ '"' . $tag . '"' }} ]);
+          $('#tags').textext()[0].tags().addTags([ ' <?= $tag ?> ' ]);
       @endforeach
     @endif
 

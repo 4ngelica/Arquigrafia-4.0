@@ -22,11 +22,11 @@
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuBk5ghbTdpdm_nBWg6xHEzdRXdryK6rU&callback=initMap"></script>
   <script type="text/javascript">
   // Missing fields and questions (to show on Modal)
-  var photo = {{ json_encode($photos) }};
-  var user = {{ json_encode($user) }}
-  var missingFields = {{ json_encode($missing) }};
-  var isReviewing = {{ json_encode($isReviewing) }};
-  var completeness = {{ json_encode($completeness) }};
+  var photo = <?= json_encode($photos) ?>;
+  var user = <?= json_encode($user) ?>;
+  var missingFields = <?= json_encode($missing) ?>;
+  var isReviewing = <?= json_encode($isReviewing) ?>;
+  var completeness = <?= json_encode($completeness) ?>;
 
   // Getting if it's gamed
   var gamed = {{ json_encode($gamified) }};
@@ -37,11 +37,11 @@
     var map;
 
     function initialize() {
-      var street = "{{ $photos->street }}";
-      var district = "{{ $photos->district }}";
-      var city = "{{ $photos->city }}";
-      var state = "{{ $photos->state }}";
-      var country = "{{ $photos->country }}";
+      var street = "<?= $photos->street ?>";
+      var district = "<?= $photos->district ?>";
+      var city = "<?= $photos->city ?>";
+      var state = "<?= $photos->state ?>";
+      var country = "<?= $photos->country ?>";
       var address;
       if (street) address = street + "," + district + "," + city + "-" + state + "," + country;
       else if (district) address = district + "," + city + "-" + state + "," + country;

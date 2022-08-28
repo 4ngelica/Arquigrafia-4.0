@@ -76,7 +76,7 @@
                   </div>
                   <div class="form-row">
                     <input type="radio" name="type" value="video" id="type_video" {{$photo->type == 'video' ? "checked" : null}}>
-                    <label for="type_video">Vídeo</label><br class="clear" >
+                    <label for="type_video">Vídeo</label><br class="clear">
                   </div>
                 </div>
         <div id="divPhoto" class="four columns alpha">

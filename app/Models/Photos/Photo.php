@@ -175,7 +175,7 @@ class Photo extends Eloquent {
 
 	public function evaluators()
 	{
-		return $this->belongsToMany('User', 'binomial_evaluation');
+		return $this->belongsToMany('App\Models\Users\User', 'binomial_evaluation');
 	}
 
 	public function suggestions()

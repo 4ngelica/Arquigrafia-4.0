@@ -25,19 +25,20 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Session;
+use App\lib\date\Date;
 use File;
 
 
 class PhotosController extends Controller {
   protected $date;
 
-  // public function __construct(Date $date = null)
-  // {
-  //   // Filtering if user is logged out, redirect to login page
-  //   $this->beforeFilter('auth',
-  //     array( 'except' => ['index', 'show', 'showCompleteness', 'getCompletenessPhotos']));
-  //   $this->date = $date ?: new Date;
-  // }
+  public function __construct(Date $date = null)
+  {
+    // Filtering if user is logged out, redirect to login page
+    // $this->beforeFilter('auth',
+    //   array( 'except' => ['index', 'show', 'showCompleteness', 'getCompletenessPhotos']));
+    $this->date = $date ?: new Date;
+  }
 
   public function index()
   {

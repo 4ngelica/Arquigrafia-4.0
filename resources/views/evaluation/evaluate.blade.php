@@ -19,7 +19,7 @@
     @if (Session::get('message'))
       <div class="container">
         <div class="twelve columns">
-          <div class="message">{{ Session::get('message') }}</div>
+          <div class="message">{!! Session::get('message') !!}</div>
         </div>
       </div>
     @endif
@@ -33,73 +33,73 @@
 					<!--   NOME / STATUS DA FOTO   -->
 					<div>
 						<div class="four columns alpha">
-            	<h1><a href="{{ URL::to("/search?q=".$photos->name)}}">  
+            	<h1><a href="{{ URL::to("/search?q=".$photos->name)}}">
             {{ $photos->name }}
-            </a></h1> 
+            </a></h1>
 
 
             </div>
 
             <!--
-			<div class="four columns omega">              
+			<div class="four columns omega">
               <span class="right" title="{{-- $commentsMessageddd --}}"><i id="comments"></i> <small>{{--$commentsCount--}}</small>
-              </span>            
-             
+              </span>
+
             </div> -->
 					</div>
 					<!--   FIM - NOME / STATUS DA FOTO   -->
-					
+
           <!--   FOTO   -->
 					<a class="fancybox" href="{{ URL::to("/arquigrafia-images")."/".$photos->id."_view.jpg" }}" title="{{ $photos->name }}" ><img class="single_view_image" style="" src="{{ URL::to("/arquigrafia-images")."/".$photos->id."_view.jpg" }}" /></a>
- 
 
-				</div>				
-				
+
+				</div>
+
 				<!--   BOX DE BOTOES DA IMAGEM   -->
 				<div id="single_view_buttons_box">
-					
+
 					<?php if (Auth::check()) { ?>
-						
-	            <ul id="single_view_image_buttons">						             
-							
+
+	            <ul id="single_view_image_buttons">
+
 							<li><a href="{{ URL::to('/albums/get/list/' . $photos->id) }}" title="Adicione aos seus álbuns" id="plus"></a></li>
-            
+
 							<li><a href="{{ asset('photos/download/'.$photos->id) }}" title="Faça o download" id="download" target="_blank"></a></li>
-           	
+
 						</ul>
-            
+
              <?php } else { ?>
               <div class="six columns alpha">Faça o login para fazer o download e comentar as imagens.</div>
             <?php } ?>
-            
+
 						<ul id="single_view_social_network_buttons">
-						<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4fdf62121c50304d"></script>	
+						<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4fdf62121c50304d"></script>
 							<li><a href="#" class="google addthis_button_google_plusone_share"><span class="google"></span></a></li>
 							<li><a href="#" class="facebook addthis_button_facebook"><span class="facebook"></span></a></li>
 							<li><a href="#" class="twitter addthis_button_twitter"><span class="twitter"></span></a></li>
 						</ul>
-					
+
 				</div>
 				<!--   FIM - BOX DE BOTOES DA IMAGEM   -->
-        
+
         <div class="tags">
         	<h3>Tags:</h3>
 
-					<p>        
+					<p>
 
           <p>
           @if (isset($tags))
             @foreach($tags as $tag)
-              @if ($tag->id == $tags->last()->id) 
-              <a style="" href="{{ URL::to("/search?q=".$tag->name) }}">             
-                {{ $tag->name }}   </a>          
-              @else              
+              @if ($tag->id == $tags->last()->id)
+              <a style="" href="{{ URL::to("/search?q=".$tag->name) }}">
+                {{ $tag->name }}   </a>
+              @else
               <a href="{{ URL::to("/search?q=".$tag->name) }}">
-                {{ $tag->name }}, </a>         
-              @endif          
+                {{ $tag->name }}, </a>
+              @endif
             @endforeach
-          @endif   
-          
+          @endif
+
           </p>
           </div>
 
@@ -108,24 +108,24 @@
     <script src="http://code.highcharts.com/highcharts.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script type="text/javascript">
-      $(function () {     
+      $(function () {
         var l1 = [
             @foreach($binomials as $binomial)
-              '{{ $binomial->firstOption}}',     
+              '{{ $binomial->firstOption}}',
             @endforeach
-        ];      
+        ];
         var l2 = [
             @foreach($binomials as $binomial)
-              '{{ $binomial->secondOption }}',       
+              '{{ $binomial->secondOption }}',
             @endforeach
-        ];    
-       
+        ];
+
         $('#evaluation_average').highcharts({
             credits: {
                 enabled: false,
             },
             chart: {
-                marginRight: 80,          
+                marginRight: 80,
             },
             title: {
                 text: '<b> Média de interpretações d{{$architectureName}} </b>'
@@ -143,8 +143,8 @@
             },
             yAxis: [{
                 lineColor: '#000',
-                lineWidth: 1,            
-                tickAmount: {{$binomials->count()}},              
+                lineWidth: 1,
+                tickAmount: {{$binomials->count()}},
                 tickPositions: [
                   <?php $count = 0?>
                   @foreach($binomials as $binomial)
@@ -160,9 +160,9 @@
                     return l1[this.value];
                   }
                 }
-            }, {                
+            }, {
                 lineWidth: 1,
-                tickAmount: {{$binomials->count()}},  
+                tickAmount: {{$binomials->count()}},
                 tickPositions: [
                   <?php $count = 0?>
                   @foreach($binomials as $binomial)
@@ -180,91 +180,91 @@
                   }
                 },
             }],
-            series: [{            
+            series: [{
                 <?php $count = 0; ?>
-                data: [ 
+                data: [
                   @foreach($average as $avg)
-                    [{{ $avg->avgPosition }}, {{ $count }}],                      
+                    [{{ $avg->avgPosition }}, {{ $count }}],
                     <?php $count++ ?>
                   @endforeach
                 ],
                 yAxis: 1,
-                name: 'Média',            
+                name: 'Média',
                 marker: {
                   symbol: 'circle',
                   enabled: true
                 },
                 color: '#999999',
-            }, 
-              
-              {            
-                <?php $count = 0; ?> 
+            },
+
+              {
+                <?php $count = 0; ?>
                 data: [
                   @if(isset($userEvaluations) && !$userEvaluations->isEmpty())
                     @foreach($userEvaluations as $userEvaluation)
-                      [{{ $userEvaluation->evaluationPosition }}, {{ $count }}], 
+                      [{{ $userEvaluation->evaluationPosition }}, {{ $count }}],
                       <?php $count++ ?>
-                    @endforeach              
+                    @endforeach
                   @endif
                 ],
-                Axis: 0,          
+                Axis: 0,
                 marker: {
                   symbol: 'circle',
                   enabled: true
                 },
                 color: '#000000',
-                name: 
+                name:
                 <?php if (Auth::check() && $owner->id == Auth::user()->id && !Session::has('institutionId')){ ?>
                   'Suas impressões'
                 <?php }else{ ?>
                   'Impressões de {{$owner->name}}'
                 <?php } ?>
             }
-           
+
             ]
         });
       });
     </script>
   </div>
-@endif   
-      
+@endif
+
 
 		<!-- Photos with similar average  -->
-    @if (count($similarPhotos) > 0) 
-    <div id="comments_block" class="eight columns row alpha omega">   
-     
-    <hgroup class="profile_block_title">    
+    @if (count($similarPhotos) > 0)
+    <div id="comments_block" class="eight columns row alpha omega">
+
+    <hgroup class="profile_block_title">
       <h3><img src="{{ asset("img/evaluate.png") }}" width="16" height="16"/>
         Imagens interpretadas com média similar</h3>
         <span>({{count($similarPhotos) }})
-            @if(count($similarPhotos)>1) 
-               Imagens 
+            @if(count($similarPhotos)>1)
+               Imagens
             @else
                Imagem
-            @endif 
+            @endif
         </span>
-    </hgroup> 
-      
-      @foreach($similarPhotos as $k => $similarPhoto)         
-         @if($photos->id != $similarPhoto->id)  
-              
-                <a  class="hovertext" href='{{"/evaluations/" . $similarPhoto->id . "/showSimilarAverage/" }}' class="gallery_photo" title="{{ $similarPhoto->name }}">                  
-                  <img src="{{ URL::to("/arquigrafia-images/" . $similarPhoto->id . "_home.jpg") }}" class="gallery_photo" />                 
+    </hgroup>
+
+      @foreach($similarPhotos as $k => $similarPhoto)
+         @if($photos->id != $similarPhoto->id)
+
+                <a  class="hovertext" href='{{"/evaluations/" . $similarPhoto->id . "/showSimilarAverage/" }}' class="gallery_photo" title="{{ $similarPhoto->name }}">
+                  <img src="{{ URL::to("/arquigrafia-images/" . $similarPhoto->id . "_home.jpg") }}" class="gallery_photo" />
                 </a>
                 <!--
                 <a href='{{"/photos/" . $similarPhoto->id . "/evaluate" }}' class="name">
                   <div class="innerbox">{{ $similarPhoto->name }}</div>
                 </a>-->
-                
+
           @endif
-      @endforeach         
-             
-    		
-    </div> 
-     @endif 
- 
-        
-        
+      @endforeach
+
+
+    </div>
+     @endif
+
+
+
 			</div>
 			<!--   FIM - COLUNA ESQUERDA   -->
 			<!--   SIDEBAR   -->
@@ -272,19 +272,19 @@
 			<div id="sidebar" class="four columns">
 
 				<!--   USUARIO   -->
-				
-				<!--   FIM - USUARIO   -->				
-        
-        <!-- AVALIAÇÃO  Suas impressões-->              
+
+				<!--   FIM - USUARIO   -->
+
+        <!-- AVALIAÇÃO  Suas impressões-->
         @if($owner->equal(Auth::user()) &&  !Session::has('institutionId'))
         <h3>Suas impressões d{{$architectureName}}</h3>
         @else
-        <h3>Interpretação d{{$architectureName}} realizada por <a href="{{ URL::to("/users/".$owner->id) }}" id="name">{{$owner->name}}</a></h3> 
+        <h3>Interpretação d{{$architectureName}} realizada por <a href="{{ URL::to("/users/".$owner->id) }}" id="name">{{$owner->name}}</a></h3>
         @endif
 	       <br>
          {{ Form::open(array('url'=>"evaluations/{$photos->id}", 'files'=> false)) }}
-         <!-- {{-- Form::open(array('url' => "evaluations/{$photos->id}/saveEvaluation")) --}} --> 
-         
+         <!-- {{-- Form::open(array('url' => "evaluations/{$photos->id}/saveEvaluation")) --}} -->
+
          @if (Auth::check() && $owner != null && $owner->id == Auth::user()->id && !Session::has('institutionId'))
          {{ Form::checkbox('knownArchitecture', 'yes', $checkedKnowArchitecture) }}
          @else
@@ -299,21 +299,21 @@
          @else
          {{ Form::checkbox('areArchitecture', 'yes', $checkedAreArchitecture, ['disabled']) }}
          @endif
-         
+
 
          Estou no local.
 
          <br><br>
 
         <p>Para cada um dos pares abaixo, quais são as qualidades predominantes na arquitetura que são visíveis nesta imagem?</p>
-               
+
         <!-- FORMULÁRIO DE AVALIAÇÃO -->
-        <div id="evaluation_box">         
-        
+        <div id="evaluation_box">
+
           <?php if (Auth::check()) { ?>
             <script>
               var baseURL = '{{ URL::to('/search') }}';
-              function outputUpdate(binomio, val) {                        
+              function outputUpdate(binomio, val) {
                 var left, right;
                 left = document.querySelector('#leftBinomialValue'+binomio);
                 right = document.querySelector('#rightBinomialValue'+binomio);
@@ -385,31 +385,31 @@
               </p>
               <?php $count-- ?>
             @endforeach
-              
+
                <a href="{{ URL::to('/photos/' . $photos->id) }}" class='btn right'>VOLTAR</a>
                @if (Auth::check() && $owner != null && $owner->id == Auth::user()->id && !Session::has('institutionId'))
-                {{ Form::submit('ENVIAR', ['id'=>'evaluation_button','class'=>'btn right']) }} 
+                {{ Form::submit('ENVIAR', ['id'=>'evaluation_button','class'=>'btn right']) }}
                @endif
-                
+
             {{ Form::close() }}
-            
-            
+
+
           <?php } else { ?>
-            @if (empty($average))               
+            @if (empty($average))
               <p>Faça o <a href="{{ URL::to('/users/login') }}">Login</a> e seja o primeiro a registrar impressões sobre {{$architectureName}}</p>
-            @else              
+            @else
               <p>Faça o <a href="{{ URL::to('/users/login') }}">Login</a> e registre você também impressões sobre {{$architectureName}}</p>
-            @endif            
+            @endif
           <?php } ?>
-        
+
         </div>
-        
-        
+
+
       </br>
-    </br>     
+    </br>
 			<!--   FIM - SIDEBAR   -->
 		</div>
-    
+
 		<!--   MODAL   -->
 		<div id="mask"></div>
 		<div id="form_window" class="form window">
