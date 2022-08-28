@@ -255,10 +255,8 @@ class Photo extends Eloquent {
 
 	public static function paginateUserPhotosNotInAlbum($user, $album, $q = null, $perPage = 24) {
 
-		return static::notInAlbum($album, $q)->withUser($user)
-			->withoutInstitutions()->paginate($perPage);
-
-
+		return static::notInAlbum($album, $q)->with('user')
+			->where('user_id', $user->id)->withoutInstitutions()->paginate($perPage);
 	}
 
 	public static function paginateInstitutionPhotosNotInAlbum($inst, $album, $q = null, $perPage = 24) {

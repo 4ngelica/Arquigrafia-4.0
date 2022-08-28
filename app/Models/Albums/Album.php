@@ -3,6 +3,7 @@
 namespace App\Models\Albums;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Album extends Model {
 

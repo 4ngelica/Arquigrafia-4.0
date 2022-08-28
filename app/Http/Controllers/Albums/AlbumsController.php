@@ -8,8 +8,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Albums\Album;
 use App\Models\Photos\Photo;
+use App\Models\Users\User;
 use Auth;
 use Session;
+use Response;
+
 
 class AlbumsController extends Controller {
 
@@ -133,9 +136,9 @@ class AlbumsController extends Controller {
 		$album = Album::find($id);
 		$institution = Institution::find( Session::get('institutionId') );
 		if ( Session::has('institutionId')) {
-			if(is_null($album) || !$institution->equal($album->institution))
+			if(is_null($album) || !$institution->is($album->institution))
 				return redirect()->to('/home');
-		} else if(is_null($album) || !($user->equal($album->user) && $album->institution_id == null)){
+		} else if(is_null($album) || !($user->is($album->user) && $album->institution_id == null)){
 				return redirect()->to('/home');
 		}
 
@@ -145,7 +148,7 @@ class AlbumsController extends Controller {
 		} else {
 			$other_photos = Photo::paginateUserPhotosNotInAlbum($user, $album);
 		}
-		$other_photos_count = $other_photos->getTotal();
+		$other_photos_count = $other_photos->total();
 		$maxPage = $other_photos->lastPage();
 		$rmMaxPage = $album_photos->lastPage();
 		$url = URL::to('/albums/' . $album->id . '/paginate/other/photos/');
@@ -179,7 +182,7 @@ class AlbumsController extends Controller {
 		return redirect()->to('albums/' . $id);
 	}
 
-	public function updateInfo($id) {
+	public function updateInfo(Request $request, $id) {
 		$album = Album::find($id);
 		if ( is_null($album) ) { return redirect()->to('/home');	}
 		$title = $request->get('title');
@@ -214,6 +217,7 @@ class AlbumsController extends Controller {
 	}
 
 	public function paginateByOtherPhotos($id) {
+		dd("chegou");
 		$album = Album::find($id);
 		$photos = Photo::paginateOtherPhotos(Auth::user(), $album->photos);
 		$page = $photos->getCurrentPage();
@@ -299,7 +303,7 @@ class AlbumsController extends Controller {
 		return $this->paginateAlbumPhotos($id);
 	}
 
-	public function attachPhotos($id) {
+	public function attachPhotos(Request $request, $id) {
 		try {
 			$album = Album::find($id);
 			$photos = $request->get('photos');
@@ -307,22 +311,23 @@ class AlbumsController extends Controller {
 		} catch (Exception $e) {
 			return Response::json('failed');
 		}
-		return $this->paginatePhotosNotInAlbum($id);
+		return $this->paginatePhotosNotInAlbum($request, $id);
 	}
 
-	public function paginateAlbumPhotos($id) {
+	public function paginateAlbumPhotos(Request $request, $id) {
 		$album = Album::find($id);
 		$query = $request->has('q') ? $request->get('q') : '';
 		$pagination = Photo::paginateFromAlbumWithQuery($album, $query);
 		return $this->paginationResponse($pagination, 'rm');
 	}
 
-	public function paginatePhotosNotInAlbum($id) {
+	public function paginatePhotosNotInAlbum(Request $request=null, $id) {
 		$album = Album::find($id);
 		$user = Auth::user();
+
 		$inst = Institution::find(Session::get('institutionId'));
-		if ( is_null($album) || ! ( $user->equal($album->user) ||
-			(isset($institution) && $institution->equal($album->institution) ) ) ) {
+		if ( is_null($album) || ! ( $user->is($album->user) ||
+			(isset($institution) && $institution->is($album->institution) ) ) ) {
 			return Response::json('failed');
 		}
 		$query = $request->has('q') ? $request->get('q') : '';
@@ -341,13 +346,13 @@ class AlbumsController extends Controller {
 	}
 
 	private function paginationResponse($photos, $type) {
-		$count = $photos->getTotal();
-		$page = $photos->getCurrentPage();
+		$count = $photos->total();
+		$page = $photos->currentPage();
 		$response = [];
 		$response['content'] = view('albums.includes.album-photos-edit')
 			->with(['photos' => $photos, 'page' => $page, 'type' => $type])
 			->render();
-		$response['maxPage'] = $photos->getLastPage();
+		$response['maxPage'] = $photos->lastPage();
 		$response['empty'] = ($photos->count() == 0);
 		$response['count'] = $count;
 		return Response::json($response);

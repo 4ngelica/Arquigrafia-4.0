@@ -14,8 +14,10 @@ use App\modules\gamification\traits\UserGamificationTrait;
 use App\modules\institutions\models\Institution;
 use App\modules\collaborative\models\Comment;
 use App\modules\collaborative\models\Like;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Eloquent {
+
+class User extends Authenticatable {
 
 	// use UserTrait, RemindableTrait;
 
