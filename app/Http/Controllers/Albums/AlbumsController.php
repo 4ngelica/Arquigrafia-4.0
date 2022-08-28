@@ -2,45 +2,58 @@
 
 namespace App\Http\Controllers\Albums;
 
-use modules\institutions\models\Institution as Institution;
-class AlbumsController extends \BaseController {
+use App\modules\institutions\models\Institution as Institution;
+use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Albums\Album;
+use App\Models\Photos\Photo;
+use Auth;
+use Session;
+
+class AlbumsController extends Controller {
 
 	public function __construct() {
-		$this->beforeFilter('auth',
-			array( 'except' => 'show' ));
-		$this->beforeFilter('ajax',
-			array( 'only' => array(
-				'updateInfo',
-				'detachPhotos',
-				'attachPhotos',
-				'paginateAlbumPhotos',
-				'paginatePhotosNotInAlbum',
-				'paginateCoverPhotos',
-				'getList'
-			)));
+		// $this->beforeFilter('auth',
+		// 	array( 'except' => 'show' ));
+		// $this->beforeFilter('ajax',
+		// 	array( 'only' => array(
+		// 		'updateInfo',
+		// 		'detachPhotos',
+		// 		'attachPhotos',
+		// 		'paginateAlbumPhotos',
+		// 		'paginatePhotosNotInAlbum',
+		// 		'paginateCoverPhotos',
+		// 		'getList'
+		// 	)));
 	}
 
 	public function index() {
 		if(Session::has('institutionId')) {
-			$albums = Album::withInstitution(Session::get('institutionId'))->get();
+			// $albums = Album::withInstitution(Session::get('institutionId'))->get();
+			$albums = Album::with('Instituition')->where('institution_id', Session::get('institutionId'))->get();
+
 		} else {
-			$albums = Album::withUser(Auth::user())->withoutInstitutions()->get();
+
+			// $albums = Album::withUser(Auth::user()->id)->withoutInstitutions()->get();
+			$albums = Album::with('User')->where('user_id', Auth::user()->id)->get();
+
 		}
-		return View::make('albums.index')->with('albums', $albums);
+		return view('albums.index')->with('albums', $albums);
 	}
 
-	public function create() {
+	public function create(Request $request) {
 		$url = URL::to('/albums/photos/add');
 		if ( Session::has('institutionId') ) {
 			$photos = Photo::paginateInstitutionPhotos(Session::get('institutionId'));
 		} else {
 			$photos = Photo::paginateUserPhotos(Auth::user());
 		}
-		$image = Photo::find( Input::get('photo') );
-		return View::make('albums.form')
+		$image = Photo::find( $request->get('photo') );
+		return view('albums.form')
 			->with(['photos' => $photos,
 				'url' => $url,
-				'maxPage' => $photos->getLastPage(),
+				'maxPage' => $photos->lastPage(),
 				'page' => 1,
 				'type' => 'add',
 				'image' => $image,
@@ -51,7 +64,7 @@ class AlbumsController extends \BaseController {
 		$album = Album::find($id);
 		$institutionlogged = false;
 		if (is_null($album)) {
-			return Redirect::to('/home');
+			return redirect()->to('/home');
 		}
 
 		$photos = $album->photos;
@@ -60,12 +73,13 @@ class AlbumsController extends \BaseController {
 			$other_albums = Album::withInstitution($user)->except($album)->get();
 		} else {
 			$user = $album->user;
-			$other_albums = Album::withUser($user)->whereNull('institution_id')->except($album)->get();
+			$other_albums = Album::with('user')->where('user_id', $user->id)->whereNull('institution_id')->where('id', '!=', $album->id)->get();
+
 		}
 		if(Session::has('institutionId'))
 			$institutionlogged = true;
 
-		return View::make('albums.show')
+		return view('albums.show')
 			->with([
 				'photos' => $photos,
 				'album' => $album,
@@ -75,8 +89,8 @@ class AlbumsController extends \BaseController {
 			]);
 	}
 
-	public function store() {
-		$photos = (array) Input::get('photos_add');
+	public function store(Request $request) {
+		$photos = (array) $request->get('photos_add');
 		$cover = Photo::find((empty($photos) ? null : array_values($photos)[0]));
 		$user = Auth::user();
 
@@ -86,19 +100,19 @@ class AlbumsController extends \BaseController {
 			$institution = NULL;
 		}
 		$album = Album::create([
-			'title' => Input::get('title'),
-			'description' => Input::get('description'),
+			'title' => $request->get('title'),
+			'description' => $request->get('description'),
 			'user' => $user,
 			'cover' => $cover,
 			'institution' => $institution
 		]);
-		if ( $album->isValid() ) {
+		if ( $album ) {
 			if ( !empty($photos) ) {
 				$album->attachPhotos($photos);
 			}
-			return Redirect::to('/albums/' . $album->id);
+			return redirect()->to('/albums/' . $album->id);
 		}
-		return Redirect::to('/albums/create')->withErrors($album->getErrors());
+		return redirect()->to('/albums/create')->withErrors($album->getErrors());
 	}
 
 	public function delete($id) {
@@ -111,7 +125,7 @@ class AlbumsController extends \BaseController {
 			$album->delete();
 			Session::put('album.delete', 'Álbum ' . $album->title . ' deletado com sucesso.');
 		}
-		return Redirect::to('albums');
+		return redirect()->to('albums');
 	}
 
 	public function edit($id) {
@@ -120,9 +134,9 @@ class AlbumsController extends \BaseController {
 		$institution = Institution::find( Session::get('institutionId') );
 		if ( Session::has('institutionId')) {
 			if(is_null($album) || !$institution->equal($album->institution))
-				return Redirect::to('/home');
+				return redirect()->to('/home');
 		} else if(is_null($album) || !($user->equal($album->user) && $album->institution_id == null)){
-				return Redirect::to('/home');
+				return redirect()->to('/home');
 		}
 
 		$album_photos = Photo::paginateAlbumPhotos($album);
@@ -132,11 +146,11 @@ class AlbumsController extends \BaseController {
 			$other_photos = Photo::paginateUserPhotosNotInAlbum($user, $album);
 		}
 		$other_photos_count = $other_photos->getTotal();
-		$maxPage = $other_photos->getLastPage();
-		$rmMaxPage = $album_photos->getLastPage();
+		$maxPage = $other_photos->lastPage();
+		$rmMaxPage = $album_photos->lastPage();
 		$url = URL::to('/albums/' . $album->id . '/paginate/other/photos/');
 		$rmUrl = URL::to('/albums/' . $album->id . '/paginate/photos');
-		return View::make('albums.edition')
+		return view('albums.edition')
 			->with(
 				['album' => $album,
 				'album_photos' => $album_photos,
@@ -153,24 +167,24 @@ class AlbumsController extends \BaseController {
 
 	public function removePhotos($id) {
 		$album = Album::find($id);
-		$photos = Input::except('_token');
+		$photos = $request->except('_token');
 		$album->detach($photos);
-		return Redirect::to('albums/' . $id);
+		return redirect()->to('albums/' . $id);
 	}
 
 	public function insertPhotos($id) {
 		$album = Album::find($id);
-		$photos = Input::except('_token');
+		$photos = $request->except('_token');
 		$album->attach($photos);
-		return Redirect::to('albums/' . $id);
+		return redirect()->to('albums/' . $id);
 	}
 
 	public function updateInfo($id) {
 		$album = Album::find($id);
-		if ( is_null($album) ) { return Redirect::to('/home');	}
-		$title = Input::get('title');
-		$description = Input::get('description');
-		$cover = Photo::find( Input::get('cover') );
+		if ( is_null($album) ) { return redirect()->to('/home');	}
+		$title = $request->get('title');
+		$description = $request->get('description');
+		$cover = Photo::find( $request->get('cover') );
 		$album->updateInfo( $title, $description, $cover );
 		if ( $album->save() ) {
 			return Response::json("success");
@@ -185,7 +199,7 @@ class AlbumsController extends \BaseController {
 			$photos = Photo::paginateUserPhotos(Auth::user());
 		}
 		$page = $photos->getCurrentPage();
-		return Response::json(View::make('albums.includes.album-photos')
+		return Response::json(view('albums.includes.album-photos')
 			->with(['photos' => $photos, 'page' => $page, 'type' => 'add'])
 			->render());
 	}
@@ -194,7 +208,7 @@ class AlbumsController extends \BaseController {
 		$album = Album::find($id);
 		$photos = Photo::paginateAlbumPhotos($album);
 		$page = $photos->getCurrentPage();
-		return Response::json(View::make('albums.includes.album-photos')
+		return Response::json(view('albums.includes.album-photos')
 			->with(['photos' => $photos, 'page' => $page, 'type' => 'rm'])
 			->render());
 	}
@@ -203,7 +217,7 @@ class AlbumsController extends \BaseController {
 		$album = Album::find($id);
 		$photos = Photo::paginateOtherPhotos(Auth::user(), $album->photos);
 		$page = $photos->getCurrentPage();
-		return Response::json(View::make('albums.includes.album-photos')
+		return Response::json(view('albums.includes.album-photos')
 			->with(['photos' => $photos, 'page' => $page, 'type' => 'add'])
 			->render());
 	}
@@ -228,14 +242,14 @@ class AlbumsController extends \BaseController {
 			$albums = Album::withUser( Auth::user() )->whereNull('institution_id')->except($albums_with_photo)->get();
 		}
 
-		return Response::json(View::make('albums.get-albums')
+		return Response::json(view('albums.get-albums')
 			->with(['albums' => $albums, 'photo_id' => $id])
 			->render());
 	}
 
 	public function addPhotoToAlbums() {
-		$albums_id = Input::get('albums');
-		$photo = Photo::find(Input::get('_photo'));
+		$albums_id = $request->get('albums');
+		$photo = Photo::find($request->get('_photo'));
 		$albums = Album::findMany($albums_id);
 
 		foreach ($albums as $album)
@@ -245,39 +259,39 @@ class AlbumsController extends \BaseController {
 				$album->cover()->associate($photo);
 			}
 		}
-		if (Input::has('create_album')) {
+		if ($request->has('create_album')) {
 			if ($albums->isEmpty()) {
-				return Redirect::to('/albums/create')->with('image', $photo);
+				return redirect()->to('/albums/create')->with('image', $photo);
 			} else {
-				return Redirect::to('/albums/create')->with([
+				return redirect()->to('/albums/create')->with([
 					'message' => '<strong>Imagem adicionada com sucesso ao(s) seu(s) álbum(ns)</strong>',
 					'image' => $photo
 				]);
 			}
 		}
 		if ($albums->isEmpty()) {
-			return Redirect::to('/photos/' . $photo->id);
+			return redirect()->to('/photos/' . $photo->id);
 		} else {
-			return Redirect::to('/albums')->with('message', '<strong>Imagem adicionada com sucesso ao(s) seu(s) álbum(ns)</strong>');
+			return redirect()->to('/albums')->with('message', '<strong>Imagem adicionada com sucesso ao(s) seu(s) álbum(ns)</strong>');
 		}
 	}
 
 	public function destroy($id) {
 		$album = Album::find($id);
 		$album->delete();
-		return Redirect::to('/albums');
+		return redirect()->to('/albums');
 	}
 
 	public function removePhotoFromAlbum($album_id, $photo_id) {
 		$album = Album::find($album_id);
 		$album->detachPhotos($photo_id);
-		return Redirect::to('/albums/' . $album->id);
+		return redirect()->to('/albums/' . $album->id);
 	}
 
 	public function detachPhotos($id) {
 		try {
 			$album = Album::find($id);
-			$photos = Input::get('photos');
+			$photos = $request->get('photos');
 			$album->detachPhotos($photos);
 		} catch (Exception $e) {
 			return Response::json('failed');
@@ -288,7 +302,7 @@ class AlbumsController extends \BaseController {
 	public function attachPhotos($id) {
 		try {
 			$album = Album::find($id);
-			$photos = Input::get('photos');
+			$photos = $request->get('photos');
 			$album->attachPhotos($photos);
 		} catch (Exception $e) {
 			return Response::json('failed');
@@ -298,7 +312,7 @@ class AlbumsController extends \BaseController {
 
 	public function paginateAlbumPhotos($id) {
 		$album = Album::find($id);
-		$query = Input::has('q') ? Input::get('q') : '';
+		$query = $request->has('q') ? $request->get('q') : '';
 		$pagination = Photo::paginateFromAlbumWithQuery($album, $query);
 		return $this->paginationResponse($pagination, 'rm');
 	}
@@ -311,8 +325,8 @@ class AlbumsController extends \BaseController {
 			(isset($institution) && $institution->equal($album->institution) ) ) ) {
 			return Response::json('failed');
 		}
-		$query = Input::has('q') ? Input::get('q') : '';
-		$which_photos = Input::get('wp');
+		$query = $request->has('q') ? $request->get('q') : '';
+		$which_photos = $request->get('wp');
 		$pagination = null;
 		if ( $which_photos == 'user' ) {
 			if ( isset($inst) ) {
@@ -330,7 +344,7 @@ class AlbumsController extends \BaseController {
 		$count = $photos->getTotal();
 		$page = $photos->getCurrentPage();
 		$response = [];
-		$response['content'] = View::make('albums.includes.album-photos-edit')
+		$response['content'] = view('albums.includes.album-photos-edit')
 			->with(['photos' => $photos, 'page' => $page, 'type' => $type])
 			->render();
 		$response['maxPage'] = $photos->getLastPage();

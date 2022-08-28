@@ -237,6 +237,7 @@
             @foreach($tags as $k => $tag)
               @if ($tag->id == $tags->last()->id)
                 <form id="{{$k}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                  @csrf
                   <input type="hidden" name="q" value="{{$tag->name}}"/>
                     <a style="" href="javascript: submitform({{$k}});">
                       {{ $tag->name }}
@@ -244,6 +245,7 @@
                 </form>
               @else
                 <form id="{{$k}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                  @csrf
                   <input type="hidden" name="q" value="{{$tag->name}}"/>
                     <a href="javascript: submitform({{$k}});">
                       {{ $tag->name }}

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models\Albums;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Album extends Model {
@@ -15,32 +16,32 @@ class Album extends Model {
 
 	public function photos()
 	{
-		return $this->belongsToMany('Photo', 'album_elements');
+		return $this->belongsToMany('App\Models\Photos\Photo', 'album_elements');
 	}
 
 	public function user()
 	{
-		return $this->belongsTo('User');
+		return $this->belongsTo('App\Models\Users\User');
 	}
 
 	public function onlyUser()
 	{
-		return $this->belongsTo('User')->whereNull('institution_id');
+		return $this->belongsTo('App\Models\Users\User')->whereNull('institution_id');
 	}
 
 	public function cover()
 	{
-		return $this->belongsTo('Photo', 'cover_id');
+		return $this->belongsTo('App\Models\Photos\Photo', 'cover_id');
 	}
 
 	public function institution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution');
+		return $this->belongsTo('App\modules\institutions\models\Institution');
 	}
 
 	public function onlyInstitution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution')->whereNull('user_id');
+		return $this->belongsTo('App\modules\institutions\models\Institution')->whereNull('user_id');
 	}
 
 	public function updateInfo($title, $description, $cover) {

@@ -97,7 +97,7 @@ Route::get('/friends/unfollow/{user_id}', [UsersController::class, 'unfollow']);
 Route::get('/profile/10/showphotoprofile/{profile_id}', [UsersController::class, 'profile']);
 
 /* ALBUMS */
-Route::resource('/albums','AlbumsController');
+Route::resource('/albums',AlbumsController::class);
 Route::get('/albums/photos/add', [AlbumsController::class, 'paginateByUser']);
 Route::get('/albums/{id}/photos/rm', [AlbumsController::class, 'paginateByAlbum']);
 Route::get('/albums/{id}/photos/add', [AlbumsController::class, 'paginateByOtherPhotos']);
