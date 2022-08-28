@@ -25,6 +25,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Session;
+use File;
 
 
 class PhotosController extends Controller {
