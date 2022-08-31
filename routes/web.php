@@ -21,6 +21,12 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAMController;
 use App\Http\Controllers\EvaluationsController;
+use App\Http\Controllers\Collaborative\CommentsController;
+use App\Http\Controllers\Collaborative\FollowController;
+use App\Http\Controllers\Collaborative\GroupsController;
+use App\Http\Controllers\Collaborative\LikesController;
+use App\Http\Controllers\Collaborative\ReportsController;
+use App\Http\Controllers\Collaborative\TagsController;
 
 
 /*
@@ -175,3 +181,28 @@ Route::get('/friends/followInstitution/{institution_id}', [InstitutionsControlle
 Route::get('/friends/unfollowInstitution/{institution_id}', [InstitutionsController::class, 'unfollowInstitution']);
 
 Route::resource('/institutions', InstitutionsController::class);
+
+/* TAGS */
+Route::get('/tags/json', 'modules\collaborative\controllers\TagsController@index');
+Route::get('/tags/refreshCount', 'modules\collaborative\controllers\TagsController@refreshCount');
+
+/* COMMENTARIOS */
+Route::post('/comments/{photo_id}', [CommentsController::class,'comment']);
+Route::get('/comments/{comment_id}/like', [CommentsController::class,'commentLike']);
+Route::get('/comments/{comment_id}/dislike', [CommentsController::class,'commentDislike']);
+Route::resource('/comments', CommentsController::class);
+
+/* LIKE E DISLIKE */
+Route::get('/like/{id}', [LikesController::class,'photoLike']);
+Route::get('/dislike/{id}', [LikesController::class,'photoDislike']);
+Route::resource('/likes', LikesController::class);
+
+/* GRUPOS */
+Route::resource('/groups',GroupsController::class);
+
+/*EVENTS */
+Event::subscribe('App\Http\LikeSubscriber');
+/*REPORTs*/
+Route::post('/reports/photo', [ReportsController::class,'reportPhoto']);
+Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModalReportPhoto']);
+//Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');

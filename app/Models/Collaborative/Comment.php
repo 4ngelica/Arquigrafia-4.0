@@ -1,14 +1,15 @@
 <?php
-namespace App\modules\collaborative\models;
 
-use modules\collaborative\models\Tag;
+namespace App\Models\Collaborative;
+
+use App\Models\Collaborative\Tag;
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
 use App\modules\gamification\traits\LikableGamificationTrait;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
 
-class Comment extends \Eloquent {
+class Comment extends Model {
 
 	use LikableGamificationTrait;
 

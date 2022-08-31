@@ -20,7 +20,6 @@ class ContributionsController extends Controller {
    * @return  {View}  Present 'show-contributions' page
    */
   public function showContributions(Request $request) {
-    dd("oi");
     // This page has a gamified variant, get the gamified variant
     $variationId = Gamified::getGamifiedVariationId();
     $isGamified = Gamified::isGamified($variationId);

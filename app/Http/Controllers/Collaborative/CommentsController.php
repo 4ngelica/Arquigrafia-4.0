@@ -1,56 +1,58 @@
 <?php
-namespace modules\collaborative\controllers;
 
-use modules\collaborative\models\Comment;
-use modules\collaborative\models\Like;
-use modules\gamification\models\Badge;
-use lib\date\Date;
-use lib\log\EventLogger;
-use modules\news\models\News;
+namespace App\Http\Controllers\Collaborative;
+
+use App\Models\Collaborative\Comment;
+use App\Models\Collaborative\Like;
+use App\modules\gamification\models\Badge;
+use App\lib\date\Date;
+use App\lib\log\EventLogger;
+use App\modules\news\models\News;
 use Input;
-use Photo;
 use Auth;
-use User;
 use Notification;
 use Carbon\Carbon;
+use App\Models\Photos\Photo;
+use App\Models\Users\User;
+use App\Http\Controllers\Controller;
 
 
-class CommentsController extends \BaseController {
+class CommentsController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
 	 * @return Response
 	 */
 	public function index()
-	{ 
+	{
 		$comment = Comment::all();
     return $comment;
 	}
 
-	
+
 	public function comment($id)
-  { 
+  {
     	$input = Input::all();
     	$rules = ['text' => 'required'];
     	$validator = \Validator::make($input, $rules);
     	if ($validator->fails()) {
       	 $messages = $validator->messages();
       	 return \Redirect::to("/photos/{$id}")->withErrors($messages);
-    	} else { 
+    	} else {
       	$comment = ['text' => $input["text"], 'user_id' => Auth::user()->id];
-      	$comment = new Comment($comment);        
+      	$comment = new Comment($comment);
       	$photo = Photo::find($id);
       	$photo->comments()->save($comment);
-        
+
         $user = Auth::user();
-        
+
         EventLogger::printEventLogs($photo->id, 'insert_comment', ['comment_id' => $comment->id], 'Web');
-      
+
         /*Envio de notificação*/
-        
+
         \Event::fire('comment.create', array($user, $photo));
-        
- 
+
+
         $this->checkCommentCount(5,'test');
         return \Redirect::to("/photos/{$id}");
       }
@@ -74,14 +76,14 @@ class CommentsController extends \BaseController {
     $user = Auth::user();
 
     \Event::fire('comment.liked', array($user, $comment));
-    
+
     EventLogger::printEventLogs(null, 'like', ["target_type" => 'comentário', "target_id" => $id], 'Web');
 
     $like = Like::getFirstOrCreate($comment, $user);
     if (is_null($comment)) {
       return \Response::json('fail');
     }
-    return \Response::json([ 
+    return \Response::json([
       'url' => \URL::to('/comments/' . $comment->id . '/' . 'dislike'),
       'likes_count' => $comment->likes->count()]);
   }
@@ -95,11 +97,11 @@ class CommentsController extends \BaseController {
     $eventContent['target_type'] = 'comentário';
     $eventContent['target_id'] = $id;
     EventLogger::printEventLogs(null, 'dislike', $eventContent, 'Web');
-    
+
     if (is_null($comment)) {
       return \Response::json('fail');
     }
-    return \Response::json([ 
+    return \Response::json([
       'url' => \URL::to('/comments/' . $comment->id . '/' . 'like'),
       'likes_count' => $comment->likes->count()]);
   }

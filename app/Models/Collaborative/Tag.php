@@ -1,11 +1,13 @@
 <?php
-namespace App\modules\collaborative\models;
+namespace App\Models\Collaborative;
 
-use \App\modules\institutions\models\Institution;
+use App\Models\Institutions\Institution;
 use App\Models\Photos\Photo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 use Session;
-class Tag extends \Eloquent {
+
+class Tag extends Model {
 
   public $timestamps = false;
 

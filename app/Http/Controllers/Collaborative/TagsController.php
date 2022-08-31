@@ -1,9 +1,13 @@
 <?php
-namespace modules\collaborative\controllers;
-use modules\collaborative\models\Tag;
-use modules\institutions\models\Institution as Institution;
-use Photo;
-class TagsController extends \BaseController {
+
+namespace App\Http\Controllers\Collaborative;
+
+use App\Models\Collaborative\Tag;
+use App\Models\Institutions\Institution;
+use App\Models\Photos\Photo;
+use App\Http\Controllers\Controller;
+
+class TagsController extends Controller {
 
 	public function index()
 	{

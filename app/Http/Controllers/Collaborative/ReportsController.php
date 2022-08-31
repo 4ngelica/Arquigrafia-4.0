@@ -1,10 +1,13 @@
 <?php
-namespace modules\collaborative\controllers;
-use modules\collaborative\models\Report;
-use Photo;
-use Auth;
 
-class ReportsController extends \BaseController {
+namespace App\Http\Controllers\Collaborative;
+
+use App\Models\Collaborative\Report;
+use App\Models\Photos\Photo;
+use Auth;
+use App\Http\Controllers\Controller;
+
+class ReportsController extends Controller {
 
 	public function index()
 	{
@@ -12,17 +15,17 @@ class ReportsController extends \BaseController {
 		//return $tags;
 	}
 
-	public function reportPhoto() { 
-		
+	public function reportPhoto() {
+
 	\Input::flash();
     $input = \Input::all();
-    
+
 	$rules = array(
         'reportTypeData' => 'required',
         'reportType' => 'required',
         '_photo' => 'required'
-    ); 
-    $validator = \Validator::make($input, $rules);   
+    );
+    $validator = \Validator::make($input, $rules);
 
 	if ($validator->fails()) {
       $messages = $validator->messages();
@@ -33,16 +36,16 @@ class ReportsController extends \BaseController {
 		$photo = Photo::find($photo_id);
 		$reportTypeDataAll =$input["reportTypeData"];
 		$reportType =$input["reportType"];
-        $comment =$input["reportComment"];        
+        $comment =$input["reportComment"];
         $reportTypeData = implode(",", array_values($reportTypeDataAll));
 		$result = Report::getFirstOrCreate($user, $photo, $reportTypeData, $comment,$reportType);
     	return \Redirect::to('/photos/'.$photo->id)->with('message', '<strong>Denúncia enviada com sucesso</strong>');
     }
-	
+
 	}
 
-	public function showModalReportPhoto($id) 
-	{		
+	public function showModalReportPhoto($id)
+	{
 		return \Response::json(\View::make('form-report')
 			->with(['photo_id' => $id])
 			->render());

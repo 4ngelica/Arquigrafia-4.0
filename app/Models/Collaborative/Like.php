@@ -1,12 +1,12 @@
 <?php
 
-namespace App\modules\collaborative\models;
+namespace App\Models\Collaborative;
 
 use App\Models\Users\User;
 use App\modules\gamification\traits\LikableGamificationTrait;
+use Illuminate\Database\Eloquent\Model;
 
-
-class Like extends \Eloquent {
+class Like extends Model {
 
 	use LikableGamificationTrait;
 	protected $table = "likes";

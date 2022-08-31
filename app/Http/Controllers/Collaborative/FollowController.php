@@ -1,10 +1,12 @@
 <?php
 
-namespace modules\collaborative\controllers;
-use lib\log\EventLogger;
-use Auth;
+namespace App\Http\Controllers\Collaborative;
 
-class FollowController extends \BaseController {
+use App\lib\log\EventLogger;
+use Auth;
+use App\Http\Controllers\Controller;
+
+class FollowController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -25,14 +27,14 @@ class FollowController extends \BaseController {
 	public function create($user_id)
 	{
 		$logged_user = Auth::user();
-    
+
 	    if ($logged_user == null) //futuramente, adicionar filtro de login
 	       return \Redirect::to('/home');
 
 	    $following = $logged_user->following;
 
-	    
-	    
+
+
 	    if ($user_id != $logged_user->id && !$following->contains($user_id)) {
 	      //Envio da Notificação
 	      $logged_user->following()->attach($user_id);
@@ -105,13 +107,13 @@ class FollowController extends \BaseController {
 	public function destroy($user_id)
 	{
 		$logged_user = Auth::user();
-    
+
 	    if ($logged_user == null) //futuramente, adicionar filtro de login
 	      return \Redirect::to('/home');
 
 	    $following = $logged_user->following;
 
-	    
+
 	    if ($user_id != $logged_user->id && $following->contains($user_id)) {
 	      $logged_user->following()->detach($user_id);
 

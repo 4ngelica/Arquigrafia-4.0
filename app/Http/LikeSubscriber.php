@@ -1,9 +1,11 @@
 <?php
-namespace modules\collaborative\subscriber;
-use Users;
+
+namespace App\Http;
+
+use App\Models\Users\User;
 use Notification;
-use modules\collaborative\models\Like;
-use modules\gamification\models\Badge;
+use App\Models\Collaborative\Like;
+use App\modules\gamification\models\Badge;
 
 class LikeSubscriber {
 

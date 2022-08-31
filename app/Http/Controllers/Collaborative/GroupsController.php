@@ -1,9 +1,12 @@
 <?php
-namespace modules\collaborative\controllers;
-use User;
-use Photo;
 
-class GroupsController extends \BaseController {
+namespace App\Http\Controllers\Collaborative;
+
+use App\Models\Photos\Photo;
+use App\Models\Users\User;
+use App\Http\Controllers\Controller;
+
+class GroupsController extends Controller {
 
 	public function index()
 	{

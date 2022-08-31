@@ -13,12 +13,12 @@ use Auth;
 use App\Models\Users\User;
 use App\modules\gamification\models\Badge;
 use App\Models\Institutions\Institution;
-use App\modules\collaborative\models\Tag as Tag;
-use App\modules\collaborative\models\Comment as Comment;
-use App\modules\collaborative\models\Like as Like;
-use App\modules\evaluations\models\Evaluation as Evaluation;
-use App\modules\evaluations\models\Binomial as Binomial;
-use App\modules\gamification\models\Gamified as Gamified;
+use App\Models\Collaborative\Tag;
+use App\Models\Collaborative\Comment;
+use App\Models\Collaborative\Like;
+use App\modules\evaluations\models\Evaluation;
+use App\modules\evaluations\models\Binomial;
+use App\modules\gamification\models\Gamified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\Log;
 use Session;
 use App\lib\date\Date;
 use File;
-
 
 class PhotosController extends Controller {
   protected $date;
