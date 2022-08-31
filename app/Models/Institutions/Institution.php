@@ -1,5 +1,5 @@
 <?php
-namespace App\modules\institutions\models;
+namespace App\Models\Institutions;
 
 use App\Models\Photos\Photo;
 use App\Models\Users\User;

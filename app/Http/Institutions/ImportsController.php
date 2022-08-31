@@ -1,14 +1,17 @@
 <?php
-namespace modules\institutions\controllers;
-use modules\institutions\models\Institution;
-use Session;  
+
+namespace App\Http\Controllers\Institutions;
+
+use App\Models\Institutions\Institution;
+use App\Http\Controllers\Controller;
+use Session;
 use Auth;
-use Photo;
+use App\Models\Photos\Photo;
 use Carbon\Carbon;
 use Image;
 use Queue;
 
-class ImportsController extends \BaseController {
+class ImportsController extends Controller {
 
   public function import() {
     $acervoreview = User::whereLogin('acervoreview')->first();

@@ -12,7 +12,7 @@ use App\Models\Photos\Author;
 use Auth;
 use App\Models\Users\User;
 use App\modules\gamification\models\Badge;
-use App\modules\institutions\models\Institution as Institution;
+use App\Models\Institutions\Institution;
 use App\modules\collaborative\models\Tag as Tag;
 use App\modules\collaborative\models\Comment as Comment;
 use App\modules\collaborative\models\Like as Like;

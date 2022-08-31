@@ -18,7 +18,7 @@
 	@if (Session::get('message'))
       	<div class="container">
         	<div class="twelve columns">
-          		<div class="message">{{ Session::get('message') }}</div>
+          		<div class="message">{!! Session::get('message') !!}</div>
         	</div>
         </div>
     @endif
@@ -28,26 +28,26 @@
 		<!--   HEADER DO USUÁRIO   -->
 		<div class="container">
 	      <div id="user_header" class="twelve columns">
-          
+
              <!-- Avatar with edit profile -->
 			<?php if (Auth::check() && Session::get('institutionId') == $institution->id) { ?>
 			  <a href= '{{"/institutions/" . $institution->id . "/edit" }}' title="Editar perfil" >
 				<?php if ($institution->photo != "") { ?>
-            	 <img class="avatar" src="{{ asset($institution->photo) }}" class="user_photo_thumbnail"/>          
+            	 <img class="avatar" src="{{ asset($institution->photo) }}" class="user_photo_thumbnail"/>
           		<?php } else { ?>
             	 <img class="avatar" src="{{ asset("img/avatar-perfil.png") }}" width="60" height="60" class="user_photo_thumbnail"/>
           		<?php } ?>
           	  </a>
             <?php }else{ ?>
             		<?php if ($institution->photo != "") { ?>
-            	 		<img class="avatar" src="{{ asset($institution->photo) }}" class="user_photo_thumbnail"/>          
+            	 		<img class="avatar" src="{{ asset($institution->photo) }}" class="user_photo_thumbnail"/>
           			<?php } else { ?>
             			<img class="avatar" src="{{ asset("img/avatar-institution.png") }}" width="60" height="60" class="user_photo_thumbnail"/>
           			<?php } ?>
             <?php } ?>
 	        <div class="info">
 
-	          <h1>{{ $institution->name}} </h1>	          
+	          <h1>{{ $institution->name}} </h1>
 
 			 @if ( !empty($institution->city) )
 				<p>{{ $institution->city }}</p>
@@ -65,16 +65,16 @@
  				@endif
  			@elseif (Auth::check() && Session::get('institutionId') == $institution->id)
  				<a href="{{ URL::to("/institutions/" . $institution->id . "/edit") }}" id="single_view_contact_add" title="Edite o seu perfil">Editar perfil</a><br />
-			@endif	
-			  
+			@endif
+
 	        </div>
 	      	<div class="count">Imagens compartilhadas ({{ count($photos) }})</div>
 	      </div>
 	    </div>
-    
+
     <!-- GALERIA DO USUÁRIO -->
     <div id="user_gallery">
-      
+
     	@if($photos->count() > 0)
 	      <div class="wrap">
    	   		@include('includes.panel-stripe')
@@ -84,7 +84,7 @@
       		<div class="six columns">
 	      		<p>
 	      			@if (Auth::check() && Session::get('institutionId') == $institution->id)
-	      				Você ainda não possui imagens no seu perfil. Faça o upload de uma imagem 
+	      				Você ainda não possui imagens no seu perfil. Faça o upload de uma imagem
 	      				<a href="{{ URL::to('/photos/update/Institutional') }}">aqui</a>
 	      			@else
 	      				Não possui imagens.
@@ -93,12 +93,12 @@
       		</div>
       	</div>
       @endif
-    
+
     </div>
 
     <br>
     <br>
-    
+
     <!-- USUÁRIO -->
     <div class="container row">
     	<div class="four columns">
@@ -116,7 +116,7 @@
 			@endif
         </ul>
         <br>
-        <ul>        	
+        <ul>
 			@if ( !empty($institution->email)) <!--&& $institution->visibleEmail == 'yes')-->
 				<li><strong>E-mail: </strong>{{ $institution->email }}</li>
 			@endif
@@ -129,48 +129,48 @@
 			@if ( !empty($institution->city) )
 				<li><strong>Cidade: </strong>{{ $institution->city }}</li>
 			@endif
-			
+
 			@if ( !empty($institution->site) )
 				<li><strong>Site pessoal: </strong> <a href="{{ $institution->site }}">{{ $institution->site }}</a></li>
-			@endif	
+			@endif
 			</br>
-			
+
         </ul>
       </div>
-      
+
       <div class="four columns">
       	<hgroup class="profile_block_title">
         	<h3><i class="follow"></i>Seguindo <!--(institution->following->count())--></h3>
-    		
+
    	 		</hgroup>
         <!--   BOX - AMIGOS   -->
-    		<div class="profile_box">			
-				box amigos        
+    		<div class="profile_box">
+				box amigos
 			</div>
-        
+
       </div>
-      
+
       <div class="four columns">
       	<hgroup class="profile_block_title">
           <h3><i class="follow"></i>Seguidores <!--(institution->followers->count())--></h3>
-          
+
         </hgroup>
     		<!--   BOX - AMIGOS   -->
 		<div class="profile_box">
           <!--   LINHA - FOTOS - AMIGOS   -->
           <!--   FOTO - AMIGO   -->
           box amigos
-         
-		
+
+
 		</div>
-        
+
       </div>
-      
-    </div>  
-    
+
+    </div>
+
     	    <!-- MEUS ALBUNS -->
 	<div class="container">
-				
+
 			<div class="twelve columns albums">
 				<hgroup class="profile_block_title">
 					<h3><i class="photos"></i>
@@ -182,13 +182,13 @@
 					</h3>
 				</hgroup>
 				<?php //$albums = $institution->albums; ?>
-				
+
 				<div class="profile_box">
 					albuns
 				</div>
-			
+
 			</div>
-	
+
 	</div>
 
 	<br>
@@ -206,15 +206,15 @@
 						Imagens interpretadas
 					@endif
 				</h3>
-			</hgroup>			
-			
+			</hgroup>
+
 			<div class="profile_box">
 				photos avaliadas
 			</div>
 		</div>
 	</div>
 
-    
+
 		<!--   MODAL   -->
 	<div id="mask"></div>
 	<div id="form_window" class="form window">

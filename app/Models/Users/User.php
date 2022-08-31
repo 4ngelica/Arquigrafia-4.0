@@ -11,10 +11,11 @@ use App\lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use App\modules\gamification\traits\UserGamificationTrait;
-use App\modules\institutions\models\Institution;
+use App\Models\Institutions\Institution;
 use App\modules\collaborative\models\Comment;
 use App\modules\collaborative\models\Like;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 
 class User extends Authenticatable {
@@ -80,12 +81,12 @@ class User extends Authenticatable {
 
 	public function suggestions()
 	{
-		return $this->hasMany('App\modules\moderation\models\Suggestion');
+		return $this->hasMany('App\Models\Moderation\Suggestion');
 	}
 
 	public function moderator()
 	{
-		return $this->belongsTo('App\modules\moderation\models\Suggestion');
+		return $this->belongsTo('App\Models\Moderation\Suggestion');
 	}
 
 	//seguidores
@@ -101,11 +102,11 @@ class User extends Authenticatable {
 	}
 
 	public function institutions(){
-		return $this->belongsToMany('App\modules\institutions\models\Institution', 'friendship_institution','institution_id', 'following_user_id');
+		return $this->belongsToMany('App\Models\Institutions\Institution', 'friendship_institution','institution_id', 'following_user_id');
 	}
 
 	public function followingInstitution(){
-		return $this->belongsToMany('App\modules\institutions\models\Institution', 'friendship_institution','following_user_id', 'institution_id');
+		return $this->belongsToMany('App\Models\Institutions\Institution', 'friendship_institution','following_user_id', 'institution_id');
 	}
 
 	public function roles()

@@ -2,9 +2,9 @@
 
 @section('head')
 	<title>Arquigrafia - Seu universo de imagens de arquitetura</title>
-	
+
 	<script src="{{ URL::to('/js/album-add-photos.js') }}"></script>
-	<link rel="stylesheet" type="text/css" href="{{ URL::to("/") }}/css/checkbox.css" />	
+	<link rel="stylesheet" type="text/css" href="{{ URL::to("/") }}/css/checkbox.css" />
 	<script>
 		var currentPage = 1;
 		var maxPage = {{ $maxPage }};
@@ -27,12 +27,12 @@
 	@if (Session::get('message'))
 		<div class="container">
 			<div class="twelve columns">
-				<div class="message">{{ Session::get('message') }}</div>
+				<div class="message">{!! Session::get('message') !!}</div>
 			</div>
 		</div>
 	@endif
 
-	<div class="container">				
+	<div class="container">
 		<div class="twelve columns">
 			<h1>Novo álbum</h1>
 			<p>Crie um novo álbum.<br><br>
@@ -49,7 +49,7 @@
 							<div class="error">{{ $errors->first('title') }}</div>
 						</p>
 					</div>
-					
+
 					<div class="one column alpha"><p>{{ Form::label('description', 'Descrição') }}</p></div>
 					<div class="two columns omega">
 						<p>{{ Form::textarea('description') }}</p>
@@ -75,8 +75,8 @@
 						<p id="p_add" class="row">Selecione pelo menos uma imagem para o álbum</p>
 					@endif
 					<div id="add-container">
-						<div class="eight columns row">	
-							<a href="#" name="modal" id="select_all" class="btn">Selecionar todas desta página</a>       
+						<div class="eight columns row">
+							<a href="#" name="modal" id="select_all" class="btn">Selecionar todas desta página</a>
 							<a href="#" name="modal" id="remove_all" class="btn">Retirar seleção desta página</a>
 						</div>
 						<div class="eleven columns row">
@@ -96,7 +96,7 @@
 				</div>
 				<div class="four columns">
 					<p>{{ Form::submit("CRIAR", array('class'=>'btn')) }}</p>
-				</div>	
+				</div>
 			{{ Form::close() }}
 		</div>
 	</div>

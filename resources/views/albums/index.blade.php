@@ -13,7 +13,7 @@
 	@if (Session::get('message'))
 		<div class="container">
 			<div class="twelve columns">
-				<div class="message">{{ Session::get('message') }}</div>
+				<div class="message">{!! Session::get('message') !!}</div>
 			</div>
 		</div>
 	@endif
@@ -67,7 +67,7 @@
 	@else
 		<div class="container">
 			<div class="twelve columns">
-				<p> 
+				<p>
 					Você ainda não possui nenhum álbum. Crie um {{ link_to('/albums/create', 'aqui') }}
 				</p>
 			</div>
@@ -86,5 +86,5 @@
 			{{ Form::close() }}
 		</div>
 	</div>
-	<!--   FIM - MODAL   -->	
+	<!--   FIM - MODAL   -->
 @stop

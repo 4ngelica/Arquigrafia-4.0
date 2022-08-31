@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Albums;
 
-use App\modules\institutions\models\Institution as Institution;
+use App\Models\Institutions\Institution;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -243,7 +243,8 @@ class AlbumsController extends Controller {
 		if(Session::has('institutionId')) {
 			$albums = Album::withInstitution(Session::get('institutionId'))->except($albums_with_photo)->get();
 		}else{
-			$albums = Album::withUser( Auth::user() )->whereNull('institution_id')->except($albums_with_photo)->get();
+			$albums = Album::with('User')->where('user_id', Auth::user()->id)->whereNull('institution_id')->get();
+			// $albums = Album::withUser( Auth::user() )->whereNull('institution_id')->except($albums_with_photo)->get();
 		}
 
 		return Response::json(view('albums.get-albums')
@@ -251,7 +252,7 @@ class AlbumsController extends Controller {
 			->render());
 	}
 
-	public function addPhotoToAlbums() {
+	public function addPhotoToAlbums(Request $request) {
 		$albums_id = $request->get('albums');
 		$photo = Photo::find($request->get('_photo'));
 		$albums = Album::findMany($albums_id);

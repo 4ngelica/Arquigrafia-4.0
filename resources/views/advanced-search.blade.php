@@ -63,7 +63,7 @@
     <div class="container">
       <div class="row">
       <div class="twelve columns">
-        <div class="message">{{ $message }}</div>
+        <div class="message">{!! $message !!}</div>
       </div>
       </div>
     </div>

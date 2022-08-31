@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Log;
 use App\modules\gamification\traits\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
-use App\modules\institutions\models\Institution;
+use App\Models\Institutions\Institution;
 use App\modules\collaborative\models\Like as Like;
 use App\modules\evaluations\models\Evaluation as Evaluation;
-use App\modules\moderation\models\Suggestion as Suggestion;
+use App\Models\Moderation\Suggestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\lib\metadata\Exiv2;
@@ -145,7 +145,7 @@ class Photo extends Eloquent {
 
 	public function institution()
 	{
-		return $this->belongsTo('App\modules\institutions\models\Institution');
+		return $this->belongsTo('App\Models\Institutions\Institution');
 	}
 
 	public function tags()
@@ -180,7 +180,7 @@ class Photo extends Eloquent {
 
 	public function suggestions()
 	{
-		return $this->hasMany('App\modules\moderation\models\Suggestion');
+		return $this->hasMany('App\Models\Moderation\Suggestion');
 	}
 
 	public static function extractVideoId($url){

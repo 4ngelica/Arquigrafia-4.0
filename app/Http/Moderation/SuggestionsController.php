@@ -1,25 +1,28 @@
 <?php
 
-namespace modules\moderation\controllers;
+namespace App\Http\Controllers\Moderation;
 
-use lib\log\EventLogger;
+use App\lib\log\EventLogger;
 use Carbon\Carbon;
-use Photo;
-use User;
-use modules\moderation\models\Suggestion;
-use modules\moderation\models\PhotoAttributeType;
-use modules\notifications\models\Notification;
+use App\Models\Users\User;
+use App\Models\Photos\Photo;
+use App\Models\Moderation\Suggestion;
+use App\Models\Moderation\PhotoAttributeType;
+use App\modules\notifications\models\Notification;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use Response;
 
-class SuggestionsController extends \BaseController {
+class SuggestionsController extends Controller {
 
 	public function __construct() {
     // filtering if user is logged out, redirect to login page
-    $this->beforefilter('auth',
-      array('except' => ['logopenmodal']));
+    // $this->beforefilter('auth',
+    //   array('except' => ['logopenmodal']));
   }
 
-	public function store() {
-		$input = \Input::all();
+	public function store(Request $request) {
+		$input = $request->all();
 
 		$rules = array(
 			'user_id' => 'required',
@@ -75,7 +78,7 @@ class SuggestionsController extends \BaseController {
 	}
 
   public function sendNotification() {
-    $input = \Input::all();
+    $input = $request->all();
     $user = \Auth::user();
     $photo = Photo::find($input['photo']);
 		$owner = $photo->user;
@@ -141,7 +144,7 @@ class SuggestionsController extends \BaseController {
 	}
 
 	public function update(){
-		$input = \Input::all();
+		$input = $request->all();
 		$id_self = \Auth::user()->id;
 		$suggestion = Suggestion::find($input['suggestion_id']);
 		$photo = $suggestion->photo;
@@ -188,7 +191,7 @@ class SuggestionsController extends \BaseController {
 	*/
 	public function getUserSuggestions() {
 		// Getting paging input
-		$input = \Input::all();
+		$input = $request->all();
 		$page = $input['page'];
 		$limit = $input['limit'];
     $filterId = $input['filter_id'];
@@ -260,7 +263,7 @@ class SuggestionsController extends \BaseController {
 	*/
 	public function getUserSuggestionsStatistics() {
 		// Generating input object
-		$input = \Input::all();
+		$input = $request->all();
 		// Getting the type
 		$type = null;
 		if (isset($input['type'])) {
