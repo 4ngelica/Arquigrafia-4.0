@@ -26,7 +26,7 @@
   @if (Session::get('message'))
         <div class="container">
           <div class="twelve columns">
-              <div class="message">{{ Session::get('message') }}</div>
+              <div class="message">{!! Session::get('message') !!}</div>
           </div>
         </div>
     @endif
@@ -314,10 +314,10 @@
 	</div>
 
 	<!-- MEUS PONTOS -->
-	@include('user_points')
-	
+	@include('gamification.user_points')
+
 	<!-- MINHAS CONQUISTAS -->
-	@include('user_badges')
+	@include('gamification.user_badges')
 
 	<br>
 	<br>

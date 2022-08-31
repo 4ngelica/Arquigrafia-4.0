@@ -16,7 +16,7 @@
   @if (Session::get('msgWelcome'))
     <div class="container">
       <div class="twelve columns">
-        <div class="message">{{ Session::get('msgWelcome') }}</div>
+        <div class="message">{!! Session::get('msgWelcome') !!}</div>
       </div>
     </div>
   @endif
@@ -40,7 +40,7 @@
    @endif
  @endif
 
-    <!--   PAINEL DE IMAGENS - GALERIA - CARROSSEL   -->  
+    <!--   PAINEL DE IMAGENS - GALERIA - CARROSSEL   -->
     <div class="wrap">
       <div id="panel">
         @include('includes.panel')

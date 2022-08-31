@@ -1,20 +1,28 @@
 <?php
 
-use modules\draft\traits\DraftingTrait;
-use lib\date\Date;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+namespace App\Models\Photos;
 
-use modules\gamification\traits\LikableGamificationTrait;
+use App\modules\draft\traits\DraftingTrait;
+use App\lib\date\Date;
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\Log;
+use App\modules\gamification\traits\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
-use modules\institutions\models\Institution;
-use modules\collaborative\models\Like as Like;
-use modules\evaluations\models\Evaluation as Evaluation;
-use modules\moderation\models\Suggestion as Suggestion;
+use App\Models\Institutions\Institution;
+use App\modules\collaborative\models\Like as Like;
+use App\modules\evaluations\models\Evaluation as Evaluation;
+use App\Models\Moderation\Suggestion;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
+use App\lib\metadata\Exiv2;
+use DateTime;
+use Session;
 
 class Photo extends Eloquent {
 
-	use DraftingTrait;
-	use SoftDeletingTrait;
+	// use DraftingTrait;
+	// use SoftDeletingTrait;
 	use LikableGamificationTrait;
 
 	protected $softDelete = true;
@@ -125,54 +133,54 @@ class Photo extends Eloquent {
 
 	protected $date;
 
-	public function __construct($attributes = array(), Date $date = null) {
-		parent::__construct($attributes);
-		$this->date = $date ?: new Date;
-	}
+	// public function __construct($attributes = array(), Date $date = null) {
+	// 	parent::__construct($attributes);
+	// 	$this->date = $date ?: new Date;
+	// }
 
 	public function user()
 	{
-		return $this->belongsTo('User');
+		return $this->belongsTo('App\Models\Users\User');
 	}
 
 	public function institution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution');
+		return $this->belongsTo('App\Models\Institutions\Institution');
 	}
 
 	public function tags()
 	{
-		return $this->belongsToMany('modules\collaborative\models\Tag', 'tag_assignments');
+		return $this->belongsToMany('App\modules\collaborative\models\Tag', 'tag_assignments');
 	}
 
 	public function authors()
 	{
-		return $this->belongsToMany('Author', 'photo_author');
+		return $this->belongsToMany('App\Models\Photos\Author', 'photo_author');
 	}
 
 	public function comments()
 	{
-		return $this->hasMany('modules\collaborative\models\Comment');
+		return $this->hasMany('App\modules\collaborative\models\Comment');
 	}
 
 	public function albums()
 	{
-		return $this->belongsToMany('Album', 'album_elements');
+		return $this->belongsToMany('App\Models\Albums\Album', 'album_elements');
 	}
 
 	public function evaluations()
 	{
-		return $this->hasMany('modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\modules\evaluations\models\Evaluation');
 	}
 
 	public function evaluators()
 	{
-		return $this->belongsToMany('User', 'binomial_evaluation');
+		return $this->belongsToMany('App\Models\Users\User', 'binomial_evaluation');
 	}
 
 	public function suggestions()
 	{
-		return $this->hasMany('modules\moderation\models\Suggestion');
+		return $this->hasMany('App\Models\Moderation\Suggestion');
 	}
 
 	public static function extractVideoId($url){
@@ -214,11 +222,13 @@ class Photo extends Eloquent {
 		$h200_path = public_path() . '/arquigrafia-images/' . $this->id . '_200h.jpg';
 		$home_path = public_path() . '/arquigrafia-images/' . $this->id . '_home.jpg';
 		$micro_path = public_path() . '/arquigrafia-images/' . $this->id . '_micro.jpg';
-		Exiv2::saveMetadata($original_path, $this, $metadata);
-		Exiv2::saveMetadata($view_path, $this, $metadata);
-		Exiv2::saveMetadata($h200_path, $this, $metadata);
-		Exiv2::saveMetadata($home_path, $this, $metadata);
-		Exiv2::saveMetadata($micro_path, $this, $metadata);
+		$exiv2 = new Exiv2($original_path, $this, $metadata);
+		// $file_path, $photo, $metadata
+		$exiv2->saveMetadata($original_path, $this, $metadata);
+		$exiv2->saveMetadata($view_path, $this, $metadata);
+		$exiv2->saveMetadata($h200_path, $this, $metadata);
+		$exiv2->saveMetadata($home_path, $this, $metadata);
+		$exiv2->saveMetadata($micro_path, $this, $metadata);
 	}
 
 	public static function paginateUserPhotos($user, $perPage = 24) {
@@ -245,10 +255,8 @@ class Photo extends Eloquent {
 
 	public static function paginateUserPhotosNotInAlbum($user, $album, $q = null, $perPage = 24) {
 
-		return static::notInAlbum($album, $q)->withUser($user)
-			->withoutInstitutions()->paginate($perPage);
-
-
+		return static::notInAlbum($album, $q)->with('user')
+			->where('user_id', $user->id)->withoutInstitutions()->paginate($perPage);
 	}
 
 	public static function paginateInstitutionPhotosNotInAlbum($inst, $album, $q = null, $perPage = 24) {
@@ -268,14 +276,14 @@ class Photo extends Eloquent {
 		$array = explode(" ", $name);
 		$architectureName = "";
 		if (!is_null($array) && !is_null($array[0])) {
-			if (ends_with($array[0], 'a') || ends_with($array[0], 'dade')
-				|| ends_with($array[0], 'ção') || ends_with($array[0], 'ase')
-				|| ends_with($array[0], 'ede') || ends_with($array[0], 'dral')
-				|| ends_with($array[0], 'agem') || $array[0] == "fonte"
+			if (str_ends_with($array[0], 'a') || str_ends_with($array[0], 'dade')
+				|| str_ends_with($array[0], 'ção') || str_ends_with($array[0], 'ase')
+				|| str_ends_with($array[0], 'ede') || str_ends_with($array[0], 'dral')
+				|| str_ends_with($array[0], 'agem') || $array[0] == "fonte"
 				|| $array[0] == "Fonte" || $array[0] == "ponte"
 				|| $array[0] == "Ponte")
 				$architectureName = 'a ';
-			else if (ends_with($array[0], 's'))
+			else if (str_ends_with($array[0], 's'))
 				$architectureName = 'a arquitetura de ';
 			else
 				$architectureName = 'o ';
@@ -285,7 +293,7 @@ class Photo extends Eloquent {
 
 	public static function getEvaluatedPhotosByUser($user) {
 		$evaluations = Evaluation::where("user_id", $user->id)->groupBy('photo_id')->distinct()->get();
-		return Photo::whereIn('id', $evaluations->lists('photo_id'))->get();
+		return Photo::whereIn('id', $evaluations->pluck('photo_id'))->get();
 	}
 
 
@@ -516,7 +524,9 @@ class Photo extends Eloquent {
 	}
 
 	public function getDataUploadAttribute($value) {
+		if($this->date){
 		return $this->date->formatDatePortugues($this->attributes['dataUpload']);
+	}
 	}
 
 
@@ -528,11 +538,15 @@ class Photo extends Eloquent {
 
 
 	public function getFormatWorkdateAttribute($dateWork,$type) {
+		if($this->date){
 		return  $this->date->formatToWorkDate($dateWork,$type);
+	}
 	}
 
 	public function getFormatDataCriacaoAttribute($dataCriacao,$type) {
-		return  $this->date->formatToDataCriacao($dataCriacao,$type);
+		if($this->date){
+		return $this->date->formatToDataCriacao($dataCriacao,$type);
+	}
 	}
 
 	public static function import($attributes, $basepath) {
@@ -589,7 +603,7 @@ class Photo extends Eloquent {
 		$this->tags()->sync($tags);
 	}
 
-	public static function search($input, $tags, $binomials, $authorsArea) {
+	public static function search($request, $input, $tags, $binomials, $authorsArea) {
 
 		if(Session::has('CurrPage') && Session::get('CurrPage')!= 1){
 		   Session::forget('CurrPage');
@@ -609,8 +623,8 @@ class Photo extends Eloquent {
 				$query->where($license, array_pull($input, $license) );
 			}
 		}
-		if(Input::has('workAuthor_area')){
-			$input = array_except($input, 'workAuthor_area');
+		if($request->has('workAuthor_area')){
+			$input = Arr::except($input, 'workAuthor_area');
 		}
 		foreach ( $input as $column => $value) {
 			$query->where('photos.'.$column, 'LIKE', '%' . $value . '%');

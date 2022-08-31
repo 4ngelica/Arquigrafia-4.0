@@ -121,7 +121,7 @@
                 <p>{{ Form::label('photo_name', 'Título*:') }}</p>
               </div>
               <div class="six columns omega">
-                <p>{{ Form::text('photo_name', Input::old('photo_name')) }} <br>
+                <p>{{ Form::text('photo_name', Request::old('photo_name')) }} <br>
                   <div class="error">{{ $errors->first('photo_name') }}</div>
                 </p>
               </div>
@@ -189,7 +189,7 @@
               <div class="four columns alpha"><p>{{ Form::label('photo_city', 'Cidade:') }}</p></div>
               <div class="six columns omega">
                 <p>
-                  {{ Form::text('photo_city', Input::old('photo_city')) }} <br>
+                  {{ Form::text('photo_city', Request::old('photo_city')) }} <br>
                   <div class="error">{{ $errors->first('photo_city') }}</div>
                 </p>
               </div>
@@ -198,7 +198,7 @@
               <div class="four columns alpha"><p>{{ Form::label('photo_district', 'Bairro:') }}</p></div>
               <div class="six columns omega">
                 <p>
-                  {{ Form::text('photo_district', Input::old('photo_district')) }} <br>
+                  {{ Form::text('photo_district', Request::old('photo_district')) }} <br>
                 </p>
               </div>
             </tr>
@@ -206,7 +206,7 @@
               <div class="four columns alpha"><p>{{ Form::label('photo_street', 'Endereço:') }}</p></div>
               <div class="six columns omega">
                 <p>
-                  {{ Form::text('photo_street', Input::old('photo_street')) }} <br>
+                  {{ Form::text('photo_street', Request::old('photo_street')) }} <br>
                 </p>
               </div>
             </tr>
@@ -222,10 +222,12 @@
             <tr>
               <?php
                 $albuns[""] = "Escolha o album";
+                if(Auth::user()->albums){
                 foreach (Auth::user()->albums as $k => $album) {
                   if ($album->institution_id == null)
                     $albuns[$album->id]	= $album->title;
                 }
+              }
               ?>
               <div class="four columns alpha select-album" style="display: none"><p>{{ Form::label('photo_album', 'Adicionar ao álbum:') }}</p></div>
               <div class="six columns omega">
@@ -238,7 +240,7 @@
               <div class="four columns alpha new-album-name" style="display: none"><p>{{ Form::label('new_album-name', 'Digite o nome do novo álbum:') }}</p></div>
               <div class="six columns omega">
                 <p class="new-album-name" style="display: none;">
-                  {{ Form::text('new_album-name', Input::old('new_album-name')) }} <br>
+                  {{ Form::text('new_album-name', Request::old('new_album-name')) }} <br>
                 </p>
               </div>
               <td>&nbsp;</td>
@@ -278,7 +280,7 @@
     <tr> <td>
         <div class="two columns alpha"><p>{{ Form::label('photo_imageDate', 'Data da imagem:') }}</p></div>
         <div class="three columns omega">
-          <p>{{ Form::text('photo_imageDate','',array('id' => 'datePickerImageDate','placeholder'=>'DD/MM/AAAA')) }}
+          <p>{{ Form::text('photo_imageDate',null,array('id' => 'datePickerImageDate','placeholder'=>'DD/MM/AAAA')) }}
             <span class="space_txt_element">Não sabe a data precisa?
               <a onclick="date_visibility('date_img_inaccurate');" >Clique aqui.</a>
             </span>
@@ -324,7 +326,7 @@
     <div class="two columns alpha"><p>{{ Form::label('photo_description', 'Descrição:') }}</p></div>
     <div class="three columns omega">
       <p>
-        {{ Form::textarea('photo_description', Input::old('photo_description'),['size' =>'36x7']) }} <br>
+        {{ Form::textarea('photo_description', Request::old('photo_description'),['size' =>'36x7']) }} <br>
 
       </p>
     </div>
@@ -385,7 +387,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    var typeChecked  = "{{Input::old('type')}}";
+    var typeChecked  = "{{Request::old('type')}}";
 
     if(typeChecked == "video" ) {
       document.getElementById('type_video').checked = true;
@@ -408,7 +410,7 @@ $(document).ready(function() {
       }
     });
 
-    if({{Input::old('autoOpenModal','false')}}) {
+    if({{Request::old('autoOpenModal','false')}}) {
       $( "#dialog-confirm" ).html("<b>Cadastro de imagem realizado com sucesso!</b> <br><br> Gostaria de utilizar os dados da imagem cadastrada para o próximo upload?");
       $( "#dialog-confirm" ).dialog({
           resizable: false,
@@ -420,14 +422,14 @@ $(document).ready(function() {
               },
               "Não": function() {
                   //$( this ).dialog( "close" );
-                  window.location.replace('{{ URL::to("/") }}/photos/{{Input::old('photoId')}}');
+                  window.location.replace('{{ URL::to("/") }}/photos/{{Request::old('photoId')}}');
               }
           }
       });
     }
 
-    var radio_checked_commercial    = "{{"photo_allowCommercialUses".(Input::old('photo_allowCommercialUses'))}}";
-    var radio_checked_modifications = "{{"photo_allowModifications".(Input::old('photo_allowModifications'))}}";
+    var radio_checked_commercial    = "{{"photo_allowCommercialUses".(Request::old('photo_allowCommercialUses'))}}";
+    var radio_checked_modifications = "{{"photo_allowModifications".(Request::old('photo_allowModifications'))}}";
 
     if((radio_checked_commercial != "photo_allowCommercialUses") && (radio_checked_modifications != "photo_allowModifications")) {
       if(radio_checked_commercial != "photo_allowCommercialUsesYES") {
@@ -441,13 +443,13 @@ $(document).ready(function() {
     }
 
     $('#tags').textext({ plugins: 'tags' });
-    @if(Input::old('tags')!=null)
-      <?php $tags = explode (",", Input::old('tags')); ?>
+    @if(Request::old('tags')!=null)
+      <?php $tags = explode (",", Request::old('tags')); ?>
     @endif
 
     @if (isset($tags) && $tags !=null)
       @foreach ( $tags as $tag )
-          $('#tags').textext()[0].tags().addTags([ {{ '"' . $tag . '"' }} ]);
+          $('#tags').textext()[0].tags().addTags([ ' <?= $tag ?> ' ]);
       @endforeach
     @endif
 
@@ -467,9 +469,9 @@ $(document).ready(function() {
     // authors
     $('#work_authors').textext({ plugins: 'tags' });
 
-    @if(Input::old('work_authors')!= null)
-      <?php //print_r(Input::old('work_authors'));
-      $work_authors = explode (";", Input::old('work_authors')); ?>
+    @if(Request::old('work_authors')!= null)
+      <?php //print_r(Request::old('work_authors'));
+      $work_authors = explode (";", Request::old('work_authors')); ?>
     @endif
 
     @if (isset($work_authors) && $work_authors != null)
@@ -499,26 +501,26 @@ $(document).ready(function() {
       $('#photo_workAuthor').val('');
     }
 
-    @if( Input::old('century_image'))
-      var centuryInputImage = "{{Input::old('century_image')}}";
+    @if( Request::old('century_image'))
+      var centuryInputImage = "{{Request::old('century_image')}}";
       showPeriodCenturyImage(centuryInputImage);
       retrieveCenturyImage(centuryInputImage);
     @endif
 
-    @if( Input::old('decade_select_image'))
-      var decadeInputImage = "{{Input::old('decade_select_image')}}";
+    @if( Request::old('decade_select_image'))
+      var decadeInputImage = "{{Request::old('decade_select_image')}}";
       retrieveDecadeImage(decadeInputImage);
       getCenturyOfDecade(decadeInputImage,"imageDate");
     @endif
 
-    @if( Input::old('century'))
-      var centuryInput = "{{Input::old('century')}}";
+    @if( Request::old('century'))
+      var centuryInput = "{{Request::old('century')}}";
       showPeriodCentury(centuryInput);
       retrieveCentury(centuryInput);
     @endif
 
-    @if( Input::old('decade_select'))
-      var decadeInput = "{{Input::old('decade_select')}}";
+    @if( Request::old('decade_select'))
+      var decadeInput = "{{Request::old('decade_select')}}";
       retrieveDecade(decadeInput);
       getCenturyOfDecade(decadeInput,"workDate");
     @endif
@@ -527,14 +529,14 @@ $(document).ready(function() {
       window.onload = cleanToLoad;
     @endif
 
-    if({{Input::old('dates','true')}}){
-      if("{{Input::old('century')}}" != "" || "{{Input::old('decade_select')}}" != "" ){
+    if({{Request::old('dates','true')}}){
+      if("{{Request::old('century')}}" != "" || "{{Request::old('decade_select')}}" != "" ){
         window.onload = resultSelectDateWork("otherDate");
       }
     }
 
-    if({{Input::old('dateImage','true')}}){
-      if("{{Input::old('century_image')}}" != "" || "{{Input::old('decade_select_image')}}" != "" ){
+    if({{Request::old('dateImage','true')}}){
+      if("{{Request::old('century_image')}}" != "" || "{{Request::old('decade_select_image')}}" != "" ){
         window.onload = resultSelectDateWork("date_img_inaccurate");
       }
     }

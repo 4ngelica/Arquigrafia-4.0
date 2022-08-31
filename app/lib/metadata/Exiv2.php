@@ -1,8 +1,9 @@
-<?php namespace lib\metadata;
+<?php
+namespace App\lib\metadata;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use lib\license\CreativeCommons_3_0;
+use App\lib\license\CreativeCommons_3_0;
 
 class Exiv2 {
 
@@ -84,19 +85,19 @@ class Exiv2 {
 		$command = sprintf("Exif.Image.Artist %s - %s", $artist, $user);
 		$this->runExif2($command);
 	}
-	
+
 	public function setCopyRight($author, $ccl) {
 		$command = sprintf("Exif.Image.Copyright %s - %s - %s", $author, $ccl->getLongLicenseName(), $ccl->getURIString());
 		$this->runExif2($command);
 		$command = sprintf("Iptc.Application2.Copyright %s - %s - %s", $author, $ccl->getLongLicenseName(), $ccl->getURIString());
 		$this->runExif2($command);
 	}
-	
+
 	public function setDescription($description) {
 		$command = sprintf("Exif.Image.ImageDescription %s", $description);
 		$this->runExif2($command);
 	}
-	
+
 	public function setUserComment($userComment) {
 		$command = sprintf("Exif.Photo.UserComment %s", $userComment);
 		$this->runExif2($command);
@@ -148,12 +149,12 @@ class Exiv2 {
 			fclose($handle);
 		}
 
-		$log->pushHandler(new StreamHandler($file, Logger::ERROR));		
+		$log->pushHandler(new StreamHandler($file, Logger::ERROR));
 		return $log;
 	}
 
 	private function log_error($cmd, $retval) {
 		if (!isset($this->log)) $this->log = $this->create_log();
-		$this->log->addError("Houve um erro ao executar o seguinte comando:\n" . $cmd);
+		$this->log->error("Houve um erro ao executar o seguinte comando:\n" . $cmd);
 	}
 }

@@ -14,7 +14,8 @@
       <div id="first_menu" class="eight-xs four columns">
         <!--   MENU DE BUSCA   -->
         <form id="search_buttons_area" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8">
-          <input type="text" class="search_bar" id="search_bar" name="q" value=""/>
+					@csrf
+					<input type="text" class="search_bar" id="search_bar" name="q" value=""/>
           <input type="hidden" value="8" name="perPage" />
           <input type="submit" class="search_bar_button cursor" value="" />
           <!--   BOTÃO DE BUSCA AVANÇADA   -->
@@ -73,13 +74,8 @@
         <ul id="logged_menu">
           <li>
             <div id="notification-icon-container">
-              <?php
-                $notesCounter = Auth::user()->notifications()->unread()->count();
-                if ($notesCounter != 1) $title = "Você tem " . $notesCounter . " notificações não lidas";
-                else $title = "Você tem " . $notesCounter . " notificação não lida";
-              ?>
-              <a onclick="toggleNotes()" id="notification" title="{{$title}}"><i class="notification">&nbsp;</i></a>
-              @if ($notesCounter > 0) <div id="bubble"> {{$notesCounter}} </div>  @endif
+
+              <a onclick="toggleNotes()" id="notification" title=""><i class="notification">&nbsp;</i></a>
             </div>
           </li>
 
@@ -91,7 +87,7 @@
           @endif
           <!-- <li><a href="#" id="messages" title="Você tem 19 mensagens">&nbsp;</a></li> -->
 
-          {{-- @if (Auth::user()->photos->count() > 0 ) --}}
+					{{-- @if (Auth::user()->photos->count() > 0 ) --}}
             @if(Auth::user()->albums->count() > 0)
               <li><a href="{{ URL::to('/albums') }}" title="Meus álbuns"><i class="photos">&nbsp;</i></a></li>
             @else
@@ -102,7 +98,6 @@
           <li>
             <div id="new-message-container" class="new-message">
               <a href="{{ URL::to('/chats') }}"></a>
-              @if (Auth::user()->newMessagesCount() > 0) <div id="bubble2"> {{Auth::user()->newMessagesCount()}} </div>  @endif
             </div>
           </li>
 
@@ -131,11 +126,7 @@
             <p id="read-all"><a onclick="readAll()"> Marcar todas como lidas </a></p>
           </div>
           <div id="notes-container">
-            @if(Auth::user()->notifications->isEmpty())
               <p id="no-notes">Você não possui notificações</p>
-            @else
-              @include("includes.notes", ['user' => Auth::user(), 'max' => 5])
-            @endif
           </div>
           <div id="notes-footer">
             <p><a href="{{ URL::to("/notifications") }}">Ver todas</a></p>

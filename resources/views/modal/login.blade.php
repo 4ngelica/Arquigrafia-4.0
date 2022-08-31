@@ -16,7 +16,7 @@
       <div class="container">
         <div class="twelve columns">
          <div class="four columns offset-by-four">
-          <div class="message">{{ Session::get('msgRegister') }}</div>
+          <div class="message">{!! Session::get('msgRegister') !!}</div>
         </div>
        </div>
       </div>
@@ -64,7 +64,7 @@
 
          <div class="four columns offset-by-four">
 
-            <a href="{{ $fburl }}">
+            <a href="{{ $fburl ?? ''}}">
                <div class="login_externo logo">
                   <img id="facebook_login" src="{{ asset('/img/Facebook_logo_square.png') }}">
                </div>
@@ -122,11 +122,7 @@
                <div class="three columns">{{ Form::label('institution', 'Acervo:') }}</div>
                <div class="three columns">
 
-                  @if(!is_null($institutions))
-                    {{ Form::select('institution', $institutions , Input::old('institution')) }}
-                  @else
-                      {{ Form::select('institution', [""=>"Escolha o acervo institutional"], "",array('class' => 'left')) }}
-                  @endif
+
                </div>
 		<br>
 

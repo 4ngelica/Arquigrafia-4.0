@@ -22,11 +22,11 @@
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuBk5ghbTdpdm_nBWg6xHEzdRXdryK6rU&callback=initMap"></script>
   <script type="text/javascript">
   // Missing fields and questions (to show on Modal)
-  var photo = {{ json_encode($photos) }};
-  var user = {{ json_encode($user) }}
-  var missingFields = {{ json_encode($missing) }};
-  var isReviewing = {{ json_encode($isReviewing) }};
-  var completeness = {{ json_encode($completeness) }};
+  var photo = <?= json_encode($photos) ?>;
+  var user = <?= json_encode($user) ?>;
+  var missingFields = <?= json_encode($missing) ?>;
+  var isReviewing = <?= json_encode($isReviewing) ?>;
+  var completeness = <?= json_encode($completeness) ?>;
 
   // Getting if it's gamed
   var gamed = {{ json_encode($gamified) }};
@@ -37,11 +37,11 @@
     var map;
 
     function initialize() {
-      var street = "{{ $photos->street }}";
-      var district = "{{ $photos->district }}";
-      var city = "{{ $photos->city }}";
-      var state = "{{ $photos->state }}";
-      var country = "{{ $photos->country }}";
+      var street = "<?= $photos->street ?>";
+      var district = "<?= $photos->district ?>";
+      var city = "<?= $photos->city ?>";
+      var state = "<?= $photos->state ?>";
+      var country = "<?= $photos->country ?>";
       var address;
       if (street) address = street + "," + district + "," + city + "-" + state + "," + country;
       else if (district) address = district + "," + city + "-" + state + "," + country;
@@ -85,7 +85,7 @@
   @if (Session::get('message'))
     <div class="container">
       <div class="twelve columns">
-          <div class="message">{{ Session::get('message') }}</div>
+          <div class="message">{!! Session::get('message') !!}</div>
       </div>
     </div>
   @endif
@@ -107,8 +107,8 @@
             <span class="right" title="{{ $commentsMessage }}">
               <i id="comments"></i><small>{{ $commentsCount }}</small>
             </span>
-            <span class="right" title="{{ $photos->likes->count() }} pessoas curtiram essa imagem">
-              <i id="likes"></i> <small>{{ $photos->likes->count() }}</small>
+            <span class="right" title="{{ $photos->likes ? $photos->likes->count() : '0' }} pessoas curtiram essa imagem">
+              <i id="likes"></i> <small>{{ $photos->likes ? $photos->likes->count() : '0' }}</small>
             </span>
             @if ($institutionId == NULL && $owner->equal(Auth::user()))
               <span class="right">
@@ -237,6 +237,7 @@
             @foreach($tags as $k => $tag)
               @if ($tag->id == $tags->last()->id)
                 <form id="{{$k}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                  @csrf
                   <input type="hidden" name="q" value="{{$tag->name}}"/>
                     <a style="" href="javascript: submitform({{$k}});">
                       {{ $tag->name }}
@@ -244,6 +245,7 @@
                 </form>
               @else
                 <form id="{{$k}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                  @csrf
                   <input type="hidden" name="q" value="{{$tag->name}}"/>
                     <a href="javascript: submitform({{$k}});">
                       {{ $tag->name }}

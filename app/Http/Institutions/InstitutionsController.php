@@ -1,25 +1,28 @@
 <?php
-namespace modules\institutions\controllers;
+
+namespace App\Http\Controllers\Institutions;
+
 use lib\date\Date;
 use lib\utils\HelpTool;
-use modules\institutions\models\Institution;
+use App\Models\Institutions\Institution;
 use modules\institutions\models\Employee as Employee;
 use modules\collaborative\models\Tag;
 use Session;
 use Auth;
-use Photo;
 use News;
-use Author;
-use Album;
+use App\Models\Albums\Album;
 use Carbon\Carbon;
 use Image;
 use URL;
+use App\Models\Photos\Photo;
+use App\Models\Photos\Author;
+use App\Http\Controllers\Controller;
 
-class InstitutionsController extends \BaseController {
+class InstitutionsController extends Controller {
   protected $date;
 
   public function __construct(Date $date = null) {
-    $this->date = $date ?: new Date; 
+    $this->date = $date ?: new Date;
   }
 
   public function index() {
@@ -68,7 +71,7 @@ class InstitutionsController extends \BaseController {
       return Redirect::to('/home');
     }
 
-    $institution = Institution::find($id); 
+    $institution = Institution::find($id);
     if ( is_null($institution) )   return Redirect::to('/home');
 
     return \View::make('edit', [
@@ -101,7 +104,7 @@ class InstitutionsController extends \BaseController {
       if(!empty($input['acronym_institution']))
         $institution->acronym = trim($input['acronym_institution']);
       else
-        $institution->acronym = null; 
+        $institution->acronym = null;
 
       if(!empty($input['site']))
         $institution->site = trim($input['site']);
@@ -111,7 +114,7 @@ class InstitutionsController extends \BaseController {
       if(!empty($input['state']))
         $institution->state = $input['state'];
       else
-        $institution->state = null; 
+        $institution->state = null;
 
       if(!empty($input['city']))
         $institution->city = trim($input['city']);
@@ -167,7 +170,7 @@ class InstitutionsController extends \BaseController {
 
     return \View::make('form-institutional')->with([
       'pageSource' => $pageSource,
-      'user' => Auth::user(), 
+      'user' => Auth::user(),
       'institution' => $institution,
       'albums' => $albums,
       'dates' => $dates,
@@ -197,7 +200,7 @@ class InstitutionsController extends \BaseController {
       'tombo' => 'required',
       'hygieneDate' => 'date_format:"d/m/Y"|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
       'backupDate' => 'date_format:"d/m/Y"|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
-      'characterization' => 'required',  
+      'characterization' => 'required',
       'photo' => 'max:10240|required_without_all:video|mimes:jpeg,jpg,png,gif',
       'photo_name' => 'required',
       'tagsArea' => 'required',
@@ -214,7 +217,7 @@ class InstitutionsController extends \BaseController {
     $rules = \Input::has('draft') ? array_except($rules, ['photo', 'video']) : $rules;
     $validator = \Validator::make($input, $rules);
 
-    if ($validator->fails()) { 
+    if ($validator->fails()) {
       $messages = $validator->messages();
       return \Redirect::to('/institutions/form/upload')->withInput($input)->withErrors($messages);
     } else {
@@ -318,7 +321,7 @@ class InstitutionsController extends \BaseController {
         $public_image   = Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
         $original_image = Image::make(\Input::file('photo'))->rotate($angle);
         $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
-        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg'); 
+        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
         $public_image->fit(186, 124)->encode('jpg', 70)->save(public_path().'/arquigrafia-images/'.$photo->id.'_home.jpg');
         $original_image->save(storage_path().'/original-images/'.$photo->id."_original.".strtolower($ext));
         $photo->saveMetadata(strtolower($ext), $metadata);
@@ -395,8 +398,8 @@ class InstitutionsController extends \BaseController {
         if (Session::has('work_authors')) {
             $work_authors = Session::pull('work_authors');
             $work_authors = explode(';', $work_authors);
-        }else{ 
-            $work_authors = $photo->authors->lists('name'); 
+        }else{
+            $work_authors = $photo->authors->lists('name');
         }
 
       $dateYear = "";

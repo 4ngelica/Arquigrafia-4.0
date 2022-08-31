@@ -12,10 +12,15 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Albums\AlbumsController;
+use App\Http\Controllers\Moderation\ContributionsController;
+use App\Http\Controllers\Moderation\SuggestionsController;
+use App\Http\Controllers\Institutions\ImportsController;
+use App\Http\Controllers\Institutions\InstitutionsController;
 use App\Http\Controllers\AudiosController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAMController;
+use App\Http\Controllers\EvaluationsController;
 
 
 /*
@@ -41,7 +46,7 @@ Route::get('/test', function () {
   //testes
 });
 
-Route::get('/photos/import', 'ImportsController@import');
+Route::get('/photos/import', [ImportsController::class, 'import']);
 
 /* phpinfo() */
 Route::get('/info/', function(){ return View::make('i'); });
@@ -96,7 +101,7 @@ Route::get('/friends/unfollow/{user_id}', [UsersController::class, 'unfollow']);
 Route::get('/profile/10/showphotoprofile/{profile_id}', [UsersController::class, 'profile']);
 
 /* ALBUMS */
-Route::resource('/albums','AlbumsController');
+Route::resource('/albums',AlbumsController::class);
 Route::get('/albums/photos/add', [AlbumsController::class, 'paginateByUser']);
 Route::get('/albums/{id}/photos/rm', [AlbumsController::class, 'paginateByAlbum']);
 Route::get('/albums/{id}/photos/add', [AlbumsController::class, 'paginateByOtherPhotos']);
@@ -119,7 +124,8 @@ Route::get('/photos/rollmigrar',[PhotosController::class, 'rollmigrar']);
 Route::get('/photos/download/{photo_id}',[PhotosController::class, 'download']);
 Route::get('/photos/completeness', [PhotosController::class, 'showCompleteness']);
 Route::get('/photos/to_complete', [PhotosController::class, 'getCompletenessPhotos']);
-Route::resource('/photos','PhotosController');
+
+Route::resource('/photos',PhotosController::class);
 
 /* SEARCH PAGE */
 Route::get('/search/paginate/other/photos', [PagesController::class, 'paginatePhotosResult']);
@@ -132,3 +138,40 @@ Route::get('oam/photo/{id}', [OAMController::class, 'photo']);
 
 /* AUDIO */
 Route::post('oam/audios', [OAMController::class, 'storeAudio']);
+
+/* Evaluations */
+Route::get('/evaluations', [EvaluationsController::class, 'index']);
+Route::get('/evaluations/{photo_id}/evaluate',[EvaluationsController::class, 'evaluate']);
+Route::get('/evaluations/{photo_id}/viewEvaluation/{user_id}',[EvaluationsController::class, 'viewEvaluation']);
+Route::get('/evaluations/{photo_id}/showSimilarAverage/', [EvaluationsController::class, 'showSimilarAverage']);
+//Route::post('/evaluations/{photo_id}/saveEvaluation','modules\evaluations\controllers\EvaluationsController@saveEvaluation');
+Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
+// Route::resource('/evaluations',[EvaluationsController::class]);
+
+//Moderation
+
+Route::post('/suggestions', [SuggestionsController::class, 'store']);
+Route::post('/suggestions/sent', [SuggestionsController::class, 'sendNotification']);
+Route::get('/users/suggestions', [SuggestionsController::class, 'edit']);
+Route::post('/users/suggestions', [SuggestionsController::class, 'update']);
+Route::get('/users/contributions', [ContributionsController::class, 'showContributions']);
+
+// JSON Responses Routes
+Route::get('/suggestions/user_suggestions', [SuggestionsController::class, 'getUserSuggestions']);
+Route::get('/suggestions/user_statistics', [SuggestionsController::class, 'getUserSuggestionsStatistics']);
+
+/* INSTITUTIONS */
+Route::get('/institutions/{id}', [InstitutionsController::class, 'show']);
+Route::get('/institutions/{id}/edit', [InstitutionsController::class, 'edit']);
+Route::get('/institutions/form/upload', [InstitutionsController::class, 'formPhotos']);
+Route::post('/institutions/save', [InstitutionsController::class, 'saveFormPhotos']);
+Route::get('/institutions/{photo_id}/form/edit', [InstitutionsController::class, 'editFormPhotos']);
+Route::put('/institutions/{photo_id}/update/photo', [InstitutionsController::class, 'updateFormPhotos']);
+
+Route::get('/institutions/{id}/allphotos', [InstitutionsController::class, 'allImages']);
+
+/* FOLLOW */
+Route::get('/friends/followInstitution/{institution_id}', [InstitutionsController::class, 'followInstitution']);
+Route::get('/friends/unfollowInstitution/{institution_id}', [InstitutionsController::class, 'unfollowInstitution']);
+
+Route::resource('/institutions', InstitutionsController::class);

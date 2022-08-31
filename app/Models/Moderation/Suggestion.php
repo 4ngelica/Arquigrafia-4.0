@@ -1,19 +1,23 @@
 <?php
-namespace modules\moderation\models;
 
-class Suggestion extends \Eloquent {
+namespace App\Models\Moderation;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Suggestion extends Model {
+
 	protected $fillable = ['user_id', 'photo_id', 'attribute_type', 'text' , 'accepted', 'moderator_id'];
 
 	public function photo_attribute_type() {
-		return $this->belongsTo('PhotoAttributeType', 'attribute_type');
+		return $this->belongsTo('App\Models\Moderation\PhotoAttributeType', 'attribute_type');
 	}
 
 	public function user(){
-		return $this->belongsTo('User');
+		return $this->belongsTo('App\Models\Users\User');
 	}
 
 	public function photo(){
-		return $this->belongsTo('Photo');
+		return $this->belongsTo('App\Models\Photos\Photo');
 	}
 
 	/**

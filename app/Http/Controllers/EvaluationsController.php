@@ -1,77 +1,79 @@
 <?php
-namespace modules\evaluations\controllers;
-use modules\evaluations\models\Evaluation;
-use modules\evaluations\models\Binomial;
-use modules\news\models\News as News;
-use lib\log\EventLogger;
-use Session;  
+namespace App\Http\Controllers;
+
+use App\modules\evaluations\models\Evaluation;
+use App\modules\evaluations\models\Binomial;
+use Illuminate\Database\Eloquent\Model;
+use App\modules\news\models\News as News;
+use App\lib\log\EventLogger;
+use Session;
 use Auth;
-use Photo;
+use App\Models\Photos\Photo;
 use Carbon\Carbon;
 use View;
 use Input;
-use User;
-use Request;
+use App\Models\Users\User;
+use Illuminate\Http\Request;
 
-class EvaluationsController extends \BaseController {
+class EvaluationsController extends Controller {
 
-  public function __construct()
-  {
-    $this->beforeFilter('auth',
-      array( 'except' => ['index','show'] ));
-  }
+  // public function __construct()
+  // {
+  //   $this->beforeFilter('auth',
+  //     array( 'except' => ['index','show'] ));
+  // }
 
 	public function index()
-	{ 
+	{
     $evaluation = Evaluation::all();
     return $evaluation;
 	}
 
 
 	public function show($id)
-	{ 
+	{
       return \Redirect::to('/home');
 	}
 
-  public function evaluate($photoId ) 
+  public function evaluate($photoId )
   {
       if (Session::has('institutionId') ) {
         return \Redirect::to('/home');
       }
-    
-      if(isset($_SERVER['QUERY_STRING'])) parse_str($_SERVER['QUERY_STRING']);
+
+      if(isset($_SERVER['QUERY_STRING'])) parse_str($_SERVER['QUERY_STRING'], $query);
       if(isset($f)) {
         if($f == "sb") $eventContent['object_source'] = 'pelo botão abaixo da imagem';
         elseif($f == "c") $eventContent['object_source'] = 'pelo botão abaixo do gráfico';
         elseif($f == "g") $eventContent['object_source'] = 'pelo gráfico';
       } else $eventContent['object_source'] = 'diretamente';
       EventLogger::printEventLogs(null, 'access_evaluation_page', $eventContent, 'Web');
-        
+
       return static::getEvaluation($photoId, Auth::user()->id, true);
     }
 
 
 
 
-   public function viewEvaluation($photoId, $userId) 
-   { 
+   public function viewEvaluation($photoId, $userId)
+   {
       return static::getEvaluation($photoId, $userId, false);
-   }      
+   }
 
    public function showSimilarAverage($photoId) {
       $isOwner = false;
-      if (Auth::check()) $userId = Auth::user()->id;     
-      $photo = Photo::find($photoId);     
+      if (Auth::check()) $userId = Auth::user()->id;
+      $photo = Photo::find($photoId);
       if($photo->user_id == $userId ) $isOwner = true;
-      
+
       return static::getEvaluation($photoId, $userId, $isOwner);
    }
 
 	 private function getEvaluation($photoId, $userId, $isOwner) {
 	   $photo = Photo::find($photoId);
      //dd($photo);
-     $binomials = Binomial::all()->keyBy('id'); 
-     $average = Evaluation::average($photo->id); 
+     $binomials = Binomial::all()->keyBy('id');
+     $average = Evaluation::average($photo->id);
      $evaluations = null;
      $averageAndEvaluations = null;
      $checkedKnowArchitecture = false;
@@ -82,12 +84,14 @@ class EvaluationsController extends \BaseController {
      if ($userId != null) {
         $user = User::find($userId);
         if (Auth::check()) {
-          if (Auth::user()->following->contains($user->id))
-              $follow = false;
-          else
-              $follow = true;
+          if (Auth::user()->following) {
+            if (Auth::user()->following->contains($user->id))
+                $follow = false;
+            else
+                $follow = true;
+          }
         }
-     
+
         $averageAndEvaluations= Evaluation::averageAndUserEvaluation($photo->id,$userId);
         $evaluations =  Evaluation::where("user_id",$user->id)
                                   ->where("photo_id", $photo->id)
@@ -95,17 +99,17 @@ class EvaluationsController extends \BaseController {
 
         $checkedKnowArchitecture= Evaluation::userKnowsArchitecture($photoId,$userId);
         $checkedAreArchitecture= Evaluation::userAreArchitecture($photoId,$userId);
-     }    
-     
-      return View::make('evaluate',
+     }
+
+      return view('evaluation.evaluate',
       [
-        'photos' => $photo, 
-        'owner' => $user, 
-        'follow' => $follow, 
-        'tags' => $photo->tags,        
-        'average' => $average, 
+        'photos' => $photo,
+        'owner' => $user,
+        'follow' => $follow,
+        'tags' => $photo->tags,
+        'average' => $average,
         'userEvaluations' => $evaluations,
-        'userEvaluationsChart' => $averageAndEvaluations, 
+        'userEvaluationsChart' => $averageAndEvaluations,
         'binomials' => $binomials,
         'architectureName' => Photo::composeArchitectureName($photo->name),
         'similarPhotos'=>Photo::photosWithSimilarEvaluation($average,$photo->id),
@@ -115,29 +119,29 @@ class EvaluationsController extends \BaseController {
       ]);
 	}
 
-  
+
    /** saveEvaluation($id) */
-  public function store($id)
+  public function store(Request $request, $id)
   {
       if (Auth::check()) {
           $evaluations =  Evaluation::where("user_id", Auth::id())->where("photo_id", $id)->get();
-          $input = Input::all();
-          if(Input::get('knownArchitecture') == true)
-              $knownArchitecture = Input::get('knownArchitecture');
+          $input = $request->all();
+          if($request->get('knownArchitecture') == true)
+              $knownArchitecture = $request->get('knownArchitecture');
           else $knownArchitecture = 'no';
-          
-          if(Input::get('areArchitecture') == true) $areArchitecture = Input::get('areArchitecture');
+
+          if($request->get('areArchitecture') == true) $areArchitecture = $request->get('areArchitecture');
           else  $areArchitecture = 'no';
-          
+
           $i = 0;
           $user_id = Auth::user()->id;
           $evaluation_string = "";
           $evaluation_names = array(
-           "Vertical-Horizontal", 
-           "Opaca-Translúcida", 
-           "Assimétrica-Simétrica", 
-           "Simples-Complexa", 
-           "Externa-Interna", 
+           "Vertical-Horizontal",
+           "Opaca-Translúcida",
+           "Assimétrica-Simétrica",
+           "Simples-Complexa",
+           "Externa-Interna",
            "Fechada-Aberta"
           );
 
@@ -158,7 +162,7 @@ class EvaluationsController extends \BaseController {
                 $evaluation_string = $evaluation_string . $evaluation_names[$i++] . ": " . $input['value-'.$bid] . ", ";
               }
           EventLogger::printEventLogs($id, 'insert_evaluation', ['evaluation' => $evaluation_string], 'Web');
-          }else { 
+          }else {
               foreach ($evaluations as $evaluation) {
                   $bid = $evaluation->binomial_id;
                   $evaluation->evaluationPosition = $input['value-'.$bid];
@@ -169,10 +173,10 @@ class EvaluationsController extends \BaseController {
               }
               EventLogger::printEventLogs($id, 'edit_evaluation', ['evaluation' => $evaluation_string], 'Web');
           } //end if evaluation empty
-          return \Redirect::to("/evaluations/{$id}/evaluate")->with('message', 
+          return \Redirect::to("/evaluations/{$id}/evaluate")->with('message',
               '<strong>Interpretação salva com sucesso</strong><br>Abaixo você pode visualizar a média atual de interpretações');
-      } else { // avaliação sem login        
-          return \Redirect::to("/photos/{$id}")->with('message', 
+      } else { // avaliação sem login
+          return \Redirect::to("/photos/{$id}")->with('message',
             '<strong>Erro na avaliação</strong><br>Faça login para poder avaliar');
       }//End if check
   }

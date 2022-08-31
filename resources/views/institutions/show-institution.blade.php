@@ -13,7 +13,7 @@
   @if (Session::get('message'))
       <div class="container">
         <div class="twelve columns">
-            <div class="message">{{ Session::get('message') }}</div>
+            <div class="message">{!! Session::get('message') !!}</div>
         </div>
       </div>
   @endif
@@ -69,10 +69,10 @@
         @endif
       </div>
       <div class="countside">Últimas imagens compartilhadas({{ count($photos) }})</div>
-	  
+
 	  <div class="count"><br><a href="{{ URL::to('/institutions/' . $institution->id . '/allphotos/') }}"
               id="single_view_contact_add">Ver todas></a><br /></div>
-	  
+
     </div>
   </div>
   <!-- GALERIA DO USUÁRIO -->

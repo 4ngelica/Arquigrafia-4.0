@@ -1,10 +1,11 @@
 <?php
-namespace modules\institutions\models;
-use Photo;
-use User;
+namespace App\Models\Institutions;
+
+use App\Models\Photos\Photo;
+use App\Models\Users\User;
 use Illuminate\Support\Collection as Collection;
 use Session;
-use modules\institutions\models\Employee;
+use App\modules\institutions\models\Employee;
 
 
 class Institution extends \Eloquent {
@@ -14,22 +15,22 @@ class Institution extends \Eloquent {
 
 	public function employees()
 	{
-		return $this->hasMany('Employee');
+		return $this->hasMany('App\modules\collaborative\models\Employee');
 	}
 
 	public function photos()
 	{
-		return $this->hasMany('Photo');
+		return $this->hasMany('App\Models\Photos\Photo');
 	}
 
 	public function albums()
 	{
-		return $this->hasMany('Album');	
+		return $this->hasMany('App\Models\Albums\Album');
 	}
 
 	public static function institutionsList()
 	{
-		return \DB::table('institutions')->orderBy('name', 'asc')->lists('name','id');
+		return \DB::table('institutions')->orderBy('name', 'asc')->pluck('name','id');
 	}
 
 	public static function belongInstitution($photo_id,$institution_id) {
@@ -68,12 +69,12 @@ class Institution extends \Eloquent {
 	//followers to institutions
 	public function followersInstitutions()
 	{
-		return $this->belongsToMany('User', 'friendship_institution', 'institution_id','following_user_id');		
+		return $this->belongsToMany('User', 'friendship_institution', 'institution_id','following_user_id');
 	}
- 
+
  	public static function RoleOfInstitutionalUser($userId)
 	{
-		$roles = \Role::where('name', 'LIKE', '%Respon%')->first();  
+		$roles = \Role::where('name', 'LIKE', '%Respon%')->first();
         $query = Employee::where('user_id', '=', $userId)
                             ->where('institution_id', '=', Session::get('institutionId'))
                             ->where('role_id', '=',$roles->id)
@@ -83,7 +84,7 @@ class Institution extends \Eloquent {
 
 
 
-	public static function paginatePhotosInstitution($id,$institution,$perPage = 30){			
+	public static function paginatePhotosInstitution($id,$institution,$perPage = 30){
 			return $institution->photos()->orderBy('photos.created_at', 'DESC')->paginate($perPage);
 	}
 
@@ -91,4 +92,3 @@ class Institution extends \Eloquent {
 
 
 }
-

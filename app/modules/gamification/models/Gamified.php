@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\gamification\models;
+namespace App\modules\gamification\models;
 
 /**
  * This class controls the Gamified aspects of Arquigrafia.

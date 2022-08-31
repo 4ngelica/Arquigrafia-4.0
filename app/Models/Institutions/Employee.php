@@ -1,5 +1,6 @@
 <?php
-namespace modules\institutions\models;
+namespace App\Models\Institutions;
+
 use modules\institutions\models\Institution as Institution;
 use User;
 use Role;

@@ -1,15 +1,19 @@
 <?php
-namespace lib\log;
-use Occupation;
-use UsersRole;
+
+namespace App\lib\log;
+
+use App\Models\Users\Occupation;
+use App\Models\Users\UsersRole;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
 use Illuminate\Filesystem\Filesystem;
-use lib\utils\ActionUser;
+use App\lib\utils\ActionUser;
 use Auth;
-use modules\gamification\models\Gamified as Gamified;
+use App\modules\gamification\models\Gamified;
+use File;
+use Storage;
 
 class EventLogger {
 	public static function printInitialStatment($file_path, $user_id, $source_page, $user_or_visitor) {
@@ -33,10 +37,10 @@ class EventLogger {
     public static function createDirectoryAndFile($date, $user_id, $source_page, $user_or_visitor) {
         $dir_path =  storage_path() . '/logs/' . $date;
         if ($user_or_visitor == "user") {
-            $file_path = storage_path() . '/logs/' . $date . '/' . 'user_' . $user_id . '.log';
+            $file_path = 'logs/' . $date . '/' . 'user_' . $user_id . '.log';
         }
         elseif ($user_or_visitor == "visitor") {
-            $file_path = storage_path() . '/logs/' . $date . '/' . 'visitor_' . $user_id . '.log';
+            $file_path = 'logs/' . $date . '/' . 'visitor_' . $user_id . '.log';
         }
 
         $filesystem = new Filesystem();
@@ -44,7 +48,7 @@ class EventLogger {
             $dir_created = $filesystem->makeDirectory($dir_path);
         }
         if(!$filesystem->exists($file_path)) {
-            $handle = fopen($file_path, 'a+');
+            $handle = fopen(storage_path() . '/' . $file_path, 'a+');
             fclose($handle);
             EventLogger::printInitialStatment($file_path, $user_id, $source_page, $user_or_visitor);
         }
@@ -52,7 +56,25 @@ class EventLogger {
     }
 
     public static function verifyTimeout($file_path, $user_id, $source_page, $user_or_visitor) {
-        $data = file($file_path);
+			// dd(storage_path('logs'));
+			// dd(file($file_path));
+			// dd(file_get_contents($file_path));
+
+				// dd(File::files('/var/www/html/storage/logs/2022-08-14'));
+				// dd(Storage::disk('logs'));
+				// dd(Storage::get($file_path));
+
+
+				 // dd(Storage::get('/var/www/html/storage/logs/2022-08-14/visitor_0659d8d6f8ab4cbdd6a16e0cfb3b790c.log'));
+				// /var/www/html/storage/logs/2022-08-14/
+				//"/var/www/html/storage/logs/2022-08-14/visitor_0659d8d6f8ab4cbdd6a16e0cfb3b790c.log"
+				$data = file(storage_path() . '/' . $file_path);
+				// $data = Storage::get($file_path);
+				// $data = File::getRequire(storage_path() . '/' . $file_path);
+
+				// dd($data);
+
+
         $line = $data[count($data)-1];
         sscanf($line, "[%s %s]", $date, $time);
         list($last_year, $last_month, $last_day) = explode("-", $date);
@@ -69,12 +91,13 @@ class EventLogger {
     }
 
     public static function addInfoToLog($channel, $file_path, $info) {
-        $log = new Logger($channel);
+        $log = new Logger('Access_logger');
         $formatter = new LineFormatter("%message%\n", null, false, true);
-        $handler = new StreamHandler($file_path, Logger::INFO);
+        $handler = new StreamHandler(storage_path() . '/' . $file_path , Logger::INFO);
+
         $handler->setFormatter($formatter);
         $log->pushHandler($handler);
-        $log->addInfo($info);
+        $log->info($info);
     }
 
     public static function printEventLogs($photoId, $eventType, $eventContent, $device) {

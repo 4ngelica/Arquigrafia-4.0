@@ -1,22 +1,27 @@
 <?php
 
+namespace App\Models\Users;
+
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
-use lib\date\Date;
-use lib\log\EventLogger;
+use App\lib\date\Date;
+use App\lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use App\modules\gamification\traits\UserGamificationTrait;
+use App\Models\Institutions\Institution;
+use App\modules\collaborative\models\Comment;
+use App\modules\collaborative\models\Like;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use modules\gamification\traits\UserGamificationTrait;
-use modules\institutions\models\Institution;
-use modules\collaborative\models\Comment;
-use modules\collaborative\models\Like;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	use UserTrait, RemindableTrait;
-	
+class User extends Authenticatable {
+
+	// use UserTrait, RemindableTrait;
+
 	use UserGamificationTrait;
 
 	use Messagable;
@@ -25,14 +30,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	protected $date;
 
-	public function __construct($attributes = array(), Date $date = null) {
-		parent::__construct($attributes);
-		$this->date = $date ?: new Date;
-	}
+	// public function __construct($attributes = array(), Date $date = null) {
+	// 	parent::__construct($attributes);
+	// 	$this->date = $date ?: new Date;
+	// }
 
 	public function news()
     {
-        return $this->hasMany('modules\news\models\News');
+        return $this->hasMany('App\modules\news\models\News');
     }
 
 	public function notifications()
@@ -42,73 +47,72 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function photos()
 	{
-		return $this->hasMany('Photo')->whereNull('institution_id');
+		return $this->hasMany('App\Models\Photos\Photo')->whereNull('institution_id');
 	}
 	public function userPhotos($user_id){
-		return $this->hasMany('Photo')->where('user_id', $user_id)->whereNull('institution_id');
+		return $this->hasMany('App\Models\Photos\Photo')->where('user_id', $user_id)->whereNull('institution_id');
 	}
 	public function comments()
 	{
-		return $this->hasMany('modules\collaborative\models\Comment');
+		return $this->hasMany('App\modules\collaborative\models\Comment');
 	}
 	public function evaluations()
 	{
-		return $this->hasMany('modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\modules\evaluations\models\Evaluation');
 	}
 
 	public function likes()
 	{
-		return $this->hasMany('modules\collaborative\models\Like');
+		return $this->hasMany('App\modules\collaborative\models\Like');
 	}
-	
+
 	public function albums()
 	{
-		return $this->hasMany('Album');
+		return $this->hasMany('App\Models\Albums\Album');
 	}
 	public function userAlbums()
 	{
-		return $this->hasMany('Album')->whereNull('institution_id');
+		return $this->hasMany('App\Models\Albums\Album')->whereNull('institution_id');
 	}
 	public function occupation()
 	{
-		return $this->hasOne('Occupation');
+		return $this->hasOne('App\Models\Users\Occupation');
 	}
 
 	public function suggestions()
 	{
-		return $this->hasMany('modules\moderation\models\Suggestion');
+		return $this->hasMany('App\Models\Moderation\Suggestion');
 	}
 
 	public function moderator()
 	{
-		return $this->belongsTo('modules\moderation\models\Suggestion');
+		return $this->belongsTo('App\Models\Moderation\Suggestion');
 	}
 
 	//seguidores
 	public function followers()
 	{
-		return $this->belongsToMany('User', 'friendship', 'followed_id', 'following_id');
+		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'followed_id', 'following_id');
 	}
 
 	//seguindo
 	public function following()
 	{
-		return $this->belongsToMany('User', 'friendship', 'following_id', 'followed_id');
+		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'following_id', 'followed_id');
 	}
 
 	public function institutions(){
-		return $this->belongsToMany('modules\institutions\models\Institution', 'friendship_institution','institution_id', 'following_user_id');
+		return $this->belongsToMany('App\Models\Institutions\Institution', 'friendship_institution','institution_id', 'following_user_id');
 	}
 
 	public function followingInstitution(){
-		return $this->belongsToMany('modules\institutions\models\Institution', 'friendship_institution','following_user_id', 'institution_id');
+		return $this->belongsToMany('App\Models\Institutions\Institution', 'friendship_institution','following_user_id', 'institution_id');
 	}
 
 	public function roles()
 	{
-		return $this->belongsToMany('Role', 'users_roles');
+		return $this->belongsToMany('App\Models\Users\Role', 'users_roles');
 	}
-
 
 
 	protected $hidden = array('password', 'remember_token');
@@ -170,11 +174,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public static function userInformation($login){
-		
+
 		$user = User::whereRaw('((login = ?) or (email = ?)) and (id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)', array($login, $login))->first();
           return $user;
 	}
-	
+
 
 	public static function userInformationObtain($email){
 		$user = User::where('email','=',$email)->whereRaw('(id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)')->first();
@@ -182,7 +186,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public static function userVerifyCode($verify_code){
-		$newUser = User::where('verify_code','=',$verify_code)->first();			
+		$newUser = User::where('verify_code','=',$verify_code)->first();
         return $newUser;
 	}
 
@@ -198,13 +202,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      			->where('users.login',$login)
      			->orWhere('users.email',$login)
      			->get();
-     			
+
      			if (!empty($employees)){
      				return true;
      			}else{
      				return false;
      			}
-     			
+
 
 	}
 

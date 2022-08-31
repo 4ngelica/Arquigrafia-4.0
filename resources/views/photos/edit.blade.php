@@ -75,8 +75,8 @@
                     <label for="type_photo">Foto</label><br class="clear">
                   </div>
                   <div class="form-row">
-                    <input type="radio" name="type" value="video" id="type_video" {{$photo->type == 'video' ? "checked" : ""}}>
-                    <label for="type_video">Vídeo</label><br class="clear" >
+                    <input type="radio" name="type" value="video" id="type_video" {{$photo->type == 'video' ? "checked" : null}}>
+                    <label for="type_video">Vídeo</label><br class="clear">
                   </div>
                 </div>
         <div id="divPhoto" class="four columns alpha">
@@ -249,7 +249,7 @@
          @if (($photo->dataCriacao)!= null && $photo->imageDateType == "date")
           <p>{{ Form::text('photo_imageDate',date("d/m/Y",strtotime($photo->dataCriacao)),array('id' => 'datePickerImageDate','placeholder'=>'dd/mm/yyyy')) }}
          @else
-          <p>{{ Form::text('photo_imageDate','',array('id' => 'datePickerImageDate','placeholder'=>'dd/mm/yyyy')) }}
+          <p>{{ Form::text('photo_imageDate',null,array('id' => 'datePickerImageDate','placeholder'=>'dd/mm/yyyy')) }}
          @endif
           <span class="space_txt_element">Não sabe a data precisa?
                   <a onclick="date_visibility('date_img_inaccurate');" >Clique aqui.</a>
@@ -348,7 +348,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
       var typeSaved  = "{{ $type }}";
-      var typeChecked  = "{{Input::old('type')}}";
+      var typeChecked  = "{{Request::old('type')}}";
 
       if(typeChecked == null || typeChecked == ""){
           if(typeSaved == "photo" ){
@@ -397,7 +397,7 @@
      $('#tags').textext({ plugins: 'tags' });
 
       @foreach($tags as $tag)
-        $('#tags').textext()[0].tags().addTags([ {{ '"' . $tag . '"' }} ]);
+        $('#tags').textext()[0].tags().addTags([' <?= $tag ?> ']);
       @endforeach
 
       $('#add_tag').click(function(e) {
@@ -415,8 +415,8 @@
 
         $('#work_authors').textext({ plugins: 'tags' });
 
-        @if(Input::old('work_authors')!= null)
-            <?php $work_authors = explode ('","', Input::old('work_authors')); ?>
+        @if(Request::old('work_authors')!= null)
+            <?php $work_authors = explode ('","', Request::old('work_authors')); ?>
         @endif
         var string_author = "";
         @if (isset($work_authors) && $work_authors != null && !empty($work_authors))
@@ -451,7 +451,7 @@
     })
 
     @if($centuryImageInput != null || $centuryImageInput != "" )    //
-      var centuryImageInput = "{{$centuryImageInput}}";//"{{Input::old('century')}}";
+      var centuryImageInput = "{{$centuryImageInput}}";//"{{Request::old('century')}}";
       showPeriodCenturyImage(centuryImageInput);
       retrieveCenturyImage(centuryImageInput);
       //get filter
@@ -474,7 +474,7 @@
     @endif
 
     @if($centuryInput != null || $centuryInput != "" )    //
-      var centuryInput = "{{$centuryInput}}";//"{{Input::old('century')}}";
+      var centuryInput = "{{$centuryInput}}";//"{{Request::old('century')}}";
       showPeriodCentury(centuryInput);
       retrieveCentury(centuryInput);
       //get filter
@@ -495,7 +495,7 @@
                // alert("iamge carga");
       }
 
-     if("{{Input::old('century_image')}}" != "" || "{{Input::old('decade_select_image')}}" != "" ){
+     if("{{Request::old('century_image')}}" != "" || "{{Request::old('decade_select_image')}}" != "" ){
                 window.onload = resultSelectDateWork("date_img_inaccurate");
                 //alert("image por error o recuperac");
       }
@@ -506,7 +506,7 @@
               //  alert("other Decade-load");
         }
 
-     if("{{Input::old('century')}}" != "" || "{{Input::old('decade_select')}}" != "" ){
+     if("{{Request::old('century')}}" != "" || "{{Request::old('decade_select')}}" != "" ){
                 window.onload = resultSelectDateWork("otherDate");
               //  alert("other Decade-old");
         }

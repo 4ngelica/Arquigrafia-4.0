@@ -1,6 +1,8 @@
-<?php 
-namespace modules\gamification\models;
+<?php
+namespace App\modules\gamification\models;
+
 use Carbon\Carbon;
+use App\Models\Users\User;
 
 class Badge extends \Eloquent {
 
@@ -8,7 +10,7 @@ class Badge extends \Eloquent {
 
 	public function users()
 	{
-		return $this->belongsToMany('User','user_badges')
+		return $this->belongsToMany('App\Models\Users\User','user_badges')
       ->withTimestamps()
       ->withPivot('element_type', 'element_id');
 	}
@@ -44,7 +46,7 @@ class Badge extends \Eloquent {
     $last_week = Carbon::today()->subWeek();
     if ( $photo->countLikesAfterDate($last_week) != 5 ) {
       return false;
-    } 
+    }
     $destaque_badge = static::whereName('Destaque da Semana')->first();
     $has_badge = $destaque_badge->withElement($photo)->count();
     if ( $has_badge ) {

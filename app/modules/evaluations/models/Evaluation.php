@@ -1,10 +1,13 @@
 <?php
-namespace modules\evaluations\models;
-use modules\evaluations\models\Binomial;
-use User;
-use Photo;
-class Evaluation extends \Eloquent {
-	
+namespace App\modules\evaluations\models;
+
+use App\modules\evaluations\models\Binomial;
+use App\Models\Users\User;
+use App\Models\Photos\Photo;
+use Illuminate\Database\Eloquent\Model;
+
+class Evaluation extends Model {
+
 	protected $softDelete = true;
 	protected $fillable = ['photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];
 
@@ -40,21 +43,22 @@ class Evaluation extends \Eloquent {
 		   $result = \DB::table('binomial_evaluation')
 			->select('knownArchitecture')
 			->where('photo_id', $photoId)
-			->where('user_id',$userId)->get();
-		   if($result != null && $result[0] != null && $result[0]->knownArchitecture == 'yes'){
+			->where('user_id',$userId)->first();
+
+		   if($result != null && $result->knownArchitecture == 'yes'){
 		   		return true;
 		   }else{
 		   		return false;
 		   }
-		   	
+
 	}
-    
+
     public static function userAreArchitecture($photoId,$userId){
         $result = \DB::table('binomial_evaluation')
             ->select('areArchitecture')
             ->where('photo_id', $photoId)
-            ->where('user_id',$userId)->get();
-        if($result != null && $result[0] != null && $result[0]->areArchitecture == 'yes'){
+            ->where('user_id',$userId)->first();
+        if($result != null && $result->areArchitecture == 'yes'){
             return true;
         }else{
             return false;
@@ -84,8 +88,8 @@ class Evaluation extends \Eloquent {
 					}
 				}
 			}
-		}		
-		return $evaluations;			
+		}
+		return $evaluations;
 	}
 
 	public static function getPhotosByBinomial( $binomial, $option, $value ) {

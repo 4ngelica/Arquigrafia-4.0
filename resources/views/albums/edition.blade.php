@@ -10,6 +10,7 @@
   <link rel="stylesheet" type="text/css" href="{{ URL::to("/") }}/css/album.css" />
   <script src="{{ URL::to('/js/jquery.tooltipster.min.js') }}"></script>
   <link rel="stylesheet" type="text/css" href="{{ URL::to("/") }}/css/tooltipster.css" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <script>
     var paginators = {
       add: {
@@ -46,7 +47,7 @@
     <div class="twelve columns">
       <h1 id="album_title">Edição de {{ $album->title }}</h1>
       <p>* Os campos a seguir são obrigatórios.</p>
-      </p>      
+      </p>
     </div>
     <div class="twelve columns">
       <div class="tabs">
@@ -62,11 +63,11 @@
                 <div class="five columns">
                   <div class="four columns center">
                     <p><label for="cover_img">Capa do álbum</label></p>
-                    <div class="img_container"> 
+                    <div class="img_container">
                       @if( isset($album->cover_id) )
                         <img id="cover-img" src="{{ URL::to('/arquigrafia-images/' . $album->cover_id . '_view.jpg') }}">
                       @else
-                        <img id="cover-img" class="hidden" 
+                        <img id="cover-img" class="hidden"
                           src="{{ URL::to('/arquigrafia-images/' . $album->cover_id . '_view.jpg') }}">
                         <div class="no_cover">
                           <p> Álbum sem capa </p>
@@ -128,7 +129,7 @@
             </div>
             <div id="rm" class="eleven columns rm">
               <img class="loader" src="{{ URL::to('/img/ajax-loader.gif') }}" />
-              <?php 
+              <?php
                 $photos = $album_photos;
                 $type = 'rm';
               ?>
@@ -166,7 +167,7 @@
                   </div>
                 </div>
                 <div class="four columns alpha omega block">
-                  <div class="four columns alpha omega"> 
+                  <div class="four columns alpha omega">
                    <input type="text" class="search_bar"
                       title="Pesquise imagens fora do seu álbum pelo nome">
                     <input type="button" class="add search_bar_button cursor" value="FILTRAR">
@@ -180,7 +181,7 @@
             </div>
             <div id="add" class="eleven columns add">
               <img class="loader" src="{{ URL::to('/img/ajax-loader.gif') }}" />
-              <?php 
+              <?php
                 $photos = $other_photos;
                 $type = 'add';
               ?>

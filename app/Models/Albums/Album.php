@@ -1,6 +1,11 @@
 <?php
 
-class Album extends \BaseModel {
+namespace App\Models\Albums;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+
+class Album extends Model {
 
 	public $timestamps = false;
 
@@ -12,32 +17,32 @@ class Album extends \BaseModel {
 
 	public function photos()
 	{
-		return $this->belongsToMany('Photo', 'album_elements');
+		return $this->belongsToMany('App\Models\Photos\Photo', 'album_elements');
 	}
 
 	public function user()
-	{	
-		return $this->belongsTo('User');
+	{
+		return $this->belongsTo('App\Models\Users\User');
 	}
 
 	public function onlyUser()
 	{
-		return $this->belongsTo('User')->whereNull('institution_id');
+		return $this->belongsTo('App\Models\Users\User')->whereNull('institution_id');
 	}
 
 	public function cover()
 	{
-		return $this->belongsTo('Photo', 'cover_id');
+		return $this->belongsTo('App\Models\Photos\Photo', 'cover_id');
 	}
 
 	public function institution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution');
+		return $this->belongsTo('App\Models\Institutions\Institution');
 	}
 
 	public function onlyInstitution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution')->whereNull('user_id');
+		return $this->belongsTo('App\Models\Institutions\Institution')->whereNull('user_id');
 	}
 
 	public function updateInfo($title, $description, $cover) {
@@ -46,19 +51,19 @@ class Album extends \BaseModel {
 		if (isset($cover)) {
 			$this->cover()->associate($cover);
 		}
-		
+
 	}
 
-	public static function create(array $attr) 
+	public static function create(array $attr)
 	{
 		$album = new Album;
 		$album->updateInfo($attr['title'], $attr['description'], $attr['cover']);
 		$album->creationDate = date('Y-m-d H:i:s');
 		$album->user()->associate($attr['user']);
-		 
+
 		if ( array_key_exists('institution',$attr) && !empty($attr['institution']) ) {
 			$album->institution()->associate($attr['institution']);
-		}		
+		}
 		$album->save();
 		return $album;
 	}

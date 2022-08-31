@@ -1,4 +1,6 @@
-<?php namespace lib\date;
+<?php
+
+namespace App\lib\date;
 
 use DateTime;
 
@@ -47,11 +49,11 @@ class Date {
 
 	public static function formatedDate($date){
 
-		$dateFunction = new Date(); 
+		$dateFunction = new Date();
 		$d = $dateFunction->formatDate($date);
 		return $d;
 	}
-	public function formatDate($date) { 
+	public function formatDate($date) {
 		if ( $this->isFormatted($date) ) {
 			return $date;
 		}
@@ -200,7 +202,7 @@ class Date {
 	}
 
 	public function formatToWorkDate($date,$type){
-		
+
 		if($date != null && $type != null){
 			if ($type == "year"){
 				return "Ano de ".$date;
@@ -211,7 +213,7 @@ class Date {
 				}else{
 					$date = explode(" ", $date);
 					return "Entre ".$date[0]." e ".$date[2];
-				} 
+				}
 			}
 			if ($type == "century"){
 				return "Século ".$date;
@@ -221,14 +223,14 @@ class Date {
 		}else{
 			return null;
 		}
-		
+
 	}
 
 	public function formatToDataCriacao($date,$type){
-		
+
 		if($date != null && $type != null){
 			if ($type == "date"){
-				return $this->translateDate($date);				
+				return $this->translateDate($date);
 			}
 			if ($type == "decade"){
 				if($date =="BD"){
@@ -236,7 +238,7 @@ class Date {
 				}else{
 					$date = explode(" ", $date);
 					return "Entre ".$date[0]." e ".$date[2];
-				} 
+				}
 			}
 			if ($type == "century"){
 				return "Século ".$date;
@@ -246,8 +248,8 @@ class Date {
 		}else{
 			return null;
 		}
-		
+
 	}
-	
+
 
 }
