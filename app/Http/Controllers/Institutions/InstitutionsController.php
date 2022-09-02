@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Institutions;
 
-use lib\date\Date;
-use lib\utils\HelpTool;
+use App\lib\date\Date;
+use App\lib\utils\HelpTool;
 use App\Models\Institutions\Institution;
-use modules\institutions\models\Employee as Employee;
-use modules\collaborative\models\Tag;
+use App\modules\institutions\models\Employee as Employee;
+use App\Models\Collaborative\Tag;
 use Session;
 use Auth;
 use News;
@@ -17,6 +17,7 @@ use URL;
 use App\Models\Photos\Photo;
 use App\Models\Photos\Author;
 use App\Http\Controllers\Controller;
+use App\modules\draft\models\DraftingScope;
 
 class InstitutionsController extends Controller {
   protected $date;
@@ -54,9 +55,13 @@ class InstitutionsController extends Controller {
         $responsible = true;
       }
     }
-    $drafts = Photo::withInstitution($institution)->onlyDrafts()->paginate(50);
 
-    return \View::make('show-institution', [
+    // $drafts = Photo::withInstitution($institution)->onlyDrafts()->paginate(50);
+    $drafts = Photo::withInstitution($institution)->paginate(50);
+    // dd($drafts->first());
+
+
+    return view('institutions.show-institution', [
       'institution' => $institution,
       'photos' => $photos,
       'follow' => $follow,
@@ -74,7 +79,7 @@ class InstitutionsController extends Controller {
     $institution = Institution::find($id);
     if ( is_null($institution) )   return Redirect::to('/home');
 
-    return \View::make('edit', [
+    return view('edit', [
       'institution' => $institution
     ]);
   }
@@ -168,7 +173,7 @@ class InstitutionsController extends Controller {
     $pageSource = \Request::header('referer');
     $dates = \Input::old('dates');
 
-    return \View::make('form-institutional')->with([
+    return view('form-institutional')->with([
       'pageSource' => $pageSource,
       'user' => Auth::user(),
       'institution' => $institution,
@@ -449,7 +454,7 @@ class InstitutionsController extends Controller {
           $photo->type = "photo";
       }
 
-      return \View::make('edit-institutional')
+      return view('edit-institutional')
         ->with(['photo' => $photo, 'tagsArea' => $tagsArea,
           'dateYear' => $dateYear,
           'centuryInput'=> $centuryInput,
@@ -767,7 +772,7 @@ class InstitutionsController extends Controller {
   public function allImages($id) {
     $institution = Institution::find($id);
     $photos = Institution::paginatePhotosInstitution($id,$institution);
-    return \View::make('images-institution')->with(array('photos'=>$photos,'institution' => $institution ));
+    return view('institutions.images-institution')->with(array('photos'=>$photos,'institution' => $institution ));
   }
 
   public function paginatePhotosInstitution() {
@@ -799,7 +804,7 @@ class InstitutionsController extends Controller {
     Session::put('CurrPage', $page);
 
     $response = [];
-    $response['content'] = \View::make('includes.result_images')
+    $response['content'] = view('includes.result_images')
       ->with(['photos' => $photos, 'page' => $page, 'type' => $type])
       ->render();
     $response['maxPage'] = $photos->getLastPage();

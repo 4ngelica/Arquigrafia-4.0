@@ -1,4 +1,6 @@
-<?php namespace modules\draft\models;
+<?php
+
+namespace App\modules\draft\models;
 
 use \Illuminate\Database\Eloquent\Builder as Builder;
 
@@ -30,7 +32,7 @@ class DraftingScope implements \Illuminate\Database\Eloquent\ScopeInterface {
     $builder->macro('onlyDrafts', function(Builder $builder)
     {
       $this->remove($builder);
-      
+
       $builder->getQuery()->whereNotNull($builder->getModel()->getQualifiedDraftColumn());
 
       return $builder;

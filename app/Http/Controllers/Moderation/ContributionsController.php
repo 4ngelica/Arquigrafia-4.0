@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Moderation;
 
 use App\Http\Controllers\Controller;
-use App\modules\gamification\models\Gamified as Gamified;
+use App\modules\gamification\models\Gamified;
 use Auth;
 
 class ContributionsController extends Controller {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Collaborative;
 
 use App\Models\Collaborative\Like;
 use App\Models\Collaborative\Comment;
+use App\Models\Users\User;
 use App\lib\log\EventLogger;
 use App\modules\news\models\News;
 use App\modules\gamification\models\Badge;
@@ -29,7 +30,7 @@ class LikesController extends Controller {
       return Response::json('fail');
     }
 
-    Event::fire('photo.like', array($user, $photo));
+    Event::dispatch('photo.like', array($user, $photo));
 
     EventLogger::printEventLogs(null, 'like', ['target_type' => 'foto', 'target_id' => $id], 'Web');
 

@@ -55,7 +55,7 @@
 @section('content')
   <div id="content">
       <div id="search_result" class="twelve columns row">
-        @include('includes.results-institution')
+        @include('institutions.results-institution')
       </div>
   </div>
 

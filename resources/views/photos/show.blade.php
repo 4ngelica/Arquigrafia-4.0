@@ -119,11 +119,11 @@
                 <a id="delete_button" class="institution" href="{{ URL::to('/institutions/' . $photos->id) }}" title="Excluir imagem"></a>
               </span>
             @endif
-            @if ( !empty($photos->dataUpload) )
+            @if(!empty($photos->getAttributes()['dataUpload']))
               <span class="right">
                 <small>Inserido em:</small>
-                <a class="data_upload" href="{{ URL::to("/search?q=".$photos->dataUpload."&t=up") }}">
-                  {{ $photos->dataUpload }}
+                <a class="data_upload" href="{{ URL::to("/search?q=".$photos->getAttributes()['dataUpload']."&t=up") }}">
+                  {{ $photos->getAttributes()['dataUpload'] }}
                 </a>
               </span>
             @endif

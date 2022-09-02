@@ -201,7 +201,7 @@ Route::resource('/likes', LikesController::class);
 Route::resource('/groups',GroupsController::class);
 
 /*EVENTS */
-Event::subscribe('App\Http\LikeSubscriber');
+Event::subscribe('App\Http\Events\Subscriber\LikeSubscriber');
 /*REPORTs*/
 Route::post('/reports/photo', [ReportsController::class,'reportPhoto']);
 Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModalReportPhoto']);

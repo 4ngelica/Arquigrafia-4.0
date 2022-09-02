@@ -69,7 +69,7 @@ class Institution extends \Eloquent {
 	//followers to institutions
 	public function followersInstitutions()
 	{
-		return $this->belongsToMany('User', 'friendship_institution', 'institution_id','following_user_id');
+		return $this->belongsToMany('App\Models\Users\User', 'friendship_institution', 'institution_id','following_user_id');
 	}
 
  	public static function RoleOfInstitutionalUser($userId)

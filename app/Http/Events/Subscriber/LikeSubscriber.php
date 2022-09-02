@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http;
+namespace App\Http\Events\Subscriber;
 
 use App\Models\Users\User;
 use Notification;
@@ -32,8 +32,8 @@ class LikeSubscriber {
 	}
 
 	public function subscribe($events){
-		$events->listen('photo.like'     , 'modules\collaborative\subscriber\LikeSubscriber@onPhotoLiked');
-		$events->listen('photo.dislike'  , 'modules\collaborative\subscriber\LikeSubscriber@onPhotoDisliked');
-		$events->listen('comment.dislike', 'modules\collaborative\subscriber\LikeSubscriber@onCommentDisliked');
+		$events->listen('photo.like'     , 'App\Http\Events\Subscriber\LikeSubscriber@onPhotoLiked');
+		$events->listen('photo.dislike'  , 'App\Http\Events\Subscriber\LikeSubscriber@onPhotoDisliked');
+		$events->listen('comment.dislike', 'App\Http\Events\Subscriber\LikeSubscriber@onCommentDisliked');
 	}
 }
