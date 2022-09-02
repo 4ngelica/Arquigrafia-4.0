@@ -8,7 +8,7 @@ use App\Models\Users\User;
 use App\Models\Photos\Photo;
 use App\Models\Moderation\Suggestion;
 use App\Models\Moderation\PhotoAttributeType;
-use App\modules\notifications\models\Notification;
+use App\App\Models\Notifications\Notification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -140,7 +140,7 @@ class SuggestionsController extends Controller {
 			$final[] = ['suggestion' => $suggestion, 'photo' => $photo, 'field' => $field, 'field_name' => $field_name, 'user' => $user, 'field_content' => $field_content];
 		}
 
-		return \View::make('show-suggestions', ['suggestions' => $final]);
+		return view('show-suggestions', ['suggestions' => $final]);
 	}
 
 	public function update(){

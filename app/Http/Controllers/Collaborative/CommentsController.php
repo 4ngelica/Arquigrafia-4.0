@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Collaborative;
 
 use App\Models\Collaborative\Comment;
 use App\Models\Collaborative\Like;
-use App\modules\gamification\models\Badge;
+use App\Models\Gamification\Badge;
 use App\lib\date\Date;
 use App\lib\log\EventLogger;
-use App\modules\news\models\News;
+use App\Models\News\News;
 use Input;
 use Auth;
 use Notification;

@@ -5,7 +5,7 @@ namespace App\Models\Collaborative;
 use App\Models\Collaborative\Tag;
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
-use App\modules\gamification\traits\LikableGamificationTrait;
+use App\Traits\Gamification\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Model;
 
 

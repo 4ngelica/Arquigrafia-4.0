@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\Institutions;
 
-use modules\institutions\models\Institution as Institution;
+use App\Models\Institution\Institution as Institution;
 use User;
 use Role;
 

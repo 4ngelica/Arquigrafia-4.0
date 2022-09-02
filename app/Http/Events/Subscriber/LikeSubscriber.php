@@ -5,7 +5,7 @@ namespace App\Http\Events\Subscriber;
 use App\Models\Users\User;
 use Notification;
 use App\Models\Collaborative\Like;
-use App\modules\gamification\models\Badge;
+use App\Models\Gamification\Badge;
 
 class LikeSubscriber {
 

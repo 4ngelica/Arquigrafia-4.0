@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Institutions;
 use App\lib\date\Date;
 use App\lib\utils\HelpTool;
 use App\Models\Institutions\Institution;
-use App\modules\institutions\models\Employee as Employee;
+use App\Models\Institutions\Employee as Employee;
 use App\Models\Collaborative\Tag;
 use Session;
 use Auth;
@@ -17,7 +17,7 @@ use URL;
 use App\Models\Photos\Photo;
 use App\Models\Photos\Author;
 use App\Http\Controllers\Controller;
-use App\modules\draft\models\DraftingScope;
+use App\Models\Drafts\DraftingScope;
 
 class InstitutionsController extends Controller {
   protected $date;

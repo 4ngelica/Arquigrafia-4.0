@@ -10,10 +10,10 @@ use App\lib\date\Date;
 use App\lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use App\modules\gamification\traits\UserGamificationTrait;
+use App\Traits\Gamification\UserGamificationTrait;
 use App\Models\Institutions\Institution;
-use App\modules\collaborative\models\Comment;
-use App\modules\collaborative\models\Like;
+use App\Models\Collaborative\Comment;
+use App\Models\Collaborative\Like;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
@@ -37,7 +37,7 @@ class User extends Authenticatable {
 
 	public function news()
     {
-        return $this->hasMany('App\modules\news\models\News');
+        return $this->hasMany('App\Models\News\News');
     }
 
 	public function notifications()
@@ -54,16 +54,16 @@ class User extends Authenticatable {
 	}
 	public function comments()
 	{
-		return $this->hasMany('App\modules\collaborative\models\Comment');
+		return $this->hasMany('App\Models\Collaborative\Comment');
 	}
 	public function evaluations()
 	{
-		return $this->hasMany('App\modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\Models\Evaluations\Evaluation');
 	}
 
 	public function likes()
 	{
-		return $this->hasMany('App\modules\collaborative\models\Like');
+		return $this->hasMany('App\Models\Collaborative\Like');
 	}
 
 	public function albums()

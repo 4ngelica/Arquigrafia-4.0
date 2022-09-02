@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-class AudiosController extends \BaseController {
+use App\Http\Controllers\Controller;
+
+class AudiosController extends Controller {
 
 	public function store() {
 

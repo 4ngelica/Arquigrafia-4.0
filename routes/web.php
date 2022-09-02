@@ -17,7 +17,7 @@ use App\Http\Controllers\Moderation\SuggestionsController;
 use App\Http\Controllers\Institutions\ImportsController;
 use App\Http\Controllers\Institutions\InstitutionsController;
 use App\Http\Controllers\AudiosController;
-use App\Http\Controllers\BaseController;
+use App\Http\ControllersController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAMController;
 use App\Http\Controllers\EvaluationsController;
@@ -150,7 +150,7 @@ Route::get('/evaluations', [EvaluationsController::class, 'index']);
 Route::get('/evaluations/{photo_id}/evaluate',[EvaluationsController::class, 'evaluate']);
 Route::get('/evaluations/{photo_id}/viewEvaluation/{user_id}',[EvaluationsController::class, 'viewEvaluation']);
 Route::get('/evaluations/{photo_id}/showSimilarAverage/', [EvaluationsController::class, 'showSimilarAverage']);
-//Route::post('/evaluations/{photo_id}/saveEvaluation','modules\evaluations\controllers\EvaluationsController@saveEvaluation');
+//Route::post('/evaluations/{photo_id}/saveEvaluation','App\Http\Controllers\EvaluationsController@saveEvaluation');
 Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
 // Route::resource('/evaluations',[EvaluationsController::class]);
 
@@ -206,3 +206,33 @@ Event::subscribe('App\Http\Events\Subscriber\LikeSubscriber');
 Route::post('/reports/photo', [ReportsController::class,'reportPhoto']);
 Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModalReportPhoto']);
 //Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');
+
+/* GAMIFICATION */
+Route::get('/photos/{id}/get/field', 'App\Http\Controllers\Gamification\QuestionsController@getField');
+Route::post('/photos/{id}/set/field', 'App\Http\Controllers\Gamification\QuestionsController@setField');
+Route::get('/rank/get', 'App\Http\Controllers\Gamification\ScoresController@getRankEval');
+Route::get('/leaderboard', 'App\Http\Controllers\Gamification\ScoresController@getLeaderboard');
+Route::get('/badges/{id}', 'App\Http\Controllers\Gamification\BadgesController@show');
+
+/* LOG */
+Route::post('/logs', 'modules\logs\controllers\LogsController@create');
+
+/* DRAFTS */
+Route::post('/drafts/delete'  , 'App\Http\Controllers\Drafts\DraftsController@deleteDraft');
+Route::get( '/drafts/paginate', 'App\Http\Controllers\Drafts\DraftsController@paginateDrafts');
+Route::get( '/drafts/{id}'    , 'App\Http\Controllers\Drafts\DraftsController@getDraft');
+Route::get( '/drafts'         , 'App\Http\Controllers\Drafts\DraftsController@listDrafts');
+
+/*CHATS*/
+Route::resource('chats', 'App\Http\Controllers\Chat\ThreadsController');
+Route::post('/chats/read', 'App\Http\Controllers\Chat\ThreadsController@markThreadAsread');
+Route::resource('messages', 'App\Http\Controllers\Chat\MessagesController');
+Route::post('/chats/cards', 'App\Http\Controllers\Chat\ThreadsController@cards');
+
+/*Notifications*/
+Route::get('/notifications', 'modules\notifications\controllers\NotificationsController@show');
+Route::get('/markRead/{id}', 'modules\notifications\controllers\NotificationsController@read');
+Route::get('/readAll',       'modules\notifications\controllers\NotificationsController@readAll');
+
+Route::get('/refreshBubble', 'NotificationsController@howManyUnread');
+Event::subscribe('App\Http\Events\Subscriber\NotificationSubscriber');

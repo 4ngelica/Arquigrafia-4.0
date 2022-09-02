@@ -11,7 +11,7 @@ use Monolog\Formatter\LineFormatter;
 use Illuminate\Filesystem\Filesystem;
 use App\lib\utils\ActionUser;
 use Auth;
-use App\modules\gamification\models\Gamified;
+use App\Models\Gamification\Gamified;
 use File;
 use Storage;
 
