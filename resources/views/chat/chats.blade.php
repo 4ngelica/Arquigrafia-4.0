@@ -14,15 +14,16 @@
     <script type="text/javascript" src="{{ URL::to("/") }}/js/chat/chat.js"></script>
     <script type="text/javascript" src="{{ URL::to("/") }}/js/searchable-option-list/sol.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
-    <script type="text/javascript">
+		<meta name="csrf-token" content="{{ csrf_token() }}" />
+		<script type="text/javascript">
         // Defining variables pushed from PHP
-        var userID = {{ $user_id }};
+        var userID = <?= $user_id ?>;
         @if (isset($thread))
         	var initialThread = {{$thread}};
         @endif
-        var userName = "{{ $user_name }}";
+        var userName = '<?= $user_name ?>';
 				var currentMessages = [];
-				var currentChats = {{ json_encode($data) }};
+				var currentChats = <?=json_encode($data)?>;
 				var currentChat;
 				var usersSearch = []; // Users shown on search
 				var sol; // Selectable options list
