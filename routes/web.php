@@ -20,7 +20,7 @@ use App\Http\Controllers\AudiosController;
 use App\Http\ControllersController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAMController;
-use App\Http\Controllers\EvaluationsController;
+use App\Http\Controllers\Evaluations\EvaluationsController;
 use App\Http\Controllers\Collaborative\CommentsController;
 use App\Http\Controllers\Collaborative\FollowController;
 use App\Http\Controllers\Collaborative\GroupsController;

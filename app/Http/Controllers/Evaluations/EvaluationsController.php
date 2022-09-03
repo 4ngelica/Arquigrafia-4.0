@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Evaluations\;
+namespace App\Http\Controllers\Evaluations;
 
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
@@ -14,6 +14,7 @@ use View;
 use Input;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class EvaluationsController extends Controller {
 
