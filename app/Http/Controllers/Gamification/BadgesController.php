@@ -1,7 +1,8 @@
-<?php 
+<?php
 namespace App\Http\Controllers\Gamification;
 
 use App\Models\Gamification\Badge;
+use App\Http\Controllers\Controller;
 
 class BadgesController extends Controller {
 

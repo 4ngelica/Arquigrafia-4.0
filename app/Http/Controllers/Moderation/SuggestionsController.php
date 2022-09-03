@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Moderation;
 use App\lib\log\EventLogger;
 use Carbon\Carbon;
 use App\Models\Users\User;
+use Illuminate\Http\Request;
 use App\Models\Photos\Photo;
 use App\Models\Moderation\Suggestion;
 use App\Models\Moderation\PhotoAttributeType;
@@ -126,7 +127,7 @@ class SuggestionsController extends Controller {
 
 	public function edit(){
 		$user = \Auth::user();
-		$photos = $user->photos->lists('id');
+		$photos = $user->photos->pluck('id');
 		//$photos = [1];
 		$suggestions = Suggestion::whereNull('accepted')->whereIn('photo_id', $photos)->get();
 		//dd($suggestions);
@@ -140,7 +141,7 @@ class SuggestionsController extends Controller {
 			$final[] = ['suggestion' => $suggestion, 'photo' => $photo, 'field' => $field, 'field_name' => $field_name, 'user' => $user, 'field_content' => $field_content];
 		}
 
-		return view('show-suggestions', ['suggestions' => $final]);
+		return view('moderation.show-suggestions', ['suggestions' => $final]);
 	}
 
 	public function update(){
@@ -189,7 +190,7 @@ class SuggestionsController extends Controller {
   * filterId - You can pass a filter, can be 'accepted', 'rejected', 'waiting'
 	* @return	A JSON with suggestions
 	*/
-	public function getUserSuggestions() {
+	public function getUserSuggestions(Request $request) {
 		// Getting paging input
 		$input = $request->all();
 		$page = $input['page'];
@@ -261,7 +262,7 @@ class SuggestionsController extends Controller {
 	* type - Can be 'reviews' or 'editions'. If not pass any type, it gets all the suggestions
 	* @return	A JSON with statistics
 	*/
-	public function getUserSuggestionsStatistics() {
+	public function getUserSuggestionsStatistics(Request $request) {
 		// Generating input object
 		$input = $request->all();
 		// Getting the type

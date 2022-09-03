@@ -28,6 +28,8 @@ export const sendSuggestion = (userID, photoID, attributeType, text) => {
   $.ajax({
     type: 'POST',
     url: '/suggestions',
+    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+
     data,
     success: (res) => {
       console.info('SUGESTAO ENVIADA', res);
@@ -61,6 +63,7 @@ export const sendFinalSuggestions = (photoID, points, numberSuggestions, status)
     $.ajax({
       type: 'POST',
       url: '/suggestions/sent',
+      headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
       data,
       success: (res) => {
         console.info('DADOS RECEBIDOS', res);
@@ -149,4 +152,3 @@ export const logOpenModal = (photoID, origin) => new Promise((resolve, reject) =
       reject(err);
     });
 });
-

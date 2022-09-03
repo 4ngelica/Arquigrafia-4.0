@@ -1,12 +1,13 @@
-<?php 
+<?php
 namespace App\Http\Controllers\Gamification;
+use App\Http\Controllers\Controller;
 
 class QuestionsController extends Controller {
 
   public function __construct()
   {
-    $this->beforeFilter('auth',
-      array( 'except' => [] ));
+    // $this->beforeFilter('auth',
+    //   array( 'except' => [] ));
   }
 
   public function getField($id) {

@@ -12,6 +12,6 @@
     </tr>
   </thead>
   <tbody>
-    @include('suggestion_list')
+    @include('moderation.suggestion_list')
   </tbody>
 </table>

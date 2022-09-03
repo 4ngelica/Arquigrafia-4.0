@@ -16,7 +16,7 @@
     <a href="{{ URL::previous() }}" class="row">Voltar para a página anterior</a>
     <br>
     <h1 class="row">Sugestões (<span class="suggestion_count">{{ count($suggestions) }}</span>)</h1>
-    @include('suggestion-list')
+    @include('moderation.suggestion-list')
   </div>
   <div id="mask"></div>
 @stop
