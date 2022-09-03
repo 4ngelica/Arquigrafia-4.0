@@ -6,6 +6,7 @@ use App\Models\Collaborative\Report;
 use App\Models\Photos\Photo;
 use Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class ReportsController extends Controller {
 
@@ -15,12 +16,12 @@ class ReportsController extends Controller {
 		//return $tags;
 	}
 
-	public function reportPhoto() {
+	public function reportPhoto(Request $request) {
 
-	\Input::flash();
-    $input = \Input::all();
+		// $request->flash();
+    $input = $request->all();
 
-	$rules = array(
+		$rules = array(
         'reportTypeData' => 'required',
         'reportType' => 'required',
         '_photo' => 'required'
@@ -46,7 +47,7 @@ class ReportsController extends Controller {
 
 	public function showModalReportPhoto($id)
 	{
-		return \Response::json(\View::make('form-report')
+		return \Response::json(view('collaborative.form-report')
 			->with(['photo_id' => $id])
 			->render());
 	}
