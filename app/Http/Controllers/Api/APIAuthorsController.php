@@ -1,5 +1,6 @@
 <?php
-App\Http\Controllers\Api;
+
+namespace App\Http\Controllers\Api;
 
 class APIAuthorsController extends Controller {
 	/**
@@ -31,7 +32,7 @@ class APIAuthorsController extends Controller {
 	 */
 	public function store()
 	{
-		
+
 
 	}
 
@@ -44,7 +45,7 @@ class APIAuthorsController extends Controller {
 	 */
 	public function show($name)
 	{
-		
+
 	}
 
 

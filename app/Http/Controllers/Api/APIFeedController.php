@@ -1,5 +1,6 @@
-<?php 
-App\Http\Controllers\Api;
+<?php
+namespace App\Http\Controllers\Api;
+
 use App\Models\Institution\Institution;
 
 class APIFeedController extends Controller {
@@ -20,7 +21,7 @@ class APIFeedController extends Controller {
 				array_push($result, ["photo" => $photo, "sender" => \User::find($photo->user_id)]);
 			}
 			else {
-				array_push($result, ["photo" => $photo, "sender" => Institution::find($photo->institution_id)]);	
+				array_push($result, ["photo" => $photo, "sender" => Institution::find($photo->institution_id)]);
 			}
 		}
 		if(empty($result)) {
@@ -50,7 +51,7 @@ class APIFeedController extends Controller {
 				array_push($result, ["photo" => $photo, "sender" => \User::find($photo->user_id)]);
 			}
 			else {
-				array_push($result, ["photo" => $photo, "sender" => Institution::find($photo->institution_id)]);	
+				array_push($result, ["photo" => $photo, "sender" => Institution::find($photo->institution_id)]);
 			}
 		}
 		if(empty($result)) {

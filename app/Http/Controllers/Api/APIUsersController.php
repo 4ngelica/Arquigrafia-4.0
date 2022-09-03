@@ -1,9 +1,11 @@
 <?php
-App\Http\Controllers\Api;
+
+use App\Models\Collaborative\Tag;
+
 use lib\log\EventLogger;
 
 class APIUsersController extends Controller {
-	
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -51,7 +53,7 @@ class APIUsersController extends Controller {
 			$user = \User::create(['name' => $input["name"],
       							  'email' => $input["email"],
       							  'password' => \Hash::make($input["password"]),
-      							  'login' => $input["login"]     
+      							  'login' => $input["login"]
       							 ]);
 			$user->mobile_token = \Hash::make(str_random(10));
 			$user->active = 'yes';
@@ -59,14 +61,14 @@ class APIUsersController extends Controller {
           	$user->save();
           	$email = $input["email"];
 
-          	\Mail::send('emails.users.welcome', array('name' => $input["name"], 'email' => $input["email"], 'login' => $input["login"]), 
+          	\Mail::send('emails.users.welcome', array('name' => $input["name"], 'email' => $input["email"], 'login' => $input["login"]),
           function($msg) use($email) {
             $msg->to($email)
                 ->subject('[Arquigrafia]- Cadastro de Usuário');
         });
 
           	/* Registro de logs */
-          	EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia", "user" => $user->id], "mobile"); 
+          	EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia", "user" => $user->id], "mobile");
 
 			return \Response::json(['login' => $input["login"], 'token' => $user->mobile_token, 'id' => $user->id, 'valid' => 'true', 'msg' => 'Cadastro efetuado com sucesso.']);
 		}

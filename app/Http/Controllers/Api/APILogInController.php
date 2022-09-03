@@ -1,5 +1,7 @@
 <?php
-App\Http\Controllers\Api;
+
+namespace App\Http\Controllers\Api;
+
 use lib\log\EventLogger;
 
 class APILogInController extends Controller {

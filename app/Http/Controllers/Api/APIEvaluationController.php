@@ -1,5 +1,6 @@
-<?php 
-App\Http\Controllers\Api;
+<?php
+namespace App\Http\Controllers\Api;
+
 use lib\log\EventLogger;
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
@@ -45,7 +46,7 @@ class APIEvaluationController extends Controller {
          	}
 
             /* Registro de logs */
-            EventLogger::printEventLogs($photoId, 'insert_evaluation', 
+            EventLogger::printEventLogs($photoId, 'insert_evaluation',
                                         ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
         }
         else {
@@ -58,7 +59,7 @@ class APIEvaluationController extends Controller {
         	}
 
             /* Registro de logs */
-            EventLogger::printEventLogs($photoId, 'edit_evaluation', 
+            EventLogger::printEventLogs($photoId, 'edit_evaluation',
                                         ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
         }
 		\Response::json($input);

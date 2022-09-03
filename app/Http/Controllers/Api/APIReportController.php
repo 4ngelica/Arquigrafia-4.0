@@ -1,5 +1,7 @@
 <?php
-App\Http\Controllers\Api;
+
+namespace App\Http\Controllers\Api;
+
 use App\Models\Collaborative\Tag;
 use App\Models\Collaborative\Report;
 
@@ -33,7 +35,7 @@ class APIReportController extends Controller {
 	 */
 	public function store()
 	{
-		
+
 
 	}
 
@@ -46,7 +48,7 @@ class APIReportController extends Controller {
 	 */
 	public function show($name)
 	{
-		
+
 	}
 
 
@@ -96,18 +98,18 @@ class APIReportController extends Controller {
 	{
 		\Input::flash();
 	    $input = \Input::all();
-	    
+
 		$rules = array(
 	        'data_type_report' => 'required',
 	        'type_report'      => 'required',
 	        'user_id'          => 'required',
 	        'photo_id'         => 'required'
-	    ); 
+	    );
 	 	$input = $input['params'];
-	    $validator = \Validator::make($input, $rules);   
+	    $validator = \Validator::make($input, $rules);
 
 		if ($validator->fails()) {
-	      
+
 	      return \Response::json(array(
 				'code' => 400,
 				'message' => 'Erro ao validar.'));
@@ -119,7 +121,7 @@ class APIReportController extends Controller {
 			if(!empty($input["observation_report"]))
 	        	$comment =$input["observation_report"];
 	        else
-	        	$comment = "";        
+	        	$comment = "";
 	        $reportTypeData = implode(",", array_values($reportTypeDataAll));
 			$result = Report::getFirstOrCreate($user, $photo, $reportTypeData, $comment,$reportType);
 	    	return \Response::json(array(

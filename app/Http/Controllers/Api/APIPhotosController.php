@@ -1,5 +1,7 @@
 <?php
-App\Http\Controllers\Api;
+
+namespace App\Http\Controllers\Api;
+
 use Photo;
 use lib\log\EventLogger;
 use lib\date\Date;
@@ -13,7 +15,7 @@ class APIPhotosController extends Controller {
 
 	public function __construct(Date $date = null)
 	{
-	    $this->date = $date ?: new Date; 
+	    $this->date = $date ?: new Date;
 	}
 	/**
 	 * Display a listing of the resource.
@@ -47,12 +49,12 @@ class APIPhotosController extends Controller {
 	{
 		/* Validação do input */
 		$input = \Input::all();
-		
-		$rules = array( 
+
+		$rules = array(
 			'photo_name' => 'required',
 	        'photo_imageAuthor' => 'required',
 	        'tags' => 'required',
-	        'photo_country' => 'required',  
+	        'photo_country' => 'required',
 	        'authorized' => 'required',
 	        'photo' => 'max:10240|required|mimes:jpeg,jpg,png,gif',
 	        'photo_imageDate' => 'date_format:d/m/Y|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/'
@@ -61,10 +63,10 @@ class APIPhotosController extends Controller {
 		if ($validator->fails()) {
 			return $validator->messages();
 		}
-		
+
 		if (\Input::hasFile('photo') and \Input::file('photo')->isValid()) {
         	$file = \Input::file('photo');
-        
+
 			/* Armazenamento */
 			$photo = new Photo;
 
@@ -74,7 +76,7 @@ class APIPhotosController extends Controller {
 	        	$photo->allowCommercialUses = 'YES';
 	        else
 	        	$photo->allowCommercialUses = 'NO';
-	        
+
 	        $photo->allowModifications = $input["photo_allowModifications"];
 	        if( !empty($input["photo_city"]) )
 	          $photo->city = $input["photo_city"];
@@ -90,40 +92,40 @@ class APIPhotosController extends Controller {
 	          $photo->state = $input["photo_state"];
 	        if ( !empty($input["photo_street"]) )
 	          $photo->street = $input["photo_street"];
-	      	
+
       		$photo->authorized = $input["authorized"];
-  			
-	      	if(!empty($input["workDate"])){  
+
+	      	if(!empty($input["workDate"])){
                $photo->workdate = $input["workDate"];
                $photo->workDateType = "year";
-           	}else{ 
+           	}else{
                $photo->workdate = NULL;
-            }            
-            
-            
-           	if(!empty($input["photo_imageDate"])){  
+            }
+
+
+           	if(!empty($input["photo_imageDate"])){
                 $photo->dataCriacao = $this->date->formatDate($input["photo_imageDate"]);
                 $photo->imageDateType = "date";
-            }else{ 
+            }else{
                 $photo->dataCriacao = NULL;
-            } 
+            }
 	      	$photo->user_id = $input["user_id"];
 	      	$photo->dataUpload = date('Y-m-d H:i:s');
 	      	$photo->nome_arquivo = $file->getClientOriginalName();
 
 			$photo->save();
 
-			
+
 
             if (\Input::has('work_authors')){
-            	
-	            $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);    
-	            $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);    
-	        }else $input["work_authors"] = ''; 
+
+	            $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
+	            $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
+	        }else $input["work_authors"] = '';
 
 			$author = new \Author();
             if (!empty($input["work_authors"])) {
-            	
+
                 $author->saveAuthors($input["work_authors"],$photo);
             }
 
@@ -136,11 +138,11 @@ class APIPhotosController extends Controller {
 
 			$tags = Tag::formatTags($finalTags);
 			$tagsSaved = Tag::saveTags($finalTags,$photo);
-              
-            if(!$tagsSaved){ 
+
+            if(!$tagsSaved){
                   $photo->forceDelete();
-                  $messages = array('tags'=>array('Inserir pelo menos uma tag'));                  
-                  return "Tags error";                  
+                  $messages = array('tags'=>array('Inserir pelo menos uma tag'));
+                  return "Tags error";
             }
 			//Photo e salva para gerar ID automatico
 
@@ -154,7 +156,7 @@ class APIPhotosController extends Controller {
   	        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
   	        $public_image   = \Image::make(\Input::file('photo'))->encode('jpg', 80);
   	        $original_image = \Image::make(\Input::file('photo'));
-  
+
   	        $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
 	        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
 	        $public_image->fit(186, 124)->encode('jpg', 70)->save(public_path().'/arquigrafia-images/'.$photo->id.'_home.jpg');
@@ -162,7 +164,7 @@ class APIPhotosController extends Controller {
 	        $original_image->save(storage_path().'/original-images/'.$photo->id."_original.".strtolower($ext));
 
 	        EventLogger::printEventLogs($photo->id, 'upload', ['user' => $photo->user_id], 'mobile');
-	        EventLogger::printEventLogs($photo->id, 'insert_tags', 
+	        EventLogger::printEventLogs($photo->id, 'insert_tags',
 	        							['tags' => $tags_copy, 'user' => $photo->user_id], 'mobile');
 	        return $photo->id;
 
@@ -192,7 +194,7 @@ class APIPhotosController extends Controller {
 		/* Registro de logs */
 		EventLogger::printEventLogs($id, 'select_photo', ['user' => $photo->user_id], 'mobile');
 
-		return \Response::json(["photo" => $photo, "sender" => $sender, "license" => $license, 
+		return \Response::json(["photo" => $photo, "sender" => $sender, "license" => $license,
 			"authors" => $authorsList, "tags" => $tags]);
 	}
 
@@ -226,7 +228,7 @@ class APIPhotosController extends Controller {
 				'code' => 403,
 				'message' => 'Usuario nao tem permissao para esta operacao'));
 		}
-		
+
 		$rules = array(
 	        'photo' => 'max:10240|mimes:jpeg,jpg,png,gif',
 	        'photo_imageDate' => 'date_format:d/m/Y|regex:/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/'
@@ -234,15 +236,15 @@ class APIPhotosController extends Controller {
 		$validator = \Validator::make($input, $rules);
 		if ($validator->fails()) {
 			return $validator->messages();
-		}			
+		}
 
 		//if ( !empty($input["photo_aditionalImageComments"]) )
         //$photo->aditionalImageComments = $input["photo_aditionalImageComments"];
         if($input["photo_allowCommercialUses"] == "true")
         	$photo->allowCommercialUses = 'YES';
-        else 
+        else
         	$photo->allowCommercialUses = 'NO';
-      	
+
         $photo->authorized = $input["authorized"];
         $photo->allowModifications = $input["photo_allowModifications"];
         if( !empty($input["photo_city"]) )
@@ -267,31 +269,31 @@ class APIPhotosController extends Controller {
       	else
       		$photo->authorized = 0;
 
-      	if(!empty($input["workDate"])){             
+      	if(!empty($input["workDate"])){
                $photo->workdate = $input["workDate"];
                $photo->workDateType = "year";
-       	}else{ 
+       	}else{
            $photo->workdate = NULL;
         }
 
-        
 
-       	if(!empty($input["photo_imageDate"])){                		   
+
+       	if(!empty($input["photo_imageDate"])){
             $photo->dataCriacao = $this->date->formatDate($input["photo_imageDate"]);
             $photo->imageDateType = "date";
-        }else{ 
+        }else{
             $photo->dataCriacao = NULL;
-        } 
+        }
       	$photo->touch();
 		$photo->save();
 
 
 		if (\Input::has('work_authors')){
-            $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);    
-            $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);    
-        }else $input["work_authors"] = ''; 
+            $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
+            $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
+        }else $input["work_authors"] = '';
         $author = new \Author();
-      
+
         if (!empty($input["work_authors"])) {
             $author->updateAuthors($input["work_authors"],$photo);
         }else{
@@ -308,28 +310,28 @@ class APIPhotosController extends Controller {
 				$tags_copy = $tags;
 
 				$tags = explode(",", $tags);
-			} 
-			else { 
-				$tags_copy = implode(",", $tags); 
+			}
+			else {
+				$tags_copy = implode(",", $tags);
 			}
 			$tags = Tag::formatTags($tags);
 			$tagsSaved = Tag::updateTags($tags,$photo);
-	          
-	        if(!$tagsSaved){ 
+
+	        if(!$tagsSaved){
 	              $photo->forceDelete();
-	              $messages = array('tags'=>array('Inserir pelo menos uma tag'));                  
-	              return "Tags error";                  
+	              $messages = array('tags'=>array('Inserir pelo menos uma tag'));
+	              return "Tags error";
 	        }
 	    }
 		//Photo e salva para gerar ID automatico
 
         if (\Input::hasFile('photo') and \Input::file('photo')->isValid()) {
         	$file = \Input::file('photo');
-        
+
 			$ext = $file->getClientOriginalExtension();
 	  		$photo->nome_arquivo = $photo->id.".".$ext;
 
-	  		
+
 
 	  		$metadata       = \Image::make(\Input::file('photo'))->exif();
 		        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
@@ -346,11 +348,11 @@ class APIPhotosController extends Controller {
 	    }
 
 	    EventLogger::printEventLogs($photo->id, 'edit', ['user' => $photo->user_id], 'mobile');
-	    EventLogger::printEventLogs($photo->id, 'edit_tags', 
+	    EventLogger::printEventLogs($photo->id, 'edit_tags',
 	    							['tags' => $tags_copy, 'user' => $photo->user_id], 'mobile');
         return $photo->id;
 
-		
+
 	}
 
 

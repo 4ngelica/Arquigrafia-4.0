@@ -1,5 +1,7 @@
 <?php
-App\Http\Controllers\Api;
+
+namespace App\Http\Controllers\Api;
+
 use App\Models\Collaborative\Tag;
 
 class APITagsController extends Controller {
@@ -32,7 +34,7 @@ class APITagsController extends Controller {
 	 */
 	public function store()
 	{
-		
+
 
 	}
 
@@ -45,7 +47,7 @@ class APITagsController extends Controller {
 	 */
 	public function show($name)
 	{
-		
+
 	}
 
 

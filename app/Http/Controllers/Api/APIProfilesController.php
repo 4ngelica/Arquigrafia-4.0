@@ -1,5 +1,7 @@
-<?php 
-App\Http\Controllers\Api;
+<?php
+
+namespace App\Http\Controllers\Api;
+
 use App\Models\Evaluations\Evaluation;
 
 class APIProfilesController extends Controller {
