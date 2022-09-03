@@ -17,12 +17,12 @@ class Comment extends Model {
 
 	public function photo()
 	{
-		return $this->belongsTo('Photo');
+		return $this->belongsTo('App\Models\Photos\Photo');
 	}
 
 	public function user()
 	{
-		return $this->belongsTo('User');
+		return $this->belongsTo('App\Models\Users\User');
 	}
 
   public static function createCommentsMessage($commentsCount)

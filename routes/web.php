@@ -190,7 +190,7 @@ Route::get('/tags/refreshCount', 'modules\collaborative\controllers\TagsControll
 Route::post('/comments/{photo_id}', [CommentsController::class,'comment']);
 Route::get('/comments/{comment_id}/like', [CommentsController::class,'commentLike']);
 Route::get('/comments/{comment_id}/dislike', [CommentsController::class,'commentDislike']);
-Route::resource('/comments', CommentsController::class);
+// Route::resource('/comments', CommentsController::class);
 
 /* LIKE E DISLIKE */
 Route::get('/like/{id}', [LikesController::class,'photoLike']);

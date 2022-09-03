@@ -8,13 +8,14 @@ use App\Models\Gamification\Badge;
 use App\lib\date\Date;
 use App\lib\log\EventLogger;
 use App\Models\News\News;
-use Input;
+use Illuminate\Http\Request;
 use Auth;
 use Notification;
 use Carbon\Carbon;
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Event;
 
 
 class CommentsController extends Controller {
@@ -30,9 +31,9 @@ class CommentsController extends Controller {
 	}
 
 
-	public function comment($id)
+	public function comment(Request $request, $id)
   {
-    	$input = Input::all();
+    	$input = $request->all();
     	$rules = ['text' => 'required'];
     	$validator = \Validator::make($input, $rules);
     	if ($validator->fails()) {
@@ -50,7 +51,7 @@ class CommentsController extends Controller {
 
         /*Envio de notificação*/
 
-        \Event::fire('comment.create', array($user, $photo));
+        Event::dispatch('comment.create', array($user, $photo));
 
 
         $this->checkCommentCount(5,'test');
@@ -75,7 +76,7 @@ class CommentsController extends Controller {
     $comment = Comment::find($id);
     $user = Auth::user();
 
-    \Event::fire('comment.liked', array($user, $comment));
+    \Event::dispatch('comment.liked', array($user, $comment));
 
     EventLogger::printEventLogs(null, 'like', ["target_type" => 'comentário', "target_id" => $id], 'Web');
 
@@ -92,7 +93,7 @@ class CommentsController extends Controller {
     $comment = Comment::find($id);
     $user = Auth::user();
 
-    \Event::fire('comment.disliked', array($user, $comment));
+    \Event::dispatch('comment.disliked', array($user, $comment));
 
     $eventContent['target_type'] = 'comentário';
     $eventContent['target_id'] = $id;

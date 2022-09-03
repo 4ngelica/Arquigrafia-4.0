@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\Users\User;
 use App\Models\Photos\Photo;
-
+use File;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
 use App\Models\Users\Occupation;

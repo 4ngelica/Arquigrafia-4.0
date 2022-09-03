@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Chat;
 
 use User;
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Thread;
 use Cmgmyr\Messenger\Models\Message;
@@ -125,7 +126,7 @@ class ThreadsController extends Controller {
 		$participant->delete();
 		if(count($thread->participants()->get()) < 2)
 			$thread->delete();
-		return View::make('test', ['output' => 'destroy']);
+		return view('chat.test', ['output' => 'destroy']);
 	}
 
 	public function index() {
@@ -144,7 +145,7 @@ class ThreadsController extends Controller {
 			array_push($array, ['thread' => $threads[$i], 'participants' => $participants,
 									   'names' => $names, 'last_message' => $last_message]);
 		}
-		return View::make('chats', ['data' => $array, 'user_id' => $user->id, 'user_name' => $user->name]);
+		return view('chat.chats', ['data' => $array, 'user_id' => $user->id, 'user_name' => $user->name]);
 	}
 
 	public function show($id) {
@@ -164,7 +165,7 @@ class ThreadsController extends Controller {
 			array_push($array, ['thread' => $threads[$i], 'participants' => $participants,
 									   'names' => $names, 'last_message' => $last_message]);
 		}
-		return View::make('chats', ['data' => $array, 'user_id' => $user->id, 'user_name' => $user->name, 'thread' => $thread->id]);
+		return view('chat.chats', ['data' => $array, 'user_id' => $user->id, 'user_name' => $user->name, 'thread' => $thread->id]);
 	}
 
 	public function searchUser(){
