@@ -17,9 +17,12 @@
   <!-- Suggestions Modal -->
   <link rel="stylesheet" type="text/css" media="screen" href="{{ URL::to("/") }}/css/suggestions/suggestions-modal.css" />
   <script type="text/javascript" src="{{ URL::to("/") }}/js/dist/suggestions.bundle.js"></script>
+  <!-- <script type="text/javascript" src="{{ URL::to('../javascript/services/SuggestionService.js') }}"></script> -->
+
 
   <!-- Google Maps API -->
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuBk5ghbTdpdm_nBWg6xHEzdRXdryK6rU&callback=initMap"></script>
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <script type="text/javascript">
   // Missing fields and questions (to show on Modal)
   var photo = <?= json_encode($photos) ?>;
@@ -119,11 +122,11 @@
                 <a id="delete_button" class="institution" href="{{ URL::to('/institutions/' . $photos->id) }}" title="Excluir imagem"></a>
               </span>
             @endif
-            @if ( !empty($photos->dataUpload) )
+            @if(!empty($photos->getAttributes()['dataUpload']))
               <span class="right">
                 <small>Inserido em:</small>
-                <a class="data_upload" href="{{ URL::to("/search?q=".$photos->dataUpload."&t=up") }}">
-                  {{ $photos->dataUpload }}
+                <a class="data_upload" href="{{ URL::to("/search?q=".$photos->getAttributes()['dataUpload']."&t=up") }}">
+                  {{ $photos->getAttributes()['dataUpload'] }}
                 </a>
               </span>
             @endif
@@ -596,7 +599,6 @@
       </div>
 
 
-
       <!-- Suggestions Modal Button -->
     @if ($photos->institution == null && $photos->type != "video")
         @if (!$isReviewing && $completeness['present'] != 100)
@@ -617,6 +619,8 @@
             </div>
 
         		<div class="modal-button OpenModal">
+
+
               @if ($user == null)
                 <a href="#" data-origin="button">Faça o login e contribua com mais informações sobre esta imagem!</a>
               @else

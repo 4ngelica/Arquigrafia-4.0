@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\URL;
 use App\lib\log\EventLogger;
 use lib\utils\HelpTool;
 use Carbon\Carbon;
@@ -11,9 +12,9 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequest;
 use Facebook\FacebookAuthorizationException;
 use Facebook\FacebookRequestException;
-use modules\institutions\models\Institution as Institution;
-use Illuminate\Database\Eloquent\Collection as Collection;
-use App\modules\gamification\models\Gamified;
+use App\Models\Institutions\Institution;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\Gamification\Gamified;
 use Illuminate\Support\Facades\Config;
 use Auth;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\Users\User;
 use App\Models\Photos\Photo;
-
+use File;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
 use App\Models\Users\Occupation;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Mail;
 use Session;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Event;
 
 
 class UsersController extends Controller {
@@ -534,7 +536,7 @@ class UsersController extends Controller {
     if ($user_id != $logged_user->id && !$following->contains($user_id)) {
       //Envio da Notificação
 
-      Event::fire('user.followed', array($logged_user->id, (int)$user_id));
+      Event::dispatch('user.followed', array($logged_user->id, (int)$user_id));
 
       $logged_user->following()->attach($user_id);
 

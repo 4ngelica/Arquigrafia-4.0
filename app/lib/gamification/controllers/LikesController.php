@@ -6,7 +6,7 @@ use lib\gamification\models\Like;
 use Notification;
 use Carbon\Carbon;
 
-class LikesController extends \BaseController {
+class LikesController extends Controller {
 
   public function photolike($id) {
     $photo = \Photo::find($id);

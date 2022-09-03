@@ -53,10 +53,10 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 
 @if($info->secondary_type == NULL && $info->tertiary_type == NULL)
 <div class="gallery_box">
-  <a href='{{ URL::to("/photos") . "/" . modules\collaborative\models\Comment::find($info->object_id)->photo_id . "#" . $info->object_id}}'>
-    <img src={{"/arquigrafia-images/" . modules\collaborative\models\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ Photo::find(modules\collaborative\models\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
+  <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "#" . $info->object_id}}'>
+    <img src={{"/arquigrafia-images/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ Photo::find(App\Models\Collaborative\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
   </a>
-  <a href='{{ URL::to("/photos") . "/" . modules\collaborative\models\Comment::find($info->object_id)->photo_id . "#" . $info->object_id}}' class="name">
+  <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "#" . $info->object_id}}' class="name">
     @if($info->data == null)
     {{User::find($info->sender_id)->name}} comentou nesta imagem
     @else
@@ -71,10 +71,10 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 </div>
 @else
 <div class="gallery_box">
-  <a href='{{ URL::to("/photos") . "/" . modules\collaborative\models\Comment::find($info->object_id)->photo_id }}'>
-    <img src={{"/arquigrafia-images/" . modules\collaborative\models\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ Photo::find(modules\collaborative\models\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
+  <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id }}'>
+    <img src={{"/arquigrafia-images/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ Photo::find(App\Models\Collaborative\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
   </a>
-  <a href='{{ URL::to("/photos") . "/" . modules\collaborative\models\Comment::find($info->object_id)->photo_id }}' class="name">
+  <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id }}' class="name">
     @if($info->data == null)
     {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else

@@ -12,7 +12,7 @@ class UpdateDetaquedasemanaBadge extends Migration {
 	 */
 	public function up()
 	{
-		// $badge = modules\gamification\models\Badge::whereName('Destaque da Semana')->first();
+		// $badge = App\Models\Gamification\Badge::whereName('Destaque da Semana')->first();
 		// if ( ! is_null($badge) ) {
 		// 	$badge->image = 'destaque_da_semana.png';
 		// 	$badge->save();
@@ -26,7 +26,7 @@ class UpdateDetaquedasemanaBadge extends Migration {
 	 */
 	public function down()
 	{
-		// $badge = modules\gamification\models\Badge::whereName('Destaque da Semana')->first();
+		// $badge = App\Models\Gamification\Badge::whereName('Destaque da Semana')->first();
 		// if ( ! is_null($badge) ) {
 		// 	$badge->image = null;
 		// }

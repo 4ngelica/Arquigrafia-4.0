@@ -1,14 +1,14 @@
 <?php
 
-use modules\draft\traits\DraftingTrait;
+use App\Traits\Drafts\DraftingTrait;
 use lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
-use modules\gamification\traits\LikableGamificationTrait;
+use App\Traits\Gamification\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
-use modules\institutions\models\Institution;
-use modules\collaborative\models\Like as Like;
-use modules\evaluations\models\Evaluation as Evaluation;
+use App\Models\Institution\Institution;
+use App\Models\Collaborative\Like as Like;
+use App\Models\Evaluations\Evaluation as Evaluation;
 
 class Video extends Eloquent {
 
@@ -84,12 +84,12 @@ class Video extends Eloquent {
 
 	public function institution()
 	{
-		return $this->belongsTo('modules\institutions\models\Institution');
+		return $this->belongsTo('App\Models\Institution\Institution');
 	}
 
 	public function tags()
 	{
-		return $this->belongsToMany('modules\collaborative\models\Tag', 'tag_assignments');
+		return $this->belongsToMany('App\Models\Collaborative\Tag', 'tag_assignments');
 	}
 
 	public function authors()
@@ -99,7 +99,7 @@ class Video extends Eloquent {
 
 	public function comments()
 	{
-		return $this->hasMany('modules\collaborative\models\Comment');
+		return $this->hasMany('App\Models\Collaborative\Comment');
 	}
 
 	public function albums()
@@ -109,7 +109,7 @@ class Video extends Eloquent {
 
 	public function evaluations()
 	{
-		return $this->hasMany('modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\Models\Evaluations\Evaluation');
 	}
 
 	public function evaluators()

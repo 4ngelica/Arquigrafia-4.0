@@ -22,23 +22,23 @@
         <div class="paginator">
           <div class="three columns alpha omega">
             <p>
-              @if ($users->getCurrentPage() <= 1)
+              @if ($users->currentPage() <= 1)
                 <a id="less" href="#" class="disabled less-than" onclick="return false;"> &lt; </a>
               @else
                 <a id="less"
-                  href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->getCurrentPage() - 1)) }}"
+                  href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->currentPage() - 1)) }}"
                   class="less-than"> &lt; </a>
               @endif
               &nbsp;
-              {{ Form::text('page', $users->getCurrentPage(),
+              {{ Form::text('page', $users->currentPage(),
                 array('style' => 'width: 30px;', 'class' => 'page_number')) }}
-              / {{ $users->getLastPage() }}
+              / {{ $users->lastPage() }}
               &nbsp;
-              @if ($users->getCurrentPage() >= $users->getLastPage())
+              @if ($users->currentPage() >= $users->lastPage())
                 <a id="greater" href="#" class="disabled greater-than" onclick="return false;"> &gt; </a>
               @else
                 <a id="greater"
-                  href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->getCurrentPage() + 1)) }}"
+                  href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->currentPage() + 1)) }}"
                   class="greater-than"> &gt; </a>
               @endif
             </p>
@@ -80,27 +80,27 @@
             </tr>
           </thead>
           <tbody>
-            @include('leaderboard_users')
+            @include('gamification.leaderboard_users')
           </tbody>
         </table>
         <div class="two columns alpha">
-          @if ($users->getCurrentPage() <= 1)
+          @if ($users->currentPage() <= 1)
             <a id="less" href="#" class="disabled less-than" onclick="return false;"> &lt; </a>
           @else
             <a id="less"
-              href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->getCurrentPage() - 1)) }}"
+              href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->currentPage() - 1)) }}"
               class="less-than"> &lt; </a>
           @endif
           &nbsp;
-          {{ Form::text('page', $users->getCurrentPage(),
+          {{ Form::text('page', $users->currentPage(),
             array('style' => 'width: 30px;', 'class' => 'page_number')) }}
-          / {{ $users->getLastPage() }}
+          / {{ $users->lastPage() }}
           &nbsp;
-          @if ($users->getCurrentPage() >= $users->getLastPage())
+          @if ($users->currentPage() >= $users->lastPage())
             <a id="greater" href="#" class="disabled greater-than" onclick="return false;"> &gt; </a>
           @else
             <a id="greater"
-              href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->getCurrentPage() + 1)) }}"
+              href="{{ URL::to('/leaderboard?type=' . $score_type . '&page=' . ($users->currentPage() + 1)) }}"
               class="greater-than"> &gt; </a>
           @endif
         </div>
@@ -111,8 +111,8 @@
   <div class="message_box"></div>
   <script type="text/javascript">
     var paginator = {
-      current_page: {{ $users->getCurrentPage() }},
-      last_page: {{ $users->getLastPage() }},
+      current_page: {{ $users->currentPage() }},
+      last_page: {{ $users->lastPage() }},
       score_type: '{{ $score_type }}',
       number_items: {{ $users->count() }},
       url: '{{ URL::to('/leaderboard') }}',

@@ -17,10 +17,16 @@ use App\Http\Controllers\Moderation\SuggestionsController;
 use App\Http\Controllers\Institutions\ImportsController;
 use App\Http\Controllers\Institutions\InstitutionsController;
 use App\Http\Controllers\AudiosController;
-use App\Http\Controllers\BaseController;
+use App\Http\ControllersController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAMController;
-use App\Http\Controllers\EvaluationsController;
+use App\Http\Controllers\Evaluations\EvaluationsController;
+use App\Http\Controllers\Collaborative\CommentsController;
+use App\Http\Controllers\Collaborative\FollowController;
+use App\Http\Controllers\Collaborative\GroupsController;
+use App\Http\Controllers\Collaborative\LikesController;
+use App\Http\Controllers\Collaborative\ReportsController;
+use App\Http\Controllers\Collaborative\TagsController;
 
 
 /*
@@ -144,7 +150,7 @@ Route::get('/evaluations', [EvaluationsController::class, 'index']);
 Route::get('/evaluations/{photo_id}/evaluate',[EvaluationsController::class, 'evaluate']);
 Route::get('/evaluations/{photo_id}/viewEvaluation/{user_id}',[EvaluationsController::class, 'viewEvaluation']);
 Route::get('/evaluations/{photo_id}/showSimilarAverage/', [EvaluationsController::class, 'showSimilarAverage']);
-//Route::post('/evaluations/{photo_id}/saveEvaluation','modules\evaluations\controllers\EvaluationsController@saveEvaluation');
+//Route::post('/evaluations/{photo_id}/saveEvaluation','App\Http\Controllers\EvaluationsController@saveEvaluation');
 Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
 // Route::resource('/evaluations',[EvaluationsController::class]);
 
@@ -175,3 +181,58 @@ Route::get('/friends/followInstitution/{institution_id}', [InstitutionsControlle
 Route::get('/friends/unfollowInstitution/{institution_id}', [InstitutionsController::class, 'unfollowInstitution']);
 
 Route::resource('/institutions', InstitutionsController::class);
+
+/* TAGS */
+Route::get('/tags/json', 'modules\collaborative\controllers\TagsController@index');
+Route::get('/tags/refreshCount', 'modules\collaborative\controllers\TagsController@refreshCount');
+
+/* COMMENTARIOS */
+Route::post('/comments/{photo_id}', [CommentsController::class,'comment']);
+Route::get('/comments/{comment_id}/like', [CommentsController::class,'commentLike']);
+Route::get('/comments/{comment_id}/dislike', [CommentsController::class,'commentDislike']);
+// Route::resource('/comments', CommentsController::class);
+
+/* LIKE E DISLIKE */
+Route::get('/like/{id}', [LikesController::class,'photoLike']);
+Route::get('/dislike/{id}', [LikesController::class,'photoDislike']);
+Route::resource('/likes', LikesController::class);
+
+/* GRUPOS */
+Route::resource('/groups',GroupsController::class);
+
+/*EVENTS */
+Event::subscribe('App\Http\Events\Subscriber\LikeSubscriber');
+/*REPORTs*/
+Route::post('/reports/photo', [ReportsController::class,'reportPhoto']);
+Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModalReportPhoto']);
+//Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');
+
+/* GAMIFICATION */
+Route::get('/photos/{id}/get/field', 'App\Http\Controllers\Gamification\QuestionsController@getField');
+Route::post('/photos/{id}/set/field', 'App\Http\Controllers\Gamification\QuestionsController@setField');
+Route::get('/rank/get', 'App\Http\Controllers\Gamification\ScoresController@getRankEval');
+Route::get('/leaderboard', 'App\Http\Controllers\Gamification\ScoresController@getLeaderboard');
+Route::get('/badges/{id}', 'App\Http\Controllers\Gamification\BadgesController@show');
+
+/* LOG */
+Route::post('/logs', 'modules\logs\controllers\LogsController@create');
+
+/* DRAFTS */
+Route::post('/drafts/delete'  , 'App\Http\Controllers\Drafts\DraftsController@deleteDraft');
+Route::get( '/drafts/paginate', 'App\Http\Controllers\Drafts\DraftsController@paginateDrafts');
+Route::get( '/drafts/{id}'    , 'App\Http\Controllers\Drafts\DraftsController@getDraft');
+Route::get( '/drafts'         , 'App\Http\Controllers\Drafts\DraftsController@listDrafts');
+
+/*CHATS*/
+Route::resource('chats', 'App\Http\Controllers\Chat\ThreadsController');
+Route::post('/chats/read', 'App\Http\Controllers\Chat\ThreadsController@markThreadAsread');
+Route::resource('messages', 'App\Http\Controllers\Chat\MessagesController');
+Route::post('/chats/cards', 'App\Http\Controllers\Chat\ThreadsController@cards');
+
+/*Notifications*/
+Route::get('/notifications', 'modules\notifications\controllers\NotificationsController@show');
+Route::get('/markRead/{id}', 'modules\notifications\controllers\NotificationsController@read');
+Route::get('/readAll',       'modules\notifications\controllers\NotificationsController@readAll');
+
+Route::get('/refreshBubble', 'NotificationsController@howManyUnread');
+Event::subscribe('App\Http\Events\Subscriber\NotificationSubscriber');

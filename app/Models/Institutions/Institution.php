@@ -5,7 +5,7 @@ use App\Models\Photos\Photo;
 use App\Models\Users\User;
 use Illuminate\Support\Collection as Collection;
 use Session;
-use App\modules\institutions\models\Employee;
+use App\Models\Institutions\Employee;
 
 
 class Institution extends \Eloquent {
@@ -15,7 +15,7 @@ class Institution extends \Eloquent {
 
 	public function employees()
 	{
-		return $this->hasMany('App\modules\collaborative\models\Employee');
+		return $this->hasMany('App\Models\Collaborative\Employee');
 	}
 
 	public function photos()
@@ -69,7 +69,7 @@ class Institution extends \Eloquent {
 	//followers to institutions
 	public function followersInstitutions()
 	{
-		return $this->belongsToMany('User', 'friendship_institution', 'institution_id','following_user_id');
+		return $this->belongsToMany('App\Models\Users\User', 'friendship_institution', 'institution_id','following_user_id');
 	}
 
  	public static function RoleOfInstitutionalUser($userId)

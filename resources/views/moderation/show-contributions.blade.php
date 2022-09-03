@@ -5,10 +5,10 @@
   <link rel="stylesheet" type="text/css" href="{{ URL::to('/css/tabs.css') }}">
   <!-- Setting global variables that comes from server side -->
   <script>
-    var currentUser = {{ json_encode($currentUser) }};
-    var isGamefied = {{ json_encode($isGamefied) }};
-    var selectedTab = {{ json_encode($selectedTab) }};
-    var selectedFilterId = {{ json_encode($selectedFilterId) }};
+    var currentUser = <?= json_encode($currentUser) ?>;
+    var isGamefied = <?= json_encode($isGamefied) ?>;
+    var selectedTab = <?= json_encode($selectedTab) ?>;
+    var selectedFilterId = <?= json_encode($selectedFilterId) ?>;
   </script>
   <!-- LOADING VUE.JS BUNDLE -->
   <script src="/js/dist/contributions.bundle.js"></script>

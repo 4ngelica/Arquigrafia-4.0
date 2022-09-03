@@ -5,15 +5,15 @@ namespace App\Http\Controllers\Photos;
 use lib\log\EventLogger;
 use Carbon\Carbon;
 use lib\date\Date;
-use modules\gamification\models\Badge;
-use modules\institutions\models\Institution as Institution;
-use modules\collaborative\models\Tag as Tag;
-use modules\collaborative\models\Comment as Comment;
-use modules\collaborative\models\Like as Like;
-use modules\evaluations\models\Evaluation as Evaluation;
-use modules\evaluations\models\Binomial as Binomial;
+use App\Models\Gamification\Badge;
+use App\Models\Institution\Institution as Institution;
+use App\Models\Collaborative\Tag as Tag;
+use App\Models\Collaborative\Comment as Comment;
+use App\Models\Collaborative\Like as Like;
+use App\Models\Evaluations\Evaluation as Evaluation;
+use App\Models\Evaluations\Binomial as Binomial;
 
-class VideosController extends \BaseController {
+class VideosController extends Controller {
 	protected $date;
 
 	public function __construct(Date $date ){

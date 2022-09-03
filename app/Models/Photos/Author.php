@@ -3,6 +3,7 @@
 namespace App\Models\Photos;
 
 use App\Models\Photos\Author;
+use App\Models\Photos\Photo;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +14,7 @@ class Author extends Eloquent {
   protected $fillable = ['name'];
 
   public function photos() {
-    return $this->belongsToMany('Photo', 'photo_author', 'author_id', 'photo_id');
+    return $this->belongsToMany('App\Models\Photos\Photo', 'photo_author', 'author_id', 'photo_id');
   }
 
   public static function getOrCreate($name)

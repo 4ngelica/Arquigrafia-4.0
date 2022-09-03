@@ -8,12 +8,12 @@ namespace App\Http\Controllers\Photos;
 
 use App\lib\log\EventLogger;
 use App\lib\date\Date;
-use App\modules\institutions\models\Institution as Institution;
-use App\modules\collaborative\models\Comment as Comment;
-use App\modules\collaborative\models\Like as Like;
-use App\modules\evaluations\models\Binomial as Binomial;
-use App\modules\evaluations\models\Evaluation as Evaluation;
-use App\modules\collaborative\models\Tag as Tag;
+use App\Models\Institutions\Institution;
+use App\Models\Collaborative\Comment;
+use App\Models\Collaborative\Like;
+use App\Models\Evaluations\Binomial;
+use App\Models\Evaluations\Evaluation;
+use App\Models\Collaborative\Tag;
 use App\Http\Controllers\Controller;
 use App\Models\Photos\Photo;
 use Illuminate\Http\Request;
@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Users\User;
 use App\Models\Photos\Author;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
 use DateTime;
 use Session;
@@ -434,7 +435,7 @@ class PagesController extends Controller {
       'pageVisited'=> $pageVisited,'typeSearch'=> 'advance', 'institutions' => $institutions ]);
   }
 
-  public function paginatePhotosResult() {
+  public function paginatePhotosResult(Request $request) {
     if(Session::has('last_search')){
       Log::info("si session fotos");
       $lastSearch = Session::get('last_search');
@@ -460,7 +461,7 @@ class PagesController extends Controller {
 
   private function paginationResponseSearch($photos, $type) {
     Log::info("paginateRsp");
-    $count = $photos->getTotal();
+    $count = $photos->total();
     $perPage = $photos->getPerPage();
     $page = $photos->getCurrentPage();
 

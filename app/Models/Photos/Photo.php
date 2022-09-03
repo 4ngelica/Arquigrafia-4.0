@@ -2,24 +2,25 @@
 
 namespace App\Models\Photos;
 
-use App\modules\draft\traits\DraftingTrait;
+use App\Traits\Drafts\DraftingTrait;
 use App\lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Log;
-use App\modules\gamification\traits\LikableGamificationTrait;
+use App\Traits\Gamification\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
 use App\Models\Institutions\Institution;
-use App\modules\collaborative\models\Like as Like;
-use App\modules\evaluations\models\Evaluation as Evaluation;
+use App\Models\Collaborative\Like;
+use App\Models\Evaluations\Evaluation;
 use App\Models\Moderation\Suggestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\lib\metadata\Exiv2;
+use Illuminate\Database\Eloquent\Model;
 use DateTime;
 use Session;
 
-class Photo extends Eloquent {
+class Photo extends Model {
 
 	// use DraftingTrait;
 	// use SoftDeletingTrait;
@@ -150,7 +151,7 @@ class Photo extends Eloquent {
 
 	public function tags()
 	{
-		return $this->belongsToMany('App\modules\collaborative\models\Tag', 'tag_assignments');
+		return $this->belongsToMany('App\Models\Collaborative\Tag', 'tag_assignments');
 	}
 
 	public function authors()
@@ -160,7 +161,7 @@ class Photo extends Eloquent {
 
 	public function comments()
 	{
-		return $this->hasMany('App\modules\collaborative\models\Comment');
+		return $this->hasMany('App\Models\Collaborative\Comment');
 	}
 
 	public function albums()
@@ -170,7 +171,7 @@ class Photo extends Eloquent {
 
 	public function evaluations()
 	{
-		return $this->hasMany('App\modules\evaluations\models\Evaluation');
+		return $this->hasMany('App\Models\Evaluations\Evaluation');
 	}
 
 	public function evaluators()
