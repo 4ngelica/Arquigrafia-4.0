@@ -27,6 +27,8 @@ use App\Http\Controllers\Collaborative\GroupsController;
 use App\Http\Controllers\Collaborative\LikesController;
 use App\Http\Controllers\Collaborative\ReportsController;
 use App\Http\Controllers\Collaborative\TagsController;
+use App\Http\Controllers\Drafts\DraftsController;
+
 
 
 /*
@@ -40,68 +42,58 @@ use App\Http\Controllers\Collaborative\TagsController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/teste', [PagesController::class, 'teste']);
 
-// Auth::routes();
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/test', function () {
-  //testes
-});
+Route::get('/', [PagesController::class, 'main']);
 
 Route::get('/photos/import', [ImportsController::class, 'import']);
 
 /* phpinfo() */
-Route::get('/info/', function(){ return View::make('i'); });
-
-Route::group(['prefix' => '/'], function()
-{
-    if ( Auth::check() ) // use Auth::check instead of Auth::user
-    {
-        Route::get('/', [PagesController::class, 'home']);
-    } else{
-      Route::get('/', [PagesController::class, 'main']);
-    }
-});
+Route::get('/info/', function(){ return view('i'); });
 
 Route::get('/landing/{language?}', [PagesController::class, 'landing']);
 Route::get('/home', [PagesController::class, 'home']);
-Route::get('/panel', [PagesController::class, 'panel']);
-Route::get('/project', function() { return View::make('project'); });
-Route::get('/faq', function() { return View::make('faq'); });
-Route::get('/chancela', function() { return View::make('chancela'); });
-Route::get('/termos', function() { return View::make('termos'); });
+// Route::get('/panel', [PagesController::class, 'panel']);
+Route::get('/project', function() { return view('project'); });
+Route::get('/faq', function() { return view('faq'); });
+Route::get('/chancela', function() { return view('chancela'); });
+Route::get('/termos', function() { return view('termos'); });
 
 /* SEARCH */
-Route::get('/search', [PagesController::class, 'search']);
-Route::post('/search', [PagesController::class, 'search']);
-Route::get('/search/more', [PagesController::class, 'advancedSearch']);
+Route::prefix('/search')->group(function () {
+  Route::get('/', [PagesController::class, 'search']);
+  Route::post('/', [PagesController::class, 'search']);
+  Route::get('/more', [PagesController::class, 'advancedSearch']);
+});
+
+// Route::prefix('/search')->group(function () {
+//
+// });
 
 /* USERS */
-Route::get('/users/account', [UsersController::class, 'account']);
-Route::get('/users/register/', [UsersController::class, 'emailRegister']);
-Route::get('/users/verify/{verifyCode}',[UsersController::class, 'verify']);
-Route::get('/users/verify/',[UsersController::class, 'verifyError']);
-Route::get('/users/login', [UsersController::class, 'loginForm']);
-Route::post('/users/login', [UsersController::class, 'login']);
-Route::get('/users/logout', [UsersController::class, 'logout']);
-Route::get('users/login/fb', [UsersController::class, 'facebook']);
-Route::get('users/login/fb/callback', [UsersController::class, 'callback']);
-Route::get('/users/forget', [UsersController::class, 'forgetForm']);
-Route::post('/users/forget', [UsersController::class, 'forget']);
+Route::prefix('/users')->group(function () {
+  Route::get('/account', [UsersController::class, 'account']);
+  Route::get('/register/', [UsersController::class, 'emailRegister']);
+  Route::get('/verify/{verifyCode}',[UsersController::class, 'verify']);
+  Route::get('/verify/',[UsersController::class, 'verifyError']);
+  Route::get('/login', [UsersController::class, 'loginForm']);
+  Route::post('/login', [UsersController::class, 'login']);
+  Route::post('/institutionalLogin', [UsersController::class, 'institutionalLogin']);
+  Route::get('/logout', [UsersController::class, 'logout']);
+  Route::get('/forget', [UsersController::class, 'forgetForm']);
+  Route::post('/forget', [UsersController::class, 'forget']);
+  Route::get('/{id}', [UsersController::class, 'show']);
+  Route::get('/{id}/edit', [UsersController::class, 'edit']);
+  Route::put('/{id}', [UsersController::class, 'store']);
+  Route::get('/', [UsersController::class, 'index']);
+});
 Route::get('/getPicture', [UsersController::class, 'getFacebookPicture']);
 
-Route::resource('/users',UsersController::class);
-// Route::resource('/users/stoaLogin',[UsersController::class, 'stoaLogin']);
-
-// Route::resource('/users/institutionalLogin',[UsersController::class, 'institutionalLogin']);
-
 /* FOLLOW */
-Route::get('/friends/follow/{user_id}', [UsersController::class, 'follow']);
-Route::get('/friends/unfollow/{user_id}', [UsersController::class, 'unfollow']);
+Route::prefix('/friends')->group(function () {
+  Route::get('/follow/{user_id}', [UsersController::class, 'follow']);
+  Route::get('/unfollow/{user_id}', [UsersController::class, 'unfollow']);
+});
 
 // AVATAR
 Route::get('/profile/10/showphotoprofile/{profile_id}', [UsersController::class, 'profile']);
@@ -158,9 +150,11 @@ Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
 
 Route::post('/suggestions', [SuggestionsController::class, 'store']);
 Route::post('/suggestions/sent', [SuggestionsController::class, 'sendNotification']);
-Route::get('/users/suggestions', [SuggestionsController::class, 'edit']);
-Route::post('/users/suggestions', [SuggestionsController::class, 'update']);
-Route::get('/users/contributions', [ContributionsController::class, 'showContributions']);
+Route::get('/suggestions', [SuggestionsController::class, 'edit']);
+Route::post('/suggestions', [SuggestionsController::class, 'update']);
+Route::get('/contributions', [ContributionsController::class, 'showContributions']);
+// Route::resource('/users/contributions', ContributionsController::class);
+
 
 // JSON Responses Routes
 Route::get('/suggestions/user_suggestions', [SuggestionsController::class, 'getUserSuggestions']);
@@ -183,8 +177,8 @@ Route::get('/friends/unfollowInstitution/{institution_id}', [InstitutionsControl
 Route::resource('/institutions', InstitutionsController::class);
 
 /* TAGS */
-Route::get('/tags/json', 'modules\collaborative\controllers\TagsController@index');
-Route::get('/tags/refreshCount', 'modules\collaborative\controllers\TagsController@refreshCount');
+Route::get('/tags/json', [TagsController::class,'index']);
+Route::get('/tags/refreshCount', [TagsController::class,'refreshCount']);
 
 /* COMMENTARIOS */
 Route::post('/comments/{photo_id}', [CommentsController::class,'comment']);
@@ -208,31 +202,26 @@ Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModal
 //Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');
 
 /* GAMIFICATION */
-Route::get('/photos/{id}/get/field', 'App\Http\Controllers\Gamification\QuestionsController@getField');
-Route::post('/photos/{id}/set/field', 'App\Http\Controllers\Gamification\QuestionsController@setField');
-Route::get('/rank/get', 'App\Http\Controllers\Gamification\ScoresController@getRankEval');
-Route::get('/leaderboard', 'App\Http\Controllers\Gamification\ScoresController@getLeaderboard');
-Route::get('/badges/{id}', 'App\Http\Controllers\Gamification\BadgesController@show');
+Route::get('/photos/{id}/get/field', [QuestionsController::class,'getField']);
+Route::post('/photos/{id}/set/field', [QuestionsController::class,'setField']);
+Route::get('/rank/get', [ScoresController::class,'getRankEval']);
+Route::get('/leaderboard', [ScoresController::class,'getLeaderboard']);
+Route::get('/badges/{id}', [BadgesController::class,'show']);
 
 /* LOG */
-Route::post('/logs', 'modules\logs\controllers\LogsController@create');
+// Route::post('/logs', 'modules\logs\controllers\LogsController@create');
 
 /* DRAFTS */
-Route::post('/drafts/delete'  , 'App\Http\Controllers\Drafts\DraftsController@deleteDraft');
-Route::get( '/drafts/paginate', 'App\Http\Controllers\Drafts\DraftsController@paginateDrafts');
-Route::get( '/drafts/{id}'    , 'App\Http\Controllers\Drafts\DraftsController@getDraft');
-Route::get( '/drafts'         , 'App\Http\Controllers\Drafts\DraftsController@listDrafts');
+Route::post('/drafts/delete', [DraftsController::class,'deleteDraft']);
+Route::get( '/drafts/paginate', [DraftsController::class,'paginateDrafts']);
+Route::get( '/drafts/{id}', [DraftsController::class,'getDraft']);
+Route::get( '/drafts', [DraftsController::class,'listDrafts']);
 
-/*CHATS*/
-Route::resource('chats', 'App\Http\Controllers\Chat\ThreadsController');
-Route::post('/chats/read', 'App\Http\Controllers\Chat\ThreadsController@markThreadAsread');
-Route::resource('messages', 'App\Http\Controllers\Chat\MessagesController');
-Route::post('/chats/cards', 'App\Http\Controllers\Chat\ThreadsController@cards');
 
 /*Notifications*/
-Route::get('/notifications', 'modules\notifications\controllers\NotificationsController@show');
-Route::get('/markRead/{id}', 'modules\notifications\controllers\NotificationsController@read');
-Route::get('/readAll',       'modules\notifications\controllers\NotificationsController@readAll');
-
-Route::get('/refreshBubble', 'NotificationsController@howManyUnread');
+// Route::get('/notifications', 'modules\notifications\controllers\NotificationsController@show');
+// Route::get('/markRead/{id}', 'modules\notifications\controllers\NotificationsController@read');
+// Route::get('/readAll',       'modules\notifications\controllers\NotificationsController@readAll');
+//
+// Route::get('/refreshBubble', 'NotificationsController@howManyUnread');
 Event::subscribe('App\Http\Events\Subscriber\NotificationSubscriber');

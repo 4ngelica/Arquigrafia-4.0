@@ -1,22 +1,30 @@
-<?php 
+<?php
+
 namespace App\Http\Controllers\Drafts;
-use lib\date\Date;
-use Photo;
+
+use App\Http\Controllers\Controller;
+use App\Traits\Drafts\DraftingTrait;
+use App\lib\date\Date;
+use App\Models\Photos\Photo;
+use Illuminate\Http\Request;
 
 class DraftsController extends Controller {
 
+  use DraftingTrait;
+
   public function __construct(Date $date = null)
   {
-    $this->beforeFilter('auth',
-      array( 'except' => ['index','show'] ));
-    $this->date = $date ?: new Date; 
+    // $this->beforeFilter('auth',
+    //   array( 'except' => ['index','show'] ));
+    // $this->date = $date ?: new Date;
   }
-  
-  public function paginateDrafts() {
+
+  public function paginateDrafts(Request $request) {
     $institution = \Session::get('institutionId');
-    $perPage = \Input::get('perPage') ?: 50;
+    $perPage = $request->get('perPage') ?: 50;
+    dd($this->onlyDrafts());
     $drafts = Photo::withInstitution($institution)->onlyDrafts()->paginate($perPage);
-    $view = \View::make('draft_list')
+    $view = view('draft_list')
       ->with([ 'drafts' => $drafts ])->render();
     return \Response::json([
         'view' => $view,
@@ -31,14 +39,15 @@ class DraftsController extends Controller {
     if ( is_null($institution) ) {
       return \Redirect::to('/home');
     }
+
     $drafts = Photo::with('tags')->withInstitution($institution)
       ->onlyDrafts()->paginate(100);
-    return \View::make('show')->with([
+    return view('show')->with([
       'drafts' => $drafts
     ]);
   }
 
-  public function getDraft($id) { 
+  public function getDraft($id) {
     $photo = Photo::onlyDrafts()->find($id);
     if ( is_null($photo) ) {
       return \Redirect::to('/home');
@@ -70,7 +79,7 @@ class DraftsController extends Controller {
       $input['tagsArea'] = implode(',', $photo->tags->lists('name'));
     }
     if ( $photo->authors->count() ) {
-     $input['work_authors'] = implode(';', $photo->authors->lists('name')); 
+     $input['work_authors'] = implode(';', $photo->authors->lists('name'));
     }
     if ( $photo->workDateType == 'year' ) {
       $input['workDate'] = $photo->workdate;
@@ -90,10 +99,10 @@ class DraftsController extends Controller {
       ->withInput($input);
   }
 
-  public function deleteDraft() {
-    $id = \Input::get('draft');
-    $last_page = \Input::get('last_page');
-    $perPage = \Input::get('per_page');
+  public function deleteDraft(Request $request) {
+    $id = $request->get('draft');
+    $last_page = $request->get('last_page');
+    $perPage = $request->get('per_page');
     $institution = \Session::get('institutionId');
     $draft = Photo::withInstitution($institution)->onlyDrafts()->find($id);
     if ( !is_null($draft) ) {
@@ -103,7 +112,7 @@ class DraftsController extends Controller {
       if ( $last_page > $drafts->getLastPage()) {
         return \Response::json([
           'refresh' => true,
-          'view' => \View::make('draft_list')->with(compact('drafts'))->render(),
+          'view' => view('draft_list')->with(compact('drafts'))->render(),
           'current_page' => $drafts->getCurrentPage(),
           'last_page' => $drafts->getLastPage(),
           'total_items' => $drafts->getTotal()

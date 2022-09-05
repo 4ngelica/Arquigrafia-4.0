@@ -1,11 +1,11 @@
-<?php 
-namespace lib\utils;
+<?php
+namespace App\lib\utils;
 
 class HelpTool {
 
 	public static function formattingLongText($firstText, $alternativeText, $limitNumber)
 	{ 	$resulString = null;
-		if ($firstText != null) { 
+		if ($firstText != null) {
     		if(strlen($firstText) > $limitNumber){
     			if($alternativeText != "" || $alternativeText != null){
     				$resulString = $alternativeText;
@@ -15,11 +15,11 @@ class HelpTool {
     			}
     		}else{
     			$resulString = $firstText;
-    		}	
+    		}
     	}
     	return $resulString;
 	}
 
 
 
-}	
+}
