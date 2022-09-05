@@ -59,11 +59,13 @@
             @foreach($tags as $k => $tag)
               @if ($k != count($tags)-1 )
                 <form id="{{$k}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                  @csrf
                   <input type="hidden" name="q" value="{{$tag->name}}"/>
                   <a href="javascript: submitform({{$k}});">{{ $tag->name }}</a>,
                 </form>
               @else
                 <form id="{{$k}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                @csrf
                 <input type="hidden" name="q" value="{{$tag->name}}"/>
                   <a href="javascript: submitform({{$k}});">{{ $tag->name }}</a>
                 </form>
@@ -86,12 +88,14 @@
 
               @if ($v != count($authors)-1 )
                 <form id="a{{$v}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                  @csrf
                   <input type="hidden" name="q" value="{{$author->name}}"/>
                   <input type="hidden" name="type" value="a"/>
                   <a href="javascript: submitformS('a{{$v}}');">{{ $author->name }}</a>;
                 </form>
               @else
                 <form id="a{{$v}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
+                @csrf
                 <input type="hidden" name="q" value="{{$author->name}}"/>
                 <input type="hidden" name="type" value="a"/>
                   <a href="javascript: submitformS('a{{$v}}');">{{ $author->name }}</a>

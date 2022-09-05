@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\URL;
 use App\lib\log\EventLogger;
-use lib\utils\HelpTool;
+use App\lib\utils\HelpTool;
 use Carbon\Carbon;
 use Facebook\FacebookSession;
 use Facebook\FacebookRedirectLoginHelper;
@@ -31,7 +31,6 @@ use Session;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Event;
-
 
 class UsersController extends Controller {
 
@@ -678,6 +677,7 @@ class UsersController extends Controller {
         $user->photo = "/arquigrafia-avatars/".$user->id.".jpg";
         //$user->save();
         $image = Image::make( $request->file('photo'))->encode('jpg', 80);
+
         $image->save(public_path().'/arquigrafia-avatars/'.$user->id.'.jpg');
         $file->move(public_path().'/arquigrafia-avatars', $user->id."_original.".strtolower($ext));
       }
@@ -707,11 +707,12 @@ class UsersController extends Controller {
     return Response::json(true);
   }
 
-  public function institutionalLogin() {
+  public function institutionalLogin(Request $request) {
     Log::info("Login Institution");
-    $login = Input::get('login');
-    $institutionId = Input::get('institution');
-    $password = Input::get('password');
+    dd($request);
+    $login = $request->get('login');
+    $institutionId = $request->get('institution');
+    $password = $request->get('password');
     Log::info("Retrieved params login=".$login.", institution=".$institutionId);
     $booleanExist = User::userBelongInstitution($login,$institutionId);
     Log::info("Result belong institution -> booleanExist=".$booleanExist);
