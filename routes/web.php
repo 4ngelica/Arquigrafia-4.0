@@ -41,8 +41,9 @@ use App\Http\Controllers\Drafts\DraftsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/images/{count}', [PagesController::class, 'images']);
 
-Route::get('/teste', [PagesController::class, 'teste']);
+Route::get('/novaHome', [PagesController::class, 'novaHome']);
 
 Route::get('/', [PagesController::class, 'main']);
 
@@ -86,6 +87,7 @@ Route::prefix('/users')->group(function () {
   Route::get('/{id}/edit', [UsersController::class, 'edit']);
   Route::put('/{id}', [UsersController::class, 'store']);
   Route::get('/', [UsersController::class, 'index']);
+  Route::post('/', [UsersController::class, 'store']);
 });
 Route::get('/getPicture', [UsersController::class, 'getFacebookPicture']);
 

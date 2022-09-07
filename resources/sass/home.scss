@@ -1,0 +1,66 @@
+.title {
+  font-family: "Carter One";
+}
+
+.grid {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.image-grid {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  grid-auto-rows: minmax(25px, auto);
+}
+
+.image-grid .image-item:nth-child(5n) {
+  grid-column-end: span 2;
+}
+
+.image-grid img {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /*border-radius: 5px;*/
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: 0.5s ease;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+.image-item {
+  position: relative;
+}
+
+.image-item:hover .overlay {
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+  opacity: 1;
+}
+
+.download {
+  color: white;
+  font-size: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+#loader-img {
+  position: fixed;
+  bottom: 3vh;
+  left: calc(50vw - 75px);
+  width: 150px;
+}
