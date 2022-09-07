@@ -1,4 +1,8 @@
 window._ = require('lodash');
+window.Vue = require('vue').default;
+window.Popper = require('popper.js');
+window.$ = window.jQuery = require('jquery');
+require('bootstrap');
 
 try {
     require('bootstrap');

@@ -6,12 +6,11 @@
         <div class="image-grid">
 
           <div class="image-item" v-for="photo in photos">
-            <a :href="photo.name" target="_blank" />
-            <img :src="'/arquigrafia-images/' + photo.id + '_home.jpg'" alt="">
-            <div class="overlay">
-              <div class="download">&#43;</div>
-            </div>
+            <a :href="'photos/' + photo.id" target="_blank" />
+              <img :src="'/arquigrafia-images/' + photo.id + '_home.jpg'" alt="">
             </a>
+            <div class="overlay">
+            </div>
           </div>
         </div>
       </div>
