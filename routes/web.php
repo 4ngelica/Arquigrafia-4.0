@@ -63,7 +63,7 @@ Route::get('/termos', function() { return view('termos'); });
 /* SEARCH */
 Route::prefix('/search')->group(function () {
   Route::get('/', [PagesController::class, 'search']);
-  Route::post('/', [PagesController::class, 'search']);
+  Route::post('/', [PagesController::class, 'search'])->name('search');
   Route::get('/more', [PagesController::class, 'advancedSearch']);
 });
 
