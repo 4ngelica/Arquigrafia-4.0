@@ -144,7 +144,7 @@ class SuggestionsController extends Controller {
 		return view('moderation.show-suggestions', ['suggestions' => $final]);
 	}
 
-	public function update(){
+	public function update(Request $request){
 		$input = $request->all();
 		$id_self = \Auth::user()->id;
 		$suggestion = Suggestion::find($input['suggestion_id']);

@@ -22,24 +22,11 @@
 </head>
 <body>
     <div id="app">
-      @include('new_front.nav')
-        <!-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container py-5">
-                <div class="flex-row w-100 d-flex justify-content-around">
-                  <div class="p-2"><img src="{{asset('/img/logo.chou.arquigrafia.png')}}" alt="" width="223" height="33"></div>
-                  <div class="p-2"><form class="" action="index.html" method="post">
-                    <input type="text" name="" value="busca">
-                  </form></div>
-                  <div class="p-2">Login</div>
-
-
-                </div>
-            </div>
-        </nav> -->
+      @include('new_front.layouts.nav')
         <main class="py-4">
             @yield('content')
         </main>
-        @include('new_front.footer')
+        @include('new_front.layouts.footer')
     </div>
 </body>
 </html>

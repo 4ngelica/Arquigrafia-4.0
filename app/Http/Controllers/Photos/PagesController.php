@@ -35,35 +35,15 @@ class PagesController extends Controller {
   }
 
   public function novaHome() {
-    // if(Session::has('last_search'))
-    //   Session::forget('last_search');
-    //
-    // if(Session::has('last_advanced_search'))
-    //   Session::forget('last_advanced_search');
-
-    $photos = Photo::all()->random(150);
-
-    // if(Session::has('institutionId')) {
-    //   $institution = Institution::find(Session::get('institutionId'));
-    // } else {
-    //   $institution = null;
-    // }
 
     EventLogger::printEventLogs(null, "home", null, "Web");
 
-    return view('new_front.home', ['photos' => $photos]);
-    // return view('teste');
+    return view('new_front.home');
   }
 
   public function images($count) {
-    // if(Session::has('last_search'))
-    //   Session::forget('last_search');
-    //
-    // if(Session::has('last_advanced_search'))
-    //   Session::forget('last_advanced_search');
-    $photos = Photo::all()->random($count)->toArray();
 
-    // $photos
+    $photos = Photo::all()->random($count)->toArray();
 
     return response($photos);
 

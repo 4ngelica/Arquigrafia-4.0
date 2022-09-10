@@ -41,6 +41,7 @@
       <div class="suggestion-button thumbs-up thumbs-link" data-id="{{ $suggestion['suggestion']->id }}">
         <!-- Form for THUMBS UP -->
         <form id="send-thumbs-up-form" method="post">
+          @csrf
           <input name="suggestion_id" value="{{ $suggestion['suggestion']->id }}" type="hidden"/>
           <input name="operation" value="accepted" type="hidden"/>
           <span>Aceitar</span>
@@ -49,6 +50,7 @@
       <div class="suggestion-button thumbs-down thumbs-link" data-id="{{ $suggestion['suggestion']->id }}">
         <!-- Form for THUMBS DOWN -->
         <form id="send-thumbs-down-form" method="post">
+          @csrf
           <input name="suggestion_id" value="{{ $suggestion['suggestion']->id }}" type="hidden"/>
           <input name="operation" value="rejected" type="hidden"/>
           <span>Rejeitar</span>

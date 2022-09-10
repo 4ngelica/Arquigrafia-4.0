@@ -13,12 +13,12 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
     <div class="iconVideo"></div>
     <iframe width="560" height="315" src="{{$photos->video}}" frameborder="0" allowfullscreen></iframe>
     @else
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
     @endif
 
   </a>
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}' class="name">
-    {{User::find($info->sender_id)->name}}
+    {{App\Models\Users\User::find($info->sender_id)->name}}
     @if($photos->type == "video")
     postou um novo vídeo
     @else
@@ -54,11 +54,11 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @if($info->secondary_type == NULL && $info->tertiary_type == NULL)
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "#" . $info->object_id}}'>
-    <img src={{"/arquigrafia-images/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ Photo::find(App\Models\Collaborative\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find(App\Models\Collaborative\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
   </a>
   <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "#" . $info->object_id}}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} comentou nesta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} comentou nesta imagem
     @else
     <?php
     $users = explode(":", $info->data);
@@ -72,11 +72,11 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @else
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id }}'>
-    <img src={{"/arquigrafia-images/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ Photo::find(App\Models\Collaborative\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find(App\Models\Collaborative\Comment::find($info->object_id)->photo_id)->name }}" class="gallery_photo" />
   </a>
   <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info->object_id)->photo_id }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
+    {{App\Models\Users\User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else
     Diversos usuários realizaram diversas ações nesta imagem. Confira!
     @endif
@@ -92,12 +92,12 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @if($info->secondary_type == NULL && $info->tertiary_type == NULL)
 <div class="gallery_box">
   <a href='{{ URL::to("/evaluations") . "/" . $info->object_id . "/viewEvaluation/" . $info->sender_id}}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
     <img src="/img/mask-avaliacao.png" class="evaluated-mask">
   </a>
   <a  href='{{ URL::to("/evaluations") . "/" . $info->object_id . "/viewEvaluation/" . $info->sender_id}}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} avaliou esta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} avaliou esta imagem
     @else
     <?php
     $users = explode(":", $info->data);
@@ -111,11 +111,11 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @else
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
   </a>
   <a  href='{{ URL::to("/photos") . "/" . $info->object_id }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
+    {{App\Models\Users\User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else
     Diversos usuários realizaram diversas ações nesta imagem. Confira!
     @endif
@@ -126,26 +126,26 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @elseif($info->news_type == 'new_profile_picture')<!--Alguém que você segue trocou a foto de perfil-->
 <div class="gallery_box">
   <a href='{{ URL::to("/users") . "/" . $info->object_id }}'>
-    @if(User::find($info->object_id)->photo != null)
-    <img src={{"/arquigrafia-avatars/" . $info->object_id . ".jpg"}} title="{{ User::find($info->object_id)->name }}" class="gallery_photo">
+    @if(App\Models\Users\User::find($info->object_id)->photo != null)
+    <img src={{"/arquigrafia-avatars/" . $info->object_id . ".jpg"}} title="{{ App\Models\Users\User::find($info->object_id)->name }}" class="gallery_photo">
     @else
-    <img src="{{ URL::to("/") }}/img/avatar-48.png" title="{{User::find($info->object_id)->name}}" class="gallery_photo">
+    <img src="{{ URL::to("/") }}/img/avatar-48.png" title="{{App\Models\Users\User::find($info->object_id)->name}}" class="gallery_photo">
     @endif
   </a>
   <a href='{{ URL::to("/users") . "/" . $info->object_id }}' class="name">
-    {{User::find($info->sender_id)->name}} trocou sua foto de perfil
+    {{App\Models\Users\User::find($info->sender_id)->name}} trocou sua foto de perfil
   </a>
   <br />
 </div>
 @elseif($info->news_type == 'edited_photo')<!--Alguém que você segue editou uma foto-->
 
-@if(Photo::find($info->object_id)->type != "video")
+@if(App\Models\Photos\Photo::find($info->object_id)->type != "video")
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
   </a>
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}' class="name">
-    {{User::find($info->sender_id)->name}} editou esta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} editou esta imagem
   </a>
   <br />
 </div>
@@ -153,21 +153,21 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @elseif($info->news_type == 'edited_profile')<!--Alguém que você segue editou o perfil-->
 <div class="gallery_box">
   <a href='{{ URL::to("/users") . "/" . $info->object_id }}'>
-    @if(User::find($info->object_id)->photo != null)
-    <img src={{"/arquigrafia-avatars/" . $info->object_id . ".jpg"}} title="{{ User::find($info->object_id)->name }}" class="gallery_photo">
+    @if(App\Models\Users\User::find($info->object_id)->photo != null)
+    <img src={{"/arquigrafia-avatars/" . $info->object_id . ".jpg"}} title="{{ App\Models\Users\User::find($info->object_id)->name }}" class="gallery_photo">
     @else
-    <img src="{{ URL::to("/") }}/img/avatar-48.png" title="{{User::find($info->object_id)->name}}" class="gallery_photo">
+    <img src="{{ URL::to("/") }}/img/avatar-48.png" title="{{App\Models\Users\User::find($info->object_id)->name}}" class="gallery_photo">
     @endif
   </a>
   <a href='{{ URL::to("/users") . "/" . $info->object_id }}' class="name">
-    {{User::find($info->sender_id)->name}} editou seu perfil
+    {{App\Models\Users\User::find($info->sender_id)->name}} editou seu perfil
   </a>
   <br />
 </div>
 @elseif($info->news_type == 'highlight_of_the_week')<!--Destaque da semana-->
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
   </a>
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}' class="name">
     Confira o destaque desta semana!
@@ -178,11 +178,11 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @if($info->secondary_type == NULL && $info->tertiary_type == NULL)
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
   </a>
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} gostou desta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} gostou desta imagem
     @else
     <?php
     $users = explode(":", $info->data);
@@ -196,11 +196,11 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @else
 <div class="gallery_box">
   <a href='{{ URL::to("/photos") . "/" . $info->object_id }}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
   </a>
   <a  href='{{ URL::to("/photos") . "/" . $info->object_id }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
+    {{App\Models\Users\User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else
     Diversos usuários realizaram diversas ações nesta imagem. Confira!
     @endif
@@ -211,11 +211,11 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
 @elseif($info->news_type == 'check_evaluation')
 <div class="gallery_box">
   <a href='{{ URL::to("/evaluations") . "/" . $info->object_id . "/evaluate" }}'>
-    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ Photo::find($info->object_id)->name }}" class="gallery_photo" />
+    <img src={{"/arquigrafia-images/" . $info->object_id . "_home.jpg"}} title="{{ App\Models\Photos\Photo::find($info->object_id)->name }}" class="gallery_photo" />
     <img src="/img/mask-avaliacao.png" class="evaluated-mask">
   </a>
   <a href='{{ URL::to("/evaluations") . "/" . $info->object_id . "/evaluate" }}' class="name">
-    Confira as últimas impressões sobre a imagem {{Photo::find($info->object_id)->name}}
+    Confira as últimas impressões sobre a imagem {{App\Models\Photos\Photo::find($info->object_id)->name}}
   </a>
   <br />
 </div>
@@ -224,7 +224,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   <a href='{{ URL::to("/leaderboard") }}'>
     <?php
     $top_user = DB::table('leaderboards')->where('type', '=', 'uploads')->orderBy('count', 'desc')->first() ?? null;
-    $uploader = User::find($top_user->user_id) ?? null;
+    $uploader = App\Models\Users\User::find($top_user->user_id) ?? null;
     ?>
     @if($uploader->photo != null)
     <img src={{$uploader->photo}} title="Learderboard arquigrafia" class="gallery_photo" />
