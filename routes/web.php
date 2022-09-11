@@ -41,10 +41,20 @@ use App\Http\Controllers\Drafts\DraftsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/images/{count}', [PagesController::class, 'images']);
 
+//novo front
+Route::get('/images/{count}', [PagesController::class, 'images']);
 Route::get('/novaHome', [PagesController::class, 'novaHome']);
 
+Route::prefix('/NovoSearch')->group(function () {
+  Route::get('/', [PagesController::class, 'NovoSearch']);
+  Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
+  Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
+});
+//fim do novo front
+
+
+//front atual
 Route::get('/', [PagesController::class, 'main']);
 
 Route::get('/photos/import', [ImportsController::class, 'import']);
@@ -63,7 +73,7 @@ Route::get('/termos', function() { return view('termos'); });
 /* SEARCH */
 Route::prefix('/search')->group(function () {
   Route::get('/', [PagesController::class, 'search']);
-  Route::post('/', [PagesController::class, 'search'])->name('search');
+  Route::post('/', [PagesController::class, 'search']);
   Route::get('/more', [PagesController::class, 'advancedSearch']);
 });
 

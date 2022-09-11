@@ -36,8 +36,6 @@ class PagesController extends Controller {
 
   public function novaHome() {
 
-    EventLogger::printEventLogs(null, "home", null, "Web");
-
     return view('new_front.home');
   }
 
@@ -46,17 +44,39 @@ class PagesController extends Controller {
     $photos = Photo::all()->random($count)->toArray();
 
     return response($photos);
+  }
 
-    // if(Session::has('institutionId')) {
-    //   $institution = Institution::find(Session::get('institutionId'));
-    // } else {
-    //   $institution = null;
-    // }
+  public function showSearch() {
+    return view('new_front.search');
+  }
 
-    // EventLogger::printEventLogs(null, "home", null, "Web");
-    //
-    // return view('new_front.home', ['photos' => $photos]);
-    // return view('teste');
+  public function NovoSearch(Request $request) {
+
+    if($request->search) {
+      $search = $request->search;
+
+      $photos = Photo::query()
+        ->where('name', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->get();
+
+      $authors = Author::query()
+        ->where('name', 'LIKE', "%{$search}%")
+        ->get();
+
+      $users = User::query()
+        ->where('name', 'LIKE', "%{$search}%")
+        ->get();
+
+      $photosCount = $photos->count();
+      $usersCount = $users->count();
+      $authorsCount = $authors->count();
+
+      return view('new_front.search', compact(['photos', 'users', 'authors', 'search', 'photosCount', 'usersCount', 'authorsCount']));
+    }
+
+      $search = null;
+      return view('new_front.search', compact(['search']));
   }
 
   public function main() {

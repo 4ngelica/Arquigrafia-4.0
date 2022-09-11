@@ -17,7 +17,7 @@
     <div class="col-lg-4 col-8 d-flex justify-content-center">
       <form class="d-flex search-form" method="POST" action="{{route('search')}}">
         @csrf
-        <input class="form-control me-2 search-bar" type="search" placeholder="" aria-label="Buscar">
+        <input class="form-control me-2 search-bar" name="search" type="search" placeholder="" aria-label="Buscar" value="{{old('search')}}">
         <button class="search-button" type="submit">
         </button>
       </form>
