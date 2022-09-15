@@ -12,11 +12,25 @@
   grid-gap: 8px;
   grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
   grid-auto-rows: minmax(25px, auto);
+  // grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  // grid-template-rows: repeat(auto-fill, minmax(200px, 1fr));
+  // grid-template-columns: repeat(5, 1fr);
+  // grid-auto-rows: 200px;
 }
 
-.image-grid .image-item:nth-child(5n) {
-  grid-column-end: span 2;
-}
+// .image-grid div:nth-child(2) {
+//   grid-column: 2;
+//   grid-row: 4 / 2;
+//   grid-area: 3/4/5/7;
+// }
+// .image-grid div:nth-child(5) {
+//   grid-column: 1 / 2;
+//   grid-row: 1 / 2;
+// }
+// //
+// .image-grid .image-item:nth-child(5n) {
+//   grid-column-end: span 2;
+// }
 
 .image-grid img {
   display: flex;
@@ -24,7 +38,27 @@
   height: 100%;
   object-fit: cover;
   /*border-radius: 5px;*/
+
+// animation: 1s ease-out 0s 1 slideInFromLeft;
+
 }
+
+// @keyframes example {
+//   0%   {left:0px; top:0px;}
+//   25%  {left:200px; top:0px;}
+//   50%  { left:200px; top:200px;}
+//   75%  {left:0px; top:200px;}
+//   100% {left:0px; top:0px;}
+// }
+// @keyframes slideInFromLeft {
+//   0% {
+//     transform: translateY(-100%);
+//   }
+//
+//   100% {
+//     transform: translateY(0);
+//   }
+// }
 
 .overlay {
   position: absolute;
@@ -40,6 +74,10 @@
 }
 .image-item {
   position: relative;
+//   animation-name: example;
+// animation-duration: 4s;
+// animation-delay: -2s;
+
 }
 
 .image-item:hover .overlay {
@@ -64,4 +102,12 @@
   bottom: 3vh;
   left: calc(50vw - 75px);
   width: 150px;
+}
+
+.image-title {
+  color: #fff;
+  position: absolute;
+  bottom: 0;
+  text-align: left;
+  padding: 0 10px;
 }
