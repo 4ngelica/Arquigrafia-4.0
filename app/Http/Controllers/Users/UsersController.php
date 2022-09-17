@@ -40,6 +40,13 @@ class UsersController extends Controller {
     //   array('only' => ['follow', 'unfollow']));
   }
 
+  public function NovoUsersShow($id)
+  {
+    $user = User::find($id);
+
+    return view('new_front.users.show', compact(['user']));
+  }
+
   public function index()
   {
     $users = User::all();

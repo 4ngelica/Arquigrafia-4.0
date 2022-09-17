@@ -2,7 +2,7 @@
 
 @section('content')
 @if($search)
-  <search-component :users="{{ $users }}" :photos="{{ $photos }}" :authors="{{ $authors }}" :search=" {{ $search }} " :photoscount=" {{ $photosCount }} " :userscount=" {{ $usersCount }}" :authorscount=" {{ $authorsCount }}"></search-component>
+  <search-component :users="{{ $users }}" :photos="{{ $photos }}" :authors="{{ $authors }}" :search=" {{ json_encode($search) }} " :photoscount=" {{ $photosCount }} " :userscount=" {{ $usersCount }}" :authorscount=" {{ $authorsCount }}"></search-component>
 @else
   <div class="container">
     <h1>Resultados encontrados para: </h1>

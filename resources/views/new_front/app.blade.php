@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Arquigrafia') }}</title>
+    <title>Arquigrafia - Seu universo de imagens de arquitetura</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>

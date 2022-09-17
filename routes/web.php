@@ -51,6 +51,10 @@ Route::prefix('/NovoSearch')->group(function () {
   Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
   Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
 });
+
+Route::prefix('/NovoUsers')->group(function () {
+  Route::get('/{id}', [UsersController::class, 'NovoUsersShow'])->name('users.show');
+});
 //fim do novo front
 
 

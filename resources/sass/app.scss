@@ -9,13 +9,19 @@
 
 @import 'home';
 @import 'nav';
+@import 'profile';
 
 body {
   font-family: $font-family-sans-serif;
+  min-width: 320px;
 }
 
 .container {
     width: 80%;
     max-width: 1160px;
     padding: 0;
+}
+
+main {
+  background: none;
 }

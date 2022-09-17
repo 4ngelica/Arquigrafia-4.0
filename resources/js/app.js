@@ -22,6 +22,7 @@ window.Vue = require('vue').default;
 
 Vue.component('home-component', require('./components/Home-Component.vue').default);
 Vue.component('search-component', require('./components/Search-Component.vue').default);
+Vue.component('profile-component', require('./components/Profile-Component.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
