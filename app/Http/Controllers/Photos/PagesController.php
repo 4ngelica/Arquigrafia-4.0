@@ -39,6 +39,20 @@ class PagesController extends Controller {
     return view('new_front.home');
   }
 
+  public function NovoUsersShow($id)
+  {
+    $user = User::find($id);
+
+    return view('new_front.users.show', compact(['user']));
+  }
+
+  public function NovoPhotosShow($id)
+  {
+    $photo = Photo::find($id);
+
+    return view('new_front.photos.show', compact(['photo']));
+  }
+
   public function images($count) {
 
     $photos = Photo::all()->random($count)->toArray();
@@ -54,11 +68,22 @@ class PagesController extends Controller {
 
     if($request->search) {
       $search = $request->search;
+      // dd($search);
+
+      // $searchValues = preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+
+      // $photos = Photo::where(function ($q) use ($searchValues) {
+      //   foreach ($searchValues as $value) {
+      //     $q->orWhere('name', 'like', "%{$value}%")->orWhere('description', 'LIKE', "%{$value}%");
+      //   }
+      // })->get();
+
 
       $photos = Photo::query()
         ->where('name', 'LIKE', "%{$search}%")
         ->orWhere('description', 'LIKE', "%{$search}%")
         ->get();
+
 
       $authors = Author::query()
         ->where('name', 'LIKE', "%{$search}%")
@@ -67,6 +92,18 @@ class PagesController extends Controller {
       $users = User::query()
         ->where('name', 'LIKE', "%{$search}%")
         ->get();
+
+      // $authors = Author::where(function ($q) use ($searchValues) {
+      //   foreach ($searchValues as $value) {
+      //     $q->orWhere('name', 'like', "%{$value}%");
+      //   }
+      // })->get();
+      //
+      // $users = User::where(function ($q) use ($searchValues) {
+      //   foreach ($searchValues as $value) {
+      //     $q->orWhere('name', 'like', "%{$value}%");
+      //   }
+      // })->get();
 
       $photosCount = $photos->count();
       $usersCount = $users->count();

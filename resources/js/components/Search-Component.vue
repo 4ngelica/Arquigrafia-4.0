@@ -8,14 +8,13 @@
     <div v-if="authorscount > 0" class="results-card border my-2 p-2 rounded-2">
       <h3>Autores</h3>
       <div class="row authors">
-        <ul  v-for="author in authors">
+        <ul v-for="author in authors">
             <li>
               {{author.name }}
             </li>
         </ul>
       </div>
     </div>
-
     <div v-if="userscount > 0" class="results-card border my-2 p-2 rounded-2">
       <h3>Usuários</h3>
       <div class="row users">
@@ -35,16 +34,36 @@
           </div>
         </div>
     </div>
+
+
+
   </div>
 </template>
 
 <script>
+
+const  count = 3;
 
   export default {
     props: ['users', 'photos', 'authors', 'search', 'photoscount', 'userscount', 'authorscount'],
     methods: {
       imageUrlAlt(event) {
         event.target.src = "/img/avatar-60.png"
+      },
+      nextPage(page) {
+        alert('teste')
+        fetch(`/images/${count}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then(data => {
+          console.log(data)
+          // this.photos.push(...data);
+          // this.loading = false;
+        })
+        .catch(err => {
+          // this.loading = false;
+        });
       }
     }
   };

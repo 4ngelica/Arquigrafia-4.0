@@ -1,5 +1,5 @@
 @extends('new_front.app')
 
 @section('content')
-<profile-component></profile-component>
+<profile-component :user="{{$user}}"></profile-component>
 @endsection

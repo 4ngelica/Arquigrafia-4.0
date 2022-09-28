@@ -2,8 +2,8 @@
   <div class="">
     <div class="container user-header">
       <div class="d-flex">
-        <img class="px-2" :src="'/arquigrafia-avatars/4882.jpg'" alt="" width="80" height="100">
-        <h1 class="px-2">NOME DO USER</h1>
+        <img class="px-2" :src="user.photo" alt="" width="80" height="100">
+        <h1 class="px-2">{{user.name}}</h1>
       </div>
       <div class="p-2">
         Seguir
@@ -17,7 +17,12 @@
         <h3>Perfil</h3>
         <hr>
         <ul class="user-attributes list-group">
-          <li>Nome: </li>
+          <li>Nome completo: {{ user.name + ' ' + (user.lastName ? user.lastName : '') }} </li>
+          <li v-if="user.scholarity">Escolaridade: {{ user.scholarity }} </li>
+          <li v-if="user.country">País: {{ user.country }} </li>
+          <li v-if="user.scholarity">Escolaridade: {{ user.scholarity }} </li>
+          <li v-if="user.institution">Instituição: {{ user.institution }} </li>
+          <li v-if="user.occupation">Ocupação: {{ user.occupation }} </li>
         </ul>
       </div>
       <div class="user-social col-md-4 col-12 px-2">
@@ -57,15 +62,38 @@
 const count = 20;
 
 export default {
+  props: ['user'],
   data () {
     return {
+      followers: [],
+      following: [],
+      badges: [],
+      albuns: [],
       photos: [],
-      loading: false
+      evaluations: []
     }
   },
   methods: {
+    get () {
+      console.log(this.user);
+
+      fetch(`/images/${id}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then(data => {
+        // this.photos.push(...data);
+        // this.loading = false;
+      })
+      .catch(err => {
+        // this.loading = false;
+      });
+    },
     loadMore() {
     },
+  },
+  mounted () {
+    this.get();
   }
 };
 

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\APIPhotosController;
+use App\Http\Controllers\Api\NewApis\APIPhotosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/photos', [APIPhotosController::class, 'index']);
+Route::get('/photos/{id}', [APIPhotosController::class, 'show']);
 
 
 
