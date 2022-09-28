@@ -2,7 +2,7 @@
 
 namespace App\Models\Photos;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Audio extends Model {
 

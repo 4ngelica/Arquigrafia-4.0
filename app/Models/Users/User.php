@@ -9,12 +9,12 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 use App\lib\date\Date;
 use App\lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use App\Traits\Gamification\UserGamificationTrait;
 use App\Models\Institutions\Institution;
 use App\Models\Collaborative\Comment;
 use App\Models\Collaborative\Like;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 

@@ -6,7 +6,7 @@ use App\Models\Collaborative\Tag;
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
 use App\Traits\Gamification\LikableGamificationTrait;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 
 class Comment extends Model {

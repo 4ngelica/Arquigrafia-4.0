@@ -6,9 +6,10 @@ use App\Models\Users\User;
 use Illuminate\Support\Collection as Collection;
 use Session;
 use App\Models\Institutions\Employee;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 
-class Institution extends \Eloquent {
+class Institution extends Model {
 
 	protected $fillable = ['name','country'];
 	protected $softDelete = true;

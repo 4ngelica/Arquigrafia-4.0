@@ -4,7 +4,7 @@ namespace App\Models\Collaborative;
 
 use App\Models\Users\User;
 use App\Traits\Gamification\LikableGamificationTrait;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Like extends Model {
 

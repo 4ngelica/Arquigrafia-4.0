@@ -2,7 +2,7 @@
 namespace App\Models\Evaluations;
 
 use App\Models\Evaluations\Evaluation;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Binomial extends Model {
 

@@ -54,7 +54,7 @@ class PagesController extends Controller {
     if(Session::has('last_advanced_search'))
       Session::forget('last_advanced_search');
 
-    $photos = Photo::orderByRaw("RAND()")->take(150)->get();
+    $photos = Photo::all()->random(150);
 
     if(Session::has('institutionId')) {
       $institution = Institution::find(Session::get('institutionId'));

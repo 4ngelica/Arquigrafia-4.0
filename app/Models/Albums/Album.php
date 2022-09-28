@@ -2,7 +2,8 @@
 
 namespace App\Models\Albums;
 
-use Illuminate\Database\Eloquent\Model;
+// use Jenssegers\Mongodb\Eloquent\Model as Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use Illuminate\Support\Facades\Log;
 
 class Album extends Model {

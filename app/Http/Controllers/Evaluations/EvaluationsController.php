@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Evaluations;
 
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use App\Models\News\News as News;
 use App\lib\log\EventLogger;
 use Session;

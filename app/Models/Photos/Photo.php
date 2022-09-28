@@ -5,7 +5,7 @@ namespace App\Models\Photos;
 use App\Traits\Drafts\DraftingTrait;
 use App\lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+// use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Log;
 use App\Traits\Gamification\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
@@ -16,7 +16,7 @@ use App\Models\Moderation\Suggestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\lib\metadata\Exiv2;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use DateTime;
 use Session;
 
@@ -25,6 +25,12 @@ class Photo extends Model {
 	// use DraftingTrait;
 	// use SoftDeletingTrait;
 	use LikableGamificationTrait;
+
+	protected $connection = 'mongodb';
+	// protected $keyType = 'int';
+
+	protected $collection = 'photos';
+	// protected $primaryKey = 'id';
 
 	protected $softDelete = true;
 

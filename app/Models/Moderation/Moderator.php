@@ -2,7 +2,7 @@
 
 namespace App\Models\Moderation;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Moderator extends Model {
 	protected $fillable = ['user_id', 'moderation_type_id', 'level'];
