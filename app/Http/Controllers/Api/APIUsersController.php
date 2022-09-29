@@ -1,8 +1,12 @@
 <?php
 
+namespace App\Http\Controllers\Api;
+
 use App\Models\Collaborative\Tag;
 
 use lib\log\EventLogger;
+use App\Http\Controllers\Controller;
+use App\Models\Users\User;
 
 class APIUsersController extends Controller {
 
@@ -13,7 +17,7 @@ class APIUsersController extends Controller {
 	 */
 	public function index()
 	{
-		return \Response::json(\User::all()->toArray());
+		return \Response::json(User::all()->toArray());
 	}
 
 

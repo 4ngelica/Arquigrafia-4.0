@@ -30,7 +30,7 @@ class Photo extends Model {
 	// protected $keyType = 'int';
 
 	protected $collection = 'photos';
-	// protected $primaryKey = 'id';
+	protected $primaryKey = 'id';
 
 	protected $softDelete = true;
 
