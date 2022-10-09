@@ -11,10 +11,12 @@
 @import 'nav';
 @import 'profile';
 @import 'photo';
+@import 'footer';
 
 body {
   font-family: $font-family-sans-serif;
   min-width: 320px;
+  background: none;
 }
 
 .container {

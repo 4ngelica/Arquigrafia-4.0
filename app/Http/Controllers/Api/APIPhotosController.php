@@ -34,18 +34,19 @@ class APIPhotosController extends Controller {
 		// $fields =	explode(',', $request->fields);
 		//	$query = Photo::get($fields);
 		// }
-
+		//
 		// if ($request->random) {
-		//	$query = $query->random(intval($request->random));
+		// 	$query = $query->random(intval($request->random));
 		// }
-
+		//
 		// $query = $query->where('draft', null);
-
+		//
 		//
 		// if ($request->orderBy) {
 		// 	$query = $query->paginate(intval($request->paginate));
 		// }
 		// return Response::json($query);
+
 	}
 
 

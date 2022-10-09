@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\APITagsController;
 use App\Http\Controllers\Api\APIPhotosController;
 use App\Http\Controllers\Api\APIAuthorsController;
 use App\Http\Controllers\Api\APILogInController;
-use App\Http\Controllers\Api\NewApis\APIPhotosController;
+// use App\Http\Controllers\Api\NewApis\APIPhotosController;
 
 /*
 |--------------------------------------------------------------------------

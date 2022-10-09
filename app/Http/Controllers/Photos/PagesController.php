@@ -34,11 +34,6 @@ class PagesController extends Controller {
     $this->date = $date ?: new Date;
   }
 
-  public function novaHome() {
-
-    return view('new_front.home');
-  }
-
   public function NovoUsersShow($id)
   {
     $user = User::find($id);
@@ -68,15 +63,6 @@ class PagesController extends Controller {
 
     if($request->search) {
       $search = $request->search;
-      // dd($search);
-
-      // $searchValues = preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY);
-
-      // $photos = Photo::where(function ($q) use ($searchValues) {
-      //   foreach ($searchValues as $value) {
-      //     $q->orWhere('name', 'like', "%{$value}%")->orWhere('description', 'LIKE', "%{$value}%");
-      //   }
-      // })->get();
 
 
       $photos = Photo::query()
@@ -92,18 +78,6 @@ class PagesController extends Controller {
       $users = User::query()
         ->where('name', 'LIKE', "%{$search}%")
         ->get();
-
-      // $authors = Author::where(function ($q) use ($searchValues) {
-      //   foreach ($searchValues as $value) {
-      //     $q->orWhere('name', 'like', "%{$value}%");
-      //   }
-      // })->get();
-      //
-      // $users = User::where(function ($q) use ($searchValues) {
-      //   foreach ($searchValues as $value) {
-      //     $q->orWhere('name', 'like', "%{$value}%");
-      //   }
-      // })->get();
 
       $photosCount = $photos->count();
       $usersCount = $users->count();
@@ -130,13 +104,6 @@ class PagesController extends Controller {
   }
 
   public function home() {
-    if(Session::has('last_search'))
-      Session::forget('last_search');
-
-    if(Session::has('last_advanced_search'))
-      Session::forget('last_advanced_search');
-
-    $photos = Photo::all()->random(150);
 
     if(Session::has('institutionId')) {
       $institution = Institution::find(Session::get('institutionId'));
@@ -146,7 +113,7 @@ class PagesController extends Controller {
 
     EventLogger::printEventLogs(null, "home", null, "Web");
 
-    return view('index', ['photos' => $photos, 'institution' => $institution ]);
+    return view('new_front.home');
   }
 
   public function panel() {

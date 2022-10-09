@@ -81,8 +81,8 @@
       <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="20">
         <div class="image-grid">
           <div class="image-item" v-for="photo in photos">
-            <a :href="'photos/' + photo.id">
-              <img :src="'/arquigrafia-images/' + photo.id + '_view.jpg'" alt="">
+            <a :href="'photos/' + photo._id">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="">
               <div class="overlay">
                 <p class="image-title">{{photo.name}}</p>
               </div>

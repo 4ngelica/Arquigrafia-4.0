@@ -86,7 +86,7 @@
                 <p class="m-0" >{{Auth::user()->email}}</p>
               </div>
             </li>
-            <li><a class="dropdown-item" href="{{'/NovoUsers/' . Auth::user()->id}}">Perfil</a></li>
+            <li><a class="dropdown-item" href="{{'/users/' . Auth::user()->_id}}">Perfil</a></li>
             <li><a class="dropdown-item" href="#">Contribuições</a></li>
             <li><a class="dropdown-item" href="#">Meus Álbuns</a></li>
             <li><a class="dropdown-item" href="#">Museu Aberto</a></li>

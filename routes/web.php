@@ -101,7 +101,7 @@ Route::prefix('/users')->group(function () {
   Route::get('/logout', [UsersController::class, 'logout']);
   Route::get('/forget', [UsersController::class, 'forgetForm']);
   Route::post('/forget', [UsersController::class, 'forget']);
-  // Route::get('/{id}', [UsersController::class, 'show']);
+  Route::get('/{id}', [UsersController::class, 'show']);
   Route::get('/{id}/edit', [UsersController::class, 'edit']);
   // Route::put('/{id}', [UsersController::class, 'store']);
   Route::get('/', [UsersController::class, 'index']);

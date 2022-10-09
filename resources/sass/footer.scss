@@ -1,0 +1,194 @@
+#footer {
+  bottom: 0;
+  clear: both;
+  margin-top: 20px;
+  font-size: 0.85em; }
+
+#footer .footer-msg {
+  width: auto; }
+
+#footer .footer-msg p {
+  display: inline-block;
+  margin-top: 0; }
+
+#footer .footer-logo {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin: 3px 8px 0 0;
+  background: url("/img/logo.chou.2018.png") no-repeat;
+  background-size: contain; }
+
+/*galeria do footer*/
+.footer_images {
+  background: #404040;
+  height: 89px;
+  overflow: hidden;
+  padding-top: 8px;
+  position: relative; }
+
+.footer_images .arrows {
+  font-size: 30px; }
+
+.footer_images .arrows {
+  color: #A6A6A6; }
+
+.footer_images .arrows:hover {
+  color: #CB9833;
+  cursor: pointer; }
+
+.footer_images #arrow-right {
+  position: absolute;
+  right: 17px;
+  top: 30px;
+  display: inline-block; }
+
+.footer_images #arrow-left {
+  position: absolute;
+  left: 17px;
+  top: 30px;
+  display: inline-block; }
+
+#images_container {
+  height: 80px;
+  width: 905px;
+  margin: auto;
+  overflow: hidden; }
+
+.images_line {
+  height: 80px;
+  width: 2715px; }
+
+a.footer_image {
+  display: block;
+  margin: 4px;
+  float: left;
+  border: none;
+  width: 105px;
+  height: 72px;
+  background: #000; }
+
+/*frase - contador de imagens*/
+.counter {
+  display: block;
+  float: left;
+  width: 100%;
+  margin: 10px 0;
+  overflow: hidden; }
+
+/*créditos*/
+#credits {
+  padding-top: 20px;
+  margin-bottom: 10px; }
+
+#credits ul {
+  margin: 0;
+  float: left;
+  width: 160px;
+  height: 160px; }
+
+#credits ul.last {
+  width: 80px;
+  margin-right: -15px; }
+
+#credits ul li {
+  display: block;
+  margin: 0 10px 4px; }
+
+#credits ul li a {
+  display: block;
+  height: 40px; }
+
+#credits ul li #usp {
+  background: url(/img/logos.png) 0 0;
+  width: 90px; }
+
+#credits ul li #fapesp {
+  background: url(/img/logos.png) 0 -50px;
+  width: 90px; }
+
+#credits ul li #rnp {
+  background: url(/img/logos.png) 0 -100px;
+  width: 90px; }
+
+#credits ul li #cnpq {
+  background: url(/img/logos.png) -170px 0;
+  width: 90px; }
+
+#credits ul li #ccsl {
+  background: url(/img/logos.png) -170px -50px;
+  width: 90px; }
+
+#credits ul li #chancela {
+  background: url(/img/logos.png) -170px -100px;
+  width: 90px;
+  height: 50px; }
+
+#credits ul li #fau {
+  background: url(/img/logos.png) -350px 0;
+  width: 70px; }
+
+#credits ul li #ime {
+  background: url(/img/logos.png) -350px -50px;
+  width: 70px; }
+
+#credits ul li #eca {
+  background: url(/img/logos.png) -350px -100px;
+  width: 150px; }
+
+#credits ul li #quapa {
+  background: url(/img/logos.png) -525px 0;
+  width: 70px; }
+
+#credits ul li #vitruvius {
+  background: url(/img/logos.png) -525px -50px;
+  width: 70px; }
+
+#credits ul li #archdaily {
+  background: url(/img/archdaily-brasil.png) 0 0 no-repeat;
+  width: 80px;
+  height: 40px; }
+
+#credits ul li #benchmark {
+  background: url(/img/logos.png) -700px 0 no-repeat;
+  width: 55px; }
+
+#credits ul li #brz {
+  background: url(/img/logos.png) -700px -50px no-repeat;
+  width: 55px; }
+
+#credits ul li #rckt {
+  background: url(/img/rckt.png) 15px 0 no-repeat;
+  width: 70px;
+  margin-top: 5px; }
+
+#credits ul li #doctela {
+  background: url(/img/doctela.png) 0 0 no-repeat;
+  width: 70px;
+  margin: 10px 0 0 -5px; }
+
+#copyright {
+  margin: 18px 0;
+  float: right; }
+  /* footer */
+  #credits ul {
+    width: 19%;
+    height: auto; }
+  #credits .footer-links {
+    text-align: left;
+    width: 150px;
+    height: auto;
+    margin: 4px 31px -10px 0;
+    border-bottom: none;
+    border-right: 1px solid #ddd; }
+  #credits .footer-links a {
+    font-weight: normal;
+    height: 23px; }
+  #credits .footer-links li {
+    display: block;
+    margin-left: 0; }
+  #credits .footer-last {
+    clear: both;
+    padding-top: 10px; }
+  #credits .footer-logos {
+    display: block; }
