@@ -55,7 +55,7 @@ class UsersController extends Controller {
     $isGamified = Gamified::isGamified($variationId);
 
     // Getting user info
-    $user = User::find($id)->first();
+    $user = User::find($id);
     $institutionFollowed = $user->followingInstitution;
     $photos = $user->photos()->get()->reverse();
 

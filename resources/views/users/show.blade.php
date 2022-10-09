@@ -13,7 +13,7 @@
 <script type="text/javascript" src="{{ URL::to("/") }}/js/dist/profile.bundle.js"></script>
 <script type="text/javascript">
   var profileUser = {{ json_encode($user) }}
-	var userID = {{$user->id}};
+	var userID = {{$user->_id}};
 	console.log({{ $userPoints }})
 </script>
 
@@ -22,7 +22,6 @@
 @stop
 
 @section('content')
-
   @if (Session::get('message'))
         <div class="container">
           <div class="twelve columns">
@@ -35,9 +34,9 @@
     <div class="container">
       <div id="user_header" class="twelve columns">
         <!-- Avatar with edit profile -->
-        @if (Auth::check() && Auth::user()->id == $user->id)
+        @if (Auth::check() && Auth::user()->_id == $user->_id)
          <div class="div_avatar_size" >
-           <a href= '{{ url("users/" . $user->id . "/edit") }}' title="Editar perfil" >
+           <a href= '{{ url("users/" . $user->_id . "/edit") }}' title="Editar perfil" >
            @if ($user->photo != "")
              <img class ="class_img_avatar" class="avatar" src="{{ asset($user->photo) }}" class="user_photo_thumbnail"/>
            @else
@@ -66,13 +65,13 @@
           </p>
 
 
-			@if (Auth::check() && $user->id != Auth::user()->id && !Session::has('institutionId'))
+			@if (Auth::check() && $user->_id != Auth::user()->_id && !Session::has('institutionId'))
     			@if (!empty($follow) && $follow == true )
-	    			<a href="{{ URL::to("/friends/follow/" . $user->id) }}"
+	    			<a href="{{ URL::to("/friends/follow/" . $user->_id) }}"
 	    				id="single_view_contact_add">Seguir</a><br />
  				@else
             		<div id="unfollow-button" class="label_following">
-					    <a href="{{ URL::to("/friends/unfollow/" . $user->id) }}">
+					    <a href="{{ URL::to("/friends/unfollow/" . $user->_id) }}">
          					<p  class="label success new-label"><span>Seguindo</span></p>
     					</a>
 					</div>
@@ -82,8 +81,8 @@
  						<p  class="label new-label"><span>Enviar mensagem</span></p>
  					</a>
  				</div>
- 			@elseif (Auth::check() && $user->id == Auth::user()->id && !Session::has('institutionId'))
- 				<a href="{{ URL::to("/users/" . $user->id . "/edit") }}" id="single_view_contact_add" title="Edite o seu perfil">Editar perfil</a><br />
+ 			@elseif (Auth::check() && $user->_id == Auth::user()->_id && !Session::has('institutionId'))
+ 				<a href="{{ URL::to("/users/" . $user->_id . "/edit") }}" id="single_view_contact_add" title="Edite o seu perfil">Editar perfil</a><br />
 			@endif
 
 	        </div>
@@ -102,7 +101,7 @@
       	<div class="container row">
       		<div class="six columns">
 	      		<p>
-	      			@if (Auth::check() && $user->id == Auth::user()->id && !Session::has('institutionId'))
+	      			@if (Auth::check() && $user->_id == Auth::user()->_id && !Session::has('institutionId'))
 	      				Você ainda não possui imagens no seu perfil. Faça o upload de uma imagem
 	      				<a href="{{ URL::to('/photos/upload') }}">aqui</a>
 	      			@else
@@ -123,8 +122,8 @@
     	<div class="four columns">
       	<hgroup class="profile_block_title">
         	<h3><i class="profile"></i>Perfil</h3> &nbsp; &nbsp;
-        	<?php if (Auth::check() && Auth::user()->id == $user->id && !Session::has('institutionId')) { ?>
-               	<a href= '{{"/users/" . $user->id . "/edit" }}' title="Editar perfil" >
+        	<?php if (Auth::check() && Auth::user()->_id == $user->_id && !Session::has('institutionId')) { ?>
+               	<a href= '{{"/users/" . $user->_id . "/edit" }}' title="Editar perfil" >
         		<img src="{{ asset("img/edit.png") }}" width="16" height="16" />
         	</a>
         	<?php } ?>
@@ -273,7 +272,7 @@
 			<div class="twelve columns albums">
 				<hgroup class="profile_block_title">
 					<h3><i class="photos"></i>
-						@if (Auth::check() && $user->id == Auth::user()->id && !Session::has('institutionId'))
+						@if (Auth::check() && $user->_id == Auth::user()->_id && !Session::has('institutionId'))
 							Meus álbuns
 						@else
 							Álbuns
@@ -305,7 +304,7 @@
 						@endforeach
 					@else
 						<p>
-						@if (Auth::check() && $user->id == Auth::user()->id)
+						@if (Auth::check() && $user->_id == Auth::user()->_id)
 							Você ainda não tem nenhum álbum. Crie um <a href="{{ URL::to('/albums/create') }}">aqui</a>
 						@else
 							Não possui álbuns.
@@ -332,7 +331,7 @@
 		<div class="twelve columns albums">
 			<hgroup class="profile_block_title">
 				<h3><img src="{{ asset("img/evaluate.png") }}" width="16" height="16"/>
-					@if (Auth::check() && $user->id == Auth::user()->id &&!Session::has('institutionId'))
+					@if (Auth::check() && $user->_id == Auth::user()->_id &&!Session::has('institutionId'))
 						<!--Minhas imagens avaliadas-->
 						Minhas imagens interpretadas
 					@else
@@ -345,7 +344,7 @@
 			<div class="profile_box">
 				@if ($evaluatedPhotos->count() > 0)
 					@foreach($evaluatedPhotos as $evaluatedPhoto)
-						@if (Auth::check() && $user->id == Auth::user()->id && !Session::has('institutionId'))
+						@if (Auth::check() && $user->_id == Auth::user()->_id && !Session::has('institutionId'))
 							<div class="gallery_box">
 								<a href='{{"/evaluations/" . $evaluatedPhoto->id . "/evaluate/" }}' class="gallery_photo" title="{{ $evaluatedPhoto->name }}">
 									<img src="{{ URL::to("/arquigrafia-images/" . $evaluatedPhoto->id . "_home.jpg") }}" class="gallery_photo" />
@@ -369,7 +368,7 @@
 					@endforeach
 				@else
 					<p>
-						@if (Auth::check() && $user->id == Auth::user()->id)
+						@if (Auth::check() && $user->_id == Auth::user()->_id)
 							Você ainda não realizou nenhuma avaliação.
               <a href="{{ URL::to('/') }}">Selecione</a> uma imagem e avalie a arquitetura apresentada nela.
 						@else
