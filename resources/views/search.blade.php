@@ -89,16 +89,16 @@
               @if ($v != count($authors)-1 )
                 <form id="a{{$v}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
                   @csrf
-                  <input type="hidden" name="q" value="{{$author->name}}"/>
+                  <input type="hidden" name="q" value="{{$author['name']}}"/>
                   <input type="hidden" name="type" value="a"/>
-                  <a href="javascript: submitformS('a{{$v}}');">{{ $author->name }}</a>;
+                  <a href="javascript: submitformS('a{{$v}}');">{{ $author['name'] }}</a>;
                 </form>
               @else
                 <form id="a{{$v}}" action="{{ URL::to("/") }}/search" method="post" accept-charset="UTF-8" style="display: inline">
                 @csrf
-                <input type="hidden" name="q" value="{{$author->name}}"/>
+                <input type="hidden" name="q" value="{{$author['name']}}"/>
                 <input type="hidden" name="type" value="a"/>
-                  <a href="javascript: submitformS('a{{$v}}');">{{ $author->name }}</a>
+                  <a href="javascript: submitformS('a{{$v}}');">{{ $author['name'] }}</a>
                 </form>
               @endif
             @endforeach
@@ -111,14 +111,15 @@
           </script>
         @endif
 
-
-        @if ( count($photos) < 1 && !isset($binomial_option) )
-          <p>Não encontramos nenhuma imagem com o termo {{ $query }}.</p>
-        @elseif (count($photos) < 1)
-          <p>Não foi encontrada nenhuma imagem com arquitetura classificada como
-          {{ lcfirst($binomial_option) }} </p>
-        @else
-          <p>Foram encontradas {{ $photosAll }} imagens.</p>
+        @if($photos)
+          @if ( count($photos) < 1 && !isset($binomial_option) )
+            <p>Não encontramos nenhuma imagem com o termo {{ $query }}.</p>
+          @elseif (count($photos) < 1)
+            <p>Não foi encontrada nenhuma imagem com arquitetura classificada como
+            {{ lcfirst($binomial_option) }} </p>
+          @else
+            <p>Foram encontradas {{ $photosAll }} imagens.</p>
+          @endif
         @endif
         <p>Faça uma <a href="{{ URL::to('/search/more') }}">busca avançada aqui</a>.</p>
         <p><a href="{{ URL::previous() }}">Voltar para página anterior</a></p>

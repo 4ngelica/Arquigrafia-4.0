@@ -160,8 +160,6 @@ class PagesController extends Controller {
 
   public function search(Request $request) {
     if ( $request->has('bin') ) {
-      dd("oi");
-
       return $this->searchBinomial(
         $request->get('bin'),$request->get('opt'), $request->get('val')
       );
@@ -201,7 +199,7 @@ class PagesController extends Controller {
         ->join('photo_author', function($join) use ($needle)
         { $join->on('authors.id', '=', 'photo_author.author_id')
         ->where('name', 'LIKE', '%' . $needle . '%');
-        })->groupBy('authors.id')->get();
+        })->get();
 
       if ($txtcity != "") {
         $photos = static::streetAndCitySearch($needle,$txtcity);
@@ -220,7 +218,8 @@ class PagesController extends Controller {
           $query->orWhere('state', 'LIKE', '%'. $needle .'%');
           $query->orWhere('city', 'LIKE', '%'. $needle .'%');
           if ($idUserList != null && !empty($idUserList)) {
-            $query->orWhereIn('user_id', $idUserList);}
+            $query->orWhereIn('user_id', $idUserList);
+          }
         });
         $photos =  $query->orderBy('created_at', 'DESC')->get();
       }
