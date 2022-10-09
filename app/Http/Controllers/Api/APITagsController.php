@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Collaborative\Tag;
+use App\Http\Controllers\Controller;
 
 class APITagsController extends Controller {
 	/**

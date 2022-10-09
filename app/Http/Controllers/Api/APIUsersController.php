@@ -54,7 +54,7 @@ class APIUsersController extends Controller {
       		return \Response::json(['valid' => 'false', 'errors' => $messages]);
 		}
 		else {
-			$user = \User::create(['name' => $input["name"],
+			$user = User::create(['name' => $input["name"],
       							  'email' => $input["email"],
       							  'password' => \Hash::make($input["password"]),
       							  'login' => $input["login"]
@@ -87,7 +87,7 @@ class APIUsersController extends Controller {
 	 */
 	public function show($name)
 	{
-		$user = \User::where("login", "=", $name)->first();
+		$user = User::where('login', $name)->first();
 		return \Response::json(array_merge($user->toArray(), ["followers" => count($user->followers), "following" => (count($user->following) + count($user->followingInstitution)), "photos" => count($user->photos)]));
 	}
 

@@ -264,8 +264,7 @@ class Photo extends Model {
 
 		// return static::notInAlbum($album, $q)->with('user')
 		// 	->where('user_id', $user->id)->withoutInstitutions()->paginate($perPage);
-		return static::notInAlbum($album, $q)->withUser($user)
-	->withoutInstitutions()->paginate($perPage);
+		return static::notInAlbum($album, $q)->where('user_id', $user->_id)->withoutInstitutions()->paginate($perPage);
 	}
 
 	public static function paginateInstitutionPhotosNotInAlbum($inst, $album, $q = null, $perPage = 24) {

@@ -71,10 +71,10 @@ class EvaluationsController extends Controller {
    }
 
 	 private function getEvaluation($photoId, $userId, $isOwner) {
-	   $photo = Photo::find($photoId);
-     //dd($photo);
+
+	   $photo = Photo::where('_id', $photoId)->first();
      $binomials = Binomial::all()->keyBy('id');
-     $average = Evaluation::average($photo->id);
+     $average = Evaluation::average($photo->_id);
      $evaluations = null;
      $averageAndEvaluations = null;
      $checkedKnowArchitecture = false;
@@ -93,9 +93,9 @@ class EvaluationsController extends Controller {
           }
         }
 
-        $averageAndEvaluations= Evaluation::averageAndUserEvaluation($photo->id,$userId);
-        $evaluations =  Evaluation::where("user_id",$user->id)
-                                  ->where("photo_id", $photo->id)
+        $averageAndEvaluations= Evaluation::averageAndUserEvaluation($photo->_id, $userId);
+        $evaluations =  Evaluation::where("user_id",$user->_id)
+                                  ->where("photo_id", $photo->_id)
                                   ->orderBy("binomial_id", "asc")->get();
 
         $checkedKnowArchitecture= Evaluation::userKnowsArchitecture($photoId,$userId);
