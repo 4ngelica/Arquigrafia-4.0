@@ -23,9 +23,9 @@
       $path = $photo->nome_arquivo;
     }
     else {
-		  $micropath = '/arquigrafia-images/'. $photo->id . '_micro.jpg';
-		  if ($size==1) $path = '/arquigrafia-images/'. $photo->id . '_home.jpg';
-		  else $path = '/arquigrafia-images/'. $photo->id . '_view.jpg';
+		  $micropath = '/arquigrafia-images/'. $photo->_id . '_micro.jpg';
+		  if ($size==1) $path = '/arquigrafia-images/'. $photo->_id . '_home.jpg';
+		  else $path = '/arquigrafia-images/'. $photo->_id . '_view.jpg';
     }
 		?>
 		<img src="{{ asset( $micropath ) }}" data-src="{{ asset( $path ) }}" title="{{ $photo->name }}">
@@ -33,7 +33,7 @@
     <div class="item-title">
       <p>{{ $photo->name }}</p>
       @if (Auth::check())
-        <a id="title_plus_button" class="title_plus" href="{{ URL::to('/albums/get/list/' . $photo->id)}}" title="Adicionar aos meus álbuns"></a>
+        <a id="title_plus_button" class="title_plus" href="{{ URL::to('/albums/get/list/' . $photo->_id)}}" title="Adicionar aos meus álbuns"></a>
       @endif
       @if (Auth::check() && $photo->institution_id !="" && Session::get('institutionId') == $photo->institution_id)
         <!--<a id="title_delete_button" class="title_delete photo" href="{{ URL::to('/photos/' . $photo->id) }}" title="Excluir imagem"></a>-->
