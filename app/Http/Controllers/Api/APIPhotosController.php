@@ -9,6 +9,8 @@ use Date;
 use App\Models\Collaborative\Tag;
 use App\Models\Institution\Institution;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Response;
 
 class APIPhotosController extends Controller {
 
@@ -25,9 +27,25 @@ class APIPhotosController extends Controller {
 	 * @return Response
 	 */
 
-	public function index()
+	public function index(Request $request)
 	{
 		return \Response::json(Photo::where('draft', null)->get()->toArray());
+		// if ($request->fields) {
+		// $fields =	explode(',', $request->fields);
+		//	$query = Photo::get($fields);
+		// }
+
+		// if ($request->random) {
+		//	$query = $query->random(intval($request->random));
+		// }
+
+		// $query = $query->where('draft', null);
+
+		//
+		// if ($request->orderBy) {
+		// 	$query = $query->paginate(intval($request->paginate));
+		// }
+		// return Response::json($query);
 	}
 
 

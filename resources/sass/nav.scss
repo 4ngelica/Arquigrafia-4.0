@@ -1,0 +1,141 @@
+/* clears the ‘X’ from Internet Explorer */
+input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+.navbar {
+  background-color: #fff;
+  padding: 21px 0;
+}
+
+.navbar .navbar-toggler {
+  text-align: right;
+}
+
+.nav-menu .dropdown {
+  list-style-type: none;
+
+}
+
+.dropdown-menu p {
+  font-size: 14px;
+}
+
+.nav-item {
+  color: #000;
+}
+
+.nav-item:hover{
+  color: #000;
+}
+
+.nav-item img{
+  object-fit: cover;
+}
+
+.dropdown-menu[data-bs-popper] {
+  left: unset;
+    right: 0;
+}
+
+.dropdown-menu {
+    min-width: 300px;
+}
+
+// .navbar .container {
+//   max-width: 1160px;
+//   padding: 0;
+// }
+
+.navbar-brand {
+  margin-right: 0;
+}
+
+.search-form {
+    height: 32px;
+    float: left;
+    border: solid 1px #ddd;
+    border-radius: 2px;
+    font-size: 14px;
+    margin-right: 0;
+}
+
+.search-bar {
+  border: none;
+  background: none;
+  padding: 3px 5px;
+}
+
+// .search_form button {
+//   background: none;
+// }
+
+.search-bar:focus {
+    border: none !important;
+    outline: 0;
+    box-shadow: none !important;
+    background-color: #fff;
+    // background: #fff;
+}
+
+.search-form:focus-within {
+    border: thin solid black;
+    // background-color: #fff;
+    // background: #fff;
+}
+
+.search-button {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.search-button {
+  background: url(/img/sprite.png) -329px 6px;
+    height: 30px;
+    width: 32px;
+    border-left: solid 1px #ddd;
+}
+
+.nav-btn {
+  // all: unset;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+  // padding: 7px 20px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.nav-btn:hover {
+  color: #000;
+  border: solid 1px #9b9b9b;
+  border-radius: 2px;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: unset;
+  border: none;
+}
+
+@media (min-width: 992px){
+.nav-btn {
+      border: solid 1px #ddd;
+}
+}
+
+.nav-menu {
+  text-align: right;
+}

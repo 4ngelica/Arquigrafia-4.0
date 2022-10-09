@@ -62,7 +62,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   </a>
   <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info['object_id'])->photo_id . "#" . $info['object_id']}}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} comentou nesta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} comentou nesta imagem
     @else
     <?php
     $users = explode(":", $info->data);
@@ -80,7 +80,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   </a>
   <a href='{{ URL::to("/photos") . "/" . App\Models\Collaborative\Comment::find($info['object_id'])->photo_id }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
+    {{App\Models\Users\User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else
     Diversos usuários realizaram diversas ações nesta imagem. Confira!
     @endif
@@ -101,7 +101,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   </a>
   <a  href='{{ URL::to("/evaluations") . "/" . $info['object_id'] . "/viewEvaluation/" . $info->sender_id}}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} avaliou esta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} avaliou esta imagem
     @else
     <?php
     $users = explode(":", $info->data);
@@ -119,7 +119,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   </a>
   <a  href='{{ URL::to("/photos") . "/" . $info['object_id'] }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
+    {{App\Models\Users\User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else
     Diversos usuários realizaram diversas ações nesta imagem. Confira!
     @endif
@@ -186,7 +186,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   </a>
   <a href='{{ URL::to("/photos") . "/" . $info['object_id'] }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} gostou desta imagem
+    {{App\Models\Users\User::find($info->sender_id)->name}} gostou desta imagem
     @else
     <?php
     $users = explode(":", $info->data);
@@ -204,7 +204,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   </a>
   <a  href='{{ URL::to("/photos") . "/" . $info['object_id'] }}' class="name">
     @if($info->data == null)
-    {{User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
+    {{App\Models\Users\User::find($info->sender_id)->name}} realizou diversas ações nesta imagem. Confira!
     @else
     Diversos usuários realizaram diversas ações nesta imagem. Confira!
     @endif
@@ -228,7 +228,7 @@ $news = DB::table('news')->where('user_id', '=', Auth::user()->id)->orWhere('use
   <a href='{{ URL::to("/leaderboard") }}'>
     <?php
     $top_user = DB::table('leaderboards')->where('type', '=', 'uploads')->orderBy('count', 'desc')->first() ?? null;
-    $uploader = User::find($top_user->user_id) ?? null;
+    $uploader = App\Models\Users\User::find($top_user->user_id) ?? null;
     ?>
     @if($uploader->photo != null)
     <img src={{$uploader->photo}} title="Learderboard arquigrafia" class="gallery_photo" />

@@ -42,8 +42,27 @@ use App\Http\Controllers\Drafts\DraftsController;
 |
 */
 
-Route::get('/teste', [PagesController::class, 'teste']);
+//novo front
+Route::get('/images/{count}', [PagesController::class, 'images']);
+Route::get('/novaHome', [PagesController::class, 'novaHome']);
 
+Route::prefix('/NovoSearch')->group(function () {
+  Route::get('/', [PagesController::class, 'NovoSearch']);
+  Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
+  Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
+});
+
+Route::prefix('/novoUsers')->group(function () {
+  Route::get('/{id}', [PagesController::class, 'NovoUsersShow'])->name('users.show');
+});
+
+Route::prefix('/novoPhotos')->group(function () {
+  Route::get('/{id}', [PagesController::class, 'NovoPhotosShow'])->name('photos.show');
+});
+//fim do novo front
+
+
+//front atual
 Route::get('/', [PagesController::class, 'main']);
 
 Route::get('/photos/import', [ImportsController::class, 'import']);
@@ -82,9 +101,9 @@ Route::prefix('/users')->group(function () {
   Route::get('/logout', [UsersController::class, 'logout']);
   Route::get('/forget', [UsersController::class, 'forgetForm']);
   Route::post('/forget', [UsersController::class, 'forget']);
-  Route::get('/{id}', [UsersController::class, 'show']);
+  // Route::get('/{id}', [UsersController::class, 'show']);
   Route::get('/{id}/edit', [UsersController::class, 'edit']);
-  Route::put('/{id}', [UsersController::class, 'store']);
+  // Route::put('/{id}', [UsersController::class, 'store']);
   Route::get('/', [UsersController::class, 'index']);
   Route::post('/', [UsersController::class, 'store']);
 });
@@ -152,8 +171,12 @@ Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
 Route::post('/suggestions', [SuggestionsController::class, 'store']);
 Route::post('/suggestions/sent', [SuggestionsController::class, 'sendNotification']);
 Route::get('/suggestions', [SuggestionsController::class, 'edit']);
-Route::post('/suggestions', [SuggestionsController::class, 'update']);
-Route::get('/contributions', [ContributionsController::class, 'showContributions']);
+// Route::post('/suggestions', [SuggestionsController::class, 'update']);
+// Route::post('users/suggestions', [SuggestionsController::class, 'update']);
+
+// Route::get('/contributions', [ContributionsController::class, 'showContributions']);
+Route::get('users/contributions', [ContributionsController::class, 'showContributions']);
+
 // Route::resource('/users/contributions', ContributionsController::class);
 
 

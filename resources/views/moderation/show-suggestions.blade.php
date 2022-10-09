@@ -7,7 +7,7 @@
   <script type="text/javascript" src="{{ URL::to("/") }}/js/dist/suggestionsList.bundle.js"></script>
 
   <script type="text/javascript">
-  var suggestions = {{ json_encode($suggestions) }};
+  var suggestions = <?= json_encode($suggestions);?>
   </script>
 @stop
 

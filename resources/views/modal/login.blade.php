@@ -62,27 +62,6 @@
 
          </div>
 
-         <div class="four columns offset-by-four">
-
-            <a href="{{ $fburl ?? ''}}">
-               <div class="login_externo logo">
-                  <img id="facebook_login" src="{{ asset('/img/Facebook_logo_square.png') }}">
-               </div>
-               <div class="login_externo label">
-                  <p>Login com Facebook </p>
-               </div>
-            </a>
-            <br>
-            <a id="stoaLogin" href="/stoaLogin" >
-               <div class="login_externo logo down">
-                  <img src="{{ asset('/img/Logo-stoa.png') }}" width="75">
-               </div>
-               <div class="login_externo label down">
-                  <p>Login com Stoa </p>
-               </div>
-            </a>
-         </div>
-
       </div>
    </div>
 

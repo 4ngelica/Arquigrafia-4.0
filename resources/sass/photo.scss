@@ -1,0 +1,27 @@
+.sidebar h3{
+  display: block;
+  font-size: 1.17em;
+  font-weight: bold;
+}
+
+.sidebar h4 {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: #222;
+  line-height: 1.2em;
+}
+
+.sidebar p {
+  line-height: 1.5em;
+  color: #555;
+}
+
+.photo-display{
+  padding-right: 2rem;
+}
+
+.info i {
+  padding: 5px 24px 0 0;
+  background: url(/img/sprite.png) 180px 10px;
+  background-repeat: no-repeat;
+}

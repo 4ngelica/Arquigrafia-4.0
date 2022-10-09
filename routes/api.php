@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\APITagsController;
 use App\Http\Controllers\Api\APIPhotosController;
 use App\Http\Controllers\Api\APIAuthorsController;
 use App\Http\Controllers\Api\APILogInController;
+use App\Http\Controllers\Api\NewApis\APIPhotosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,9 @@ Route::get('recent', 'modules\api\controllers\APIFeedController@loadRecentPhotos
 Route::get('moreRecent', 'modules\api\controllers\APIFeedController@loadMoreRecentPhotos');
 Route::post('search', 'modules\api\controllers\APISearchController@search');
 Route::post('moreSearch', 'modules\api\controllers\APISearchController@moreSearch');
+
+// Route::get('/photos', [APIPhotosController::class, 'index']);
+// Route::get('/photos/{id}', [APIPhotosController::class, 'show']);
 
 // Route::group(array('middleware' => 'cors', 'prefix' => 'api/'), function()
 // {

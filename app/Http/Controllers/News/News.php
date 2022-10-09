@@ -1,7 +1,8 @@
 <?php
 namespace App\Models\News;
 use App\Models\Collaborative\Comment as Comment;
-use User;
+use App\Models\Photos\Photo;
+use  App\Models\Users\User;
 use Log;
 use Auth;
 use \Session;
@@ -15,7 +16,7 @@ class News extends Model {
 
 	public function user()
   {
-        return $this->belongsTo('User');
+        return $this->belongsTo('App\Models\Users\User');
   }
 
   public static function registerPhotoInstitutional($photo, $type)
