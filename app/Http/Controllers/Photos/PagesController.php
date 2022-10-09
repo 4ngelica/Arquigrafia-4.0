@@ -136,7 +136,7 @@ class PagesController extends Controller {
     if(Session::has('last_advanced_search'))
       Session::forget('last_advanced_search');
 
-    $photos = Photo::orderByRaw("RAND()")->take(150)->get();
+    $photos = Photo::all()->random(150);
 
     if(Session::has('institutionId')) {
       $institution = Institution::find(Session::get('institutionId'));
@@ -281,7 +281,7 @@ class PagesController extends Controller {
         ->join('photo_author', function($join) use ($needle)
         { $join->on('authors.id', '=', 'photo_author.author_id')
         ->where('name', 'LIKE', '%' . $needle . '%');
-        })->groupBy('authors.id')->get();
+        })->get();
 
       if ($txtcity != "") {
         $photos = static::streetAndCitySearch($needle,$txtcity);
@@ -300,7 +300,8 @@ class PagesController extends Controller {
           $query->orWhere('state', 'LIKE', '%'. $needle .'%');
           $query->orWhere('city', 'LIKE', '%'. $needle .'%');
           if ($idUserList != null && !empty($idUserList)) {
-            $query->orWhereIn('user_id', $idUserList);}
+            $query->orWhereIn('user_id', $idUserList);
+          }
         });
         $photos =  $query->orderBy('created_at', 'DESC')->get();
       }

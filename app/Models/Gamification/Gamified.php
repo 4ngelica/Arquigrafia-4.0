@@ -2,11 +2,13 @@
 
 namespace App\Models\Gamification;
 
+use Jenssegers\Mongodb\Eloquent\Model as Model;
+
 /**
  * This class controls the Gamified aspects of Arquigrafia.
  * It's used to inform the controllers which version is running (Gamified or Not-Gamified).
  */
-class Gamified extends \Eloquent {
+class Gamified extends Model {
   /*
    * This function return the variation Id for a page based on user session.
    * @return  {Number}  "0" for non-gamified and "1" for gamefied

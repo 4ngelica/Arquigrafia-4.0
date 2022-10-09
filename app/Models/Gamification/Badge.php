@@ -1,10 +1,11 @@
 <?php
 namespace App\Models\Gamification;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 use Carbon\Carbon;
 use App\Models\Users\User;
 
-class Badge extends \Eloquent {
+class Badge extends Model {
 
 	protected $fillable = ['name', 'image', 'description'];
 

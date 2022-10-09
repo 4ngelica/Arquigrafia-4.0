@@ -4,7 +4,7 @@ namespace App\Models\Collaborative;
 use App\Models\Institutions\Institution;
 use App\Models\Photos\Photo;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use Session;
 
 class Tag extends Model {

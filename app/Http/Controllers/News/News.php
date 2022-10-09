@@ -8,8 +8,9 @@ use Auth;
 use \Session;
 use Illuminate\Support\Collection as Collection;
 use Carbon\Carbon;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
-class News extends \Eloquent {
+class News extends Model {
 	protected $table = 'news';
 	protected $fillable = array('object_type', 'object_id', 'user_id', 'sender_id', 'news_type');
 

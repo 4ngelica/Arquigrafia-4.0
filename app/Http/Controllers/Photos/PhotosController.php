@@ -50,12 +50,11 @@ class PhotosController extends Controller {
     // This page has a gamified variant, get the gamified variant
     $variationId = Gamified::getGamifiedVariationId();
     $isGamified = Gamified::isGamified($variationId);
-
     // Getting photo by id
     $photos = Photo::find($id);
     // If didn't find the photo, go to home
     if ( !isset($photos) ) {
-      return Redirect::to('/home');
+      return redirect('/home');
     }
     $user = null;
     $user = Auth::user();

@@ -2,8 +2,9 @@
 namespace App\Models\Notifications;
 use User;
 use Photo;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
-class Notification extends \Eloquent{
+class Notification extends Model{
 
 	protected $fillable = ['type', 'sender_id', 'sender_type', 'object_id', 'objetc_type', 'data', 'created_at', 'updated_at'];
 

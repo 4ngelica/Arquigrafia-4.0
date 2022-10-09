@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\Photos\Author;
+
 class APIAuthorsController extends Controller {
 	/**
 	 * Display a listing of the resource.
@@ -10,7 +13,7 @@ class APIAuthorsController extends Controller {
 	 */
 	public function index()
 	{
-		return \Response::json(\Author::all()->toArray());
+		return \Response::json(Author::all()->toArray());
 	}
 
 

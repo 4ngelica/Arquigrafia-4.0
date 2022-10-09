@@ -4,9 +4,12 @@ namespace App\Models\Evaluations;
 use App\Models\Evaluations\Binomial;
 use App\Models\Users\User;
 use App\Models\Photos\Photo;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Evaluation extends Model {
+
+	protected $connection = 'mongodb';
+	protected $collection = 'evaluations';
 
 	protected $softDelete = true;
 	protected $fillable = ['photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];

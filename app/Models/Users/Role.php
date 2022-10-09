@@ -2,6 +2,9 @@
 
 class Role extends Eloquent {
 
+  protected $connection = 'mongodb';
+  protected $collection = 'roles';
+
   public $timestamps = false;
 
   protected $fillable = ['name'];
@@ -13,11 +16,11 @@ class Role extends Eloquent {
   public static function usersRoles() {
   }
 
-  
+
   public static function proba(){
       $string = "Ok";
       return $string;
   }
- 
+
 
 }

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Photos\Photo;
+use App\Models\Users\User;
 use App\lib\log\EventLogger;
-use App\lib\date\Date;
+use Date;
 use App\Models\Collaborative\Tag;
 use App\Models\Institution\Institution;
 use App\Http\Controllers\Controller;
@@ -28,22 +29,23 @@ class APIPhotosController extends Controller {
 
 	public function index(Request $request)
 	{
-		if ($request->fields) {
-			$fields =	explode(',', $request->fields);
-			$query = Photo::get($fields);
-		}
+		return \Response::json(Photo::where('draft', null)->get()->toArray());
+		// if ($request->fields) {
+		// $fields =	explode(',', $request->fields);
+		//	$query = Photo::get($fields);
+		// }
 
-		if ($request->random) {
-			$query = $query->random(intval($request->random));
-		}
+		// if ($request->random) {
+		//	$query = $query->random(intval($request->random));
+		// }
 
-		$query = $query->where('draft', null);
+		// $query = $query->where('draft', null);
 
 		//
 		// if ($request->orderBy) {
 		// 	$query = $query->paginate(intval($request->paginate));
 		// }
-		return Response::json($query);
+		// return Response::json($query);
 	}
 
 
@@ -199,15 +201,15 @@ class APIPhotosController extends Controller {
 	 */
 	public function show($id)
 	{
-		$photo = \Photo::find($id);
-		$sender = \User::find($photo->user_id);
-		$user_id = \Input::get("user_id");
-		$tags = $photo->tags->lists('name');
+		$photo = Photo::find($id);
+		$sender = User::find($photo->user_id);
+		$user_id = \Request::get("user_id");
+		$tags = $photo->tags->pluck('name');
 		if (!is_null($photo->institution_id)) {
 			$sender = Institution::find($photo->institution_id);
 		}
-		$license = \Photo::licensePhoto($photo);
-		$authorsList = $photo->authors->lists('name');
+		$license = Photo::licensePhoto($photo);
+		$authorsList = $photo->authors->pluck('name');
 
 		/* Registro de logs */
 		EventLogger::printEventLogs($id, 'select_photo', ['user' => $photo->user_id], 'mobile');

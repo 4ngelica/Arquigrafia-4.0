@@ -3,7 +3,7 @@ namespace App\Models\Collaborative;
 
 use App\Models\Users\User;
 use App\Models\Photos\Photo;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Report extends Model {
 

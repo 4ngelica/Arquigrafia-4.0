@@ -5,7 +5,7 @@ namespace App\Models\Photos;
 use App\Traits\Drafts\DraftingTrait;
 use App\lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+// use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Log;
 use App\Traits\Gamification\LikableGamificationTrait;
 use Illuminate\Database\Eloquent\Collection as Collection;
@@ -16,7 +16,7 @@ use App\Models\Moderation\Suggestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\lib\metadata\Exiv2;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use DateTime;
 use Session;
 
@@ -25,6 +25,11 @@ class Photo extends Model {
 	// use DraftingTrait;
 	// use SoftDeletingTrait;
 	use LikableGamificationTrait;
+
+	protected $connection = 'mongodb';
+	protected $collection = 'photos';
+	// protected $keyType = 'int';
+	// protected $primaryKey = 'id';
 
 	protected $softDelete = true;
 
@@ -233,8 +238,9 @@ class Photo extends Model {
 	}
 
 	public static function paginateUserPhotos($user, $perPage = 24) {
-		return static::withUser($user)
-			->withoutInstitutions()->paginate($perPage);
+		return static::where('user_id', $user->_id)->withoutInstitutions()->paginate($perPage);
+		// return static::withUser($user)
+		// 	->withoutInstitutions()->paginate($perPage);
 	}
 
 	public static function paginateInstitutionPhotos($institution, $perPage = 24) {
@@ -256,8 +262,9 @@ class Photo extends Model {
 
 	public static function paginateUserPhotosNotInAlbum($user, $album, $q = null, $perPage = 24) {
 
-		return static::notInAlbum($album, $q)->with('user')
-			->where('user_id', $user->id)->withoutInstitutions()->paginate($perPage);
+		// return static::notInAlbum($album, $q)->with('user')
+		// 	->where('user_id', $user->id)->withoutInstitutions()->paginate($perPage);
+		return static::notInAlbum($album, $q)->where('user_id', $user->_id)->withoutInstitutions()->paginate($perPage);
 	}
 
 	public static function paginateInstitutionPhotosNotInAlbum($inst, $album, $q = null, $perPage = 24) {
