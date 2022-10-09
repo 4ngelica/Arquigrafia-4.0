@@ -14,7 +14,7 @@ class CreatePhotoAuthorTable extends Migration
     public function up()
     {
         Schema::create('photo_author', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('photo_id')->index('photo_author_photo_id_foreign');
             $table->unsignedBigInteger('author_id')->index('photo_author_author_id_foreign');
         });

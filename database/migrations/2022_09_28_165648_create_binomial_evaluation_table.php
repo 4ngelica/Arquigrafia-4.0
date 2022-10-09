@@ -14,7 +14,7 @@ class CreateBinomialEvaluationTable extends Migration
     public function up()
     {
         Schema::create('binomial_evaluation', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('photo_id')->index('binomial_evaluation_photo_id_foreign');
             $table->integer('evaluationPosition');
             $table->unsignedBigInteger('binomial_id')->nullable()->index('binomial_evaluation_binomial_id_foreign');

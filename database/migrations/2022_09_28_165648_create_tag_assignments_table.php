@@ -14,8 +14,8 @@ class CreateTagAssignmentsTable extends Migration
     public function up()
     {
         Schema::create('tag_assignments', function (Blueprint $table) {
-            $table->unsignedBigInteger('tag_id')->index('tag_assignments_tag_id_foreign');
-            $table->unsignedBigInteger('photo_id')->index('tag_assignments_photo_id_foreign');
+            $table->id('tag_id')->index('tag_assignments_tag_id_foreign');
+            $table->id('photo_id')->index('tag_assignments_photo_id_foreign');
         });
     }
 

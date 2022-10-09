@@ -14,8 +14,8 @@ class CreateUsersRolesTable extends Migration
     public function up()
     {
         Schema::create('users_roles', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->index('users_roles_user_id_foreign');
-            $table->unsignedBigInteger('role_id')->index('users_roles_role_id_foreign');
+            $table->id('user_id')->index('users_roles_user_id_foreign');
+            $table->id('role_id')->index('users_roles_role_id_foreign');
         });
     }
 

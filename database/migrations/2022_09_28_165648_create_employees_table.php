@@ -14,7 +14,7 @@ class CreateEmployeesTable extends Migration
     public function up()
     {
         Schema::create('employees', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamp('created_at')->default('0000-00-00 00:00:00');
             $table->timestamp('updated_at')->default('0000-00-00 00:00:00');
             $table->unsignedBigInteger('user_id')->index('employees_user_id_foreign');

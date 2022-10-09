@@ -14,7 +14,7 @@ class CreateBinomialsTable extends Migration
     public function up()
     {
         Schema::create('binomials', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->integer('defaultValue');
             $table->string('firstOption')->nullable();
             $table->string('secondOption')->nullable();

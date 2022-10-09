@@ -14,7 +14,7 @@ class CreateCountersTable extends Migration
     public function up()
     {
         Schema::create('counters', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->dateTime('dataCriacao')->nullable();
             $table->integer('value');
             $table->unsignedBigInteger('photo_id')->index('counters_photo_id_foreign');

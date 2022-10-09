@@ -14,7 +14,7 @@ class CreateOccupationsTable extends Migration
     public function up()
     {
         Schema::create('occupations', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('institution')->nullable();
             $table->string('occupation')->nullable();
             $table->unsignedBigInteger('user_id')->index('occupations_user_id_foreign');

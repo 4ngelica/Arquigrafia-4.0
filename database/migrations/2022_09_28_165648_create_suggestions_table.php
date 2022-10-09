@@ -14,7 +14,7 @@ class CreateSuggestionsTable extends Migration
     public function up()
     {
         Schema::create('suggestions', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('user_id')->index('suggestions_user_id_foreign');
             $table->unsignedBigInteger('photo_id')->index('suggestions_photo_id_foreign');
             $table->unsignedBigInteger('attribute_type')->index('suggestions_attribute_type_foreign');

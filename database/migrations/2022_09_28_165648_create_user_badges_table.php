@@ -14,7 +14,7 @@ class CreateUserBadgesTable extends Migration
     public function up()
     {
         Schema::create('user_badges', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('user_id')->index('user_badges_user_id_foreign');
             $table->unsignedBigInteger('badge_id')->index('user_badges_badge_id_foreign');
             $table->timestamp('created_at')->default('0000-00-00 00:00:00');

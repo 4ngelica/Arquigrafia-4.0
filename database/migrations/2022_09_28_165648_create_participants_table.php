@@ -14,7 +14,7 @@ class CreateParticipantsTable extends Migration
     public function up()
     {
         Schema::create('participants', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->unsignedInteger('thread_id');
             $table->unsignedInteger('user_id');
             $table->timestamp('last_read')->nullable();

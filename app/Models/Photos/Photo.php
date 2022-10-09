@@ -27,10 +27,9 @@ class Photo extends Model {
 	use LikableGamificationTrait;
 
 	protected $connection = 'mongodb';
-	// protected $keyType = 'int';
-
 	protected $collection = 'photos';
-	protected $primaryKey = 'id';
+	// protected $keyType = 'int';
+	// protected $primaryKey = 'id';
 
 	protected $softDelete = true;
 

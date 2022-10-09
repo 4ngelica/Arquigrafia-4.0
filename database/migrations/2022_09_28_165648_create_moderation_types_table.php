@@ -14,7 +14,7 @@ class CreateModerationTypesTable extends Migration
     public function up()
     {
         Schema::create('moderation_types', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('moderation_type');
         });
     }

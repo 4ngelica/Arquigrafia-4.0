@@ -14,7 +14,7 @@ class CreatePhotosTable extends Migration
     public function up()
     {
         Schema::create('photos', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('aditionalImageComments')->nullable();
             $table->string('allowCommercialUses')->nullable();
             $table->string('allowModifications')->nullable();

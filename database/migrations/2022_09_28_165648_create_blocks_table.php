@@ -14,7 +14,7 @@ class CreateBlocksTable extends Migration
     public function up()
     {
         Schema::create('blocks', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('user_id')->index('blocks_user_id_foreign');
             $table->unsignedBigInteger('blocked_id')->index('blocks_blocked_id_foreign');
         });

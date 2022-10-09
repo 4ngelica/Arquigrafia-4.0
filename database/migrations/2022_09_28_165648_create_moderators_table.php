@@ -14,7 +14,7 @@ class CreateModeratorsTable extends Migration
     public function up()
     {
         Schema::create('moderators', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('user_id')->index('moderators_user_id_foreign');
             $table->unsignedBigInteger('moderation_type_id')->index('moderators_moderation_type_id_foreign');
             $table->string('level');

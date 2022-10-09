@@ -18,11 +18,10 @@ use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
-
-
-
-
 class User extends Authenticatable {
+
+	protected $connection = 'mongodb';
+	protected $collection = 'users';
 
 	// use UserTrait, RemindableTrait;
 
@@ -178,9 +177,8 @@ class User extends Authenticatable {
 	}
 
 	public static function userInformation($login){
-
-		$user = User::whereRaw('((login = ?) or (email = ?)) and (id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)', array($login, $login))->first();
-          return $user;
+		$user = User::where('email', $login)->orWhere('username', $login)->take(1)->get();
+    return $user;
 	}
 
 

@@ -14,7 +14,7 @@ class CreateMedalsTable extends Migration
     public function up()
     {
         Schema::create('medals', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->enum('class', ['gold', 'silver', 'bronze', 'honor']);
             $table->timestamp('created_at')->default('0000-00-00 00:00:00');
             $table->timestamp('updated_at')->default('0000-00-00 00:00:00');

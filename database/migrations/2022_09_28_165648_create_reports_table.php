@@ -14,7 +14,7 @@ class CreateReportsTable extends Migration
     public function up()
     {
         Schema::create('reports', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('photo_id')->index('reports_photo_id_foreign');
             $table->unsignedBigInteger('user_id')->index('reports_user_id_foreign');
             $table->string('observation')->nullable();

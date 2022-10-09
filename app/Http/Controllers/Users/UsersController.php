@@ -55,9 +55,10 @@ class UsersController extends Controller {
     $isGamified = Gamified::isGamified($variationId);
 
     // Getting user info
-    $user = User::whereid($id)->first();
+    $user = User::find($id)->first();
     $institutionFollowed = $user->followingInstitution;
     $photos = $user->photos()->get()->reverse();
+
     // Starting suggestions variables as a empty array
     $acceptedSuggestions = [];
     $waitingSuggestions = [];
@@ -287,6 +288,7 @@ class UsersController extends Controller {
     $input = $request->all();
     $user = User::userInformation($input["login"]);
     if (isset($user)) {
+      $user = $user->first();
       $integration_message = $this->integrateAccounts($user->email);
     }
     if ($user != null && $user->oldAccount == 1)

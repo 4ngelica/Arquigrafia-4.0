@@ -14,7 +14,7 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->dateTime('postDate')->nullable();
             $table->string('text')->nullable();
             $table->timestamp('created_at')->default('0000-00-00 00:00:00');

@@ -14,7 +14,7 @@ class CreatePhotoAttributeTypesTable extends Migration
     public function up()
     {
         Schema::create('photo_attribute_types', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('attribute_type');
         });
     }

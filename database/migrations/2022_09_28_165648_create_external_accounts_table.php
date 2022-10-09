@@ -14,7 +14,7 @@ class CreateExternalAccountsTable extends Migration
     public function up()
     {
         Schema::create('external_accounts', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('accessToken')->nullable();
             $table->integer('accountType')->nullable();
             $table->string('tokenSecret')->nullable();
