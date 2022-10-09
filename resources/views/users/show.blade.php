@@ -163,12 +163,17 @@
 			@if ( !empty($user->scholarity) )
 				<li><strong>Escolaridade: </strong> {{ $user->scholarity }}</li>
 			@endif
-			@if ( $user->occupation != null && $user->occupation->institution != null )
-				<li><strong>Instituição: </strong>{{ $user->occupation->institution}}</li>
-			@endif
-			@if ( $user->occupation != null && $user->occupation->occupation != null )
-				<li><strong>Ocupação: </strong>{{ $user->occupation->occupation}}</li>
-			@endif
+			@if ( ( !empty($user->occupation()) ))
+        @if( !empty($user->occupation()->institution))
+				    <li><strong>Instituição: </strong>{{ $user->occupation->institution}}</li>
+			  @endif
+      @endif
+      @if ( ( !empty($user->occupation()) ))
+			   @if (!empty($user->occupation()->occupation) )
+				     <li><strong>Ocupação: </strong>{{ $user->occupation->occupation}}</li>
+			   @endif
+      @endif
+
 			@if ( !empty($user->site) )
 				<li><strong>Site pessoal: </strong> <a href="{{ $user->site }}" target="_blank">{{ $user->site }}</a></li>
 			@endif
