@@ -46,11 +46,11 @@ use App\Http\Controllers\Drafts\DraftsController;
 Route::get('/images/{count}', [PagesController::class, 'images']);
 Route::get('/novaHome', [PagesController::class, 'novaHome']);
 
-Route::prefix('/NovoSearch')->group(function () {
-  Route::get('/', [PagesController::class, 'NovoSearch']);
-  Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
-  Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
-});
+// Route::prefix('/NovoSearch')->group(function () {
+//   Route::get('/', [PagesController::class, 'NovoSearch']);
+//   Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
+//   Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
+// });
 
 Route::prefix('/novoUsers')->group(function () {
   Route::get('/{id}', [PagesController::class, 'NovoUsersShow'])->name('users.show');
@@ -81,7 +81,7 @@ Route::get('/termos', function() { return view('termos'); });
 /* SEARCH */
 Route::prefix('/search')->group(function () {
   Route::get('/', [PagesController::class, 'search']);
-  Route::post('/', [PagesController::class, 'search']);
+  Route::post('/', [PagesController::class, 'search'])->name('search');
   Route::get('/more', [PagesController::class, 'advancedSearch']);
 });
 
