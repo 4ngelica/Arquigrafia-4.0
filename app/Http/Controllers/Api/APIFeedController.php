@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Institution\Institution;
+use App\Http\Controllers\Controller;
+
 
 class APIFeedController extends Controller {
 

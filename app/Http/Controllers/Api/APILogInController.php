@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use lib\log\EventLogger;
+use App\Http\Controllers\Controller;
 
 class APILogInController extends Controller {
 
