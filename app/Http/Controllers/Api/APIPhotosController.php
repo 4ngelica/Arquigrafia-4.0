@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Photos\Photo;
+use App\Models\Photos\Author;
 use App\Models\Users\User;
 use App\lib\log\EventLogger;
 use Date;
 use App\Models\Collaborative\Tag;
 use App\Models\Institution\Institution;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class APIPhotosController extends Controller {
 
@@ -47,10 +49,10 @@ class APIPhotosController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 		/* Validação do input */
-		$input = \Input::all();
+		$input = $request->all();
 
 		$rules = array(
 			'photo_name' => 'required',
@@ -66,8 +68,8 @@ class APIPhotosController extends Controller {
 			return $validator->messages();
 		}
 
-		if (\Input::hasFile('photo') and \Input::file('photo')->isValid()) {
-        	$file = \Input::file('photo');
+		if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
+        	$file = $request->file('photo');
 
 			/* Armazenamento */
 			$photo = new Photo;
@@ -119,13 +121,13 @@ class APIPhotosController extends Controller {
 
 
 
-            if (\Input::has('work_authors')){
+            if ($request->has('work_authors')){
 
 	            $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
 	            $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
 	        }else $input["work_authors"] = '';
 
-			$author = new \Author();
+			$author = new Author();
             if (!empty($input["work_authors"])) {
 
                 $author->saveAuthors($input["work_authors"],$photo);
@@ -153,11 +155,11 @@ class APIPhotosController extends Controller {
 
       		$photo->save();
 
-      		$metadata       = \Image::make(\Input::file('photo'))->exif();
-  	        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-  	        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
-  	        $public_image   = \Image::make(\Input::file('photo'))->encode('jpg', 80);
-  	        $original_image = \Image::make(\Input::file('photo'));
+      		$metadata       = \Image::make($request->file('photo'))->exif();
+  	        // $public_image   = \Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
+  	        // $original_image = \Image::make($request->file('photo'))->rotate($angle);
+  	        $public_image   = \Image::make($request->file('photo'))->encode('jpg', 80);
+  	        $original_image = \Image::make($request->file('photo'));
 
   	        $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
 	        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
@@ -183,7 +185,7 @@ class APIPhotosController extends Controller {
 	 */
 	public function show($id)
 	{
-		$photo = Photo::find($id);
+		$photo = Photo::where('_id', $id)->first();
 		$sender = User::find($photo->user_id);
 		$user_id = \Request::get("user_id");
 		$tags = $photo->tags->pluck('name');
@@ -219,11 +221,11 @@ class APIPhotosController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		$photo = \Photo::find($id);
+		$photo = Photo::find($id);
 
-		$input = \Input::all();
+		$input = $request->all();
 
 		if($photo->user_id != $input["user_id"]) {
 			return \Response::json(array(
@@ -290,11 +292,11 @@ class APIPhotosController extends Controller {
 		$photo->save();
 
 
-		if (\Input::has('work_authors')){
+		if ($request->has('work_authors')){
             $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
             $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
         }else $input["work_authors"] = '';
-        $author = new \Author();
+        $author = new Author();
 
         if (!empty($input["work_authors"])) {
             $author->updateAuthors($input["work_authors"],$photo);
@@ -327,19 +329,19 @@ class APIPhotosController extends Controller {
 	    }
 		//Photo e salva para gerar ID automatico
 
-        if (\Input::hasFile('photo') and \Input::file('photo')->isValid()) {
-        	$file = \Input::file('photo');
+        if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
+        	$file = $request->file('photo');
 
 			$ext = $file->getClientOriginalExtension();
 	  		$photo->nome_arquivo = $photo->id.".".$ext;
 
 
 
-	  		$metadata       = \Image::make(\Input::file('photo'))->exif();
-		        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-		        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
-		        $public_image   = \Image::make(\Input::file('photo'))->encode('jpg', 80);
-		        $original_image = \Image::make(\Input::file('photo'));
+	  		$metadata       = \Image::make($request->file('photo'))->exif();
+		        // $public_image   = \Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
+		        // $original_image = \Image::make($request->file('photo'))->rotate($angle);
+		        $public_image   = \Image::make($request->file('photo'))->encode('jpg', 80);
+		        $original_image = \Image::make($request->file('photo'));
 
 		    $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
 	        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
@@ -366,8 +368,8 @@ class APIPhotosController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		$photo = \Photo::find($id);
-		$user = \User::find(\Request::input('user_id'));
+		$photo = Photo::find($id);
+		$user = User::find(\Request::input('user_id'));
 
 		if($photo->user_id != \Request::input('user_id') || $user->mobile_token != \Request::input('token')) {
 			return \Response::json(array(
