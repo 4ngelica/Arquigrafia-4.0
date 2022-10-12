@@ -27,7 +27,7 @@ class APIPhotosController extends Controller {
 
 	public function index()
 	{
-		return \Response::json(Photo::where('draft', null)->get()->toArray());
+		return \Response::json(Photo::where('draft', null)->take(1000)->get()->toArray());
 	}
 
 
