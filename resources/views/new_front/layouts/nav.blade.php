@@ -41,10 +41,9 @@
         <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Perfil</a>
         <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Notificações</a>
         <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Enviar Imagem</a>
-        <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Meus Álbuns</a>
+        <a href="/albums" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Meus Álbuns</a>
         <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Mensagens</a>
         <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Constribuições</a>
-        <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Museu Aberto</a>
         <a href="/users/logout" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Sair</a>
         <a href="#" class="nav-item d-lg-flex d-none mx-1 px-3 py-2 align-items-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
@@ -76,11 +75,19 @@
         </li>
         <li class="nav-item dropdown d-lg-flex d-none mx-1 px-2 py-2 align-items-center">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img class="nav-item dropdown rounded-circle" src="{{asset('/arquigrafia-avatars/4882.jpg')}}" alt="" width="40" height="40">
+            @if(Auth::user()->photo)
+              <img class="nav-item dropdown rounded-circle" src="{{asset('/'. Auth::user()->photo)}}" alt="" width="40" height="40">
+            @else
+              <img class="nav-item dropdown rounded-circle" src="{{asset('/img/avatar-48.png')}}" alt="" width="40" height="40">
+            @endif
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="d-flex align-items-center bg-light p-1">
-              <img class="nav-item dropdown rounded-circle" src="{{asset('/arquigrafia-avatars/4882.jpg')}}" alt="" width="60" height="60">
+              @if(Auth::user()->photo)
+              <img class="nav-item dropdown rounded-circle" src="{{asset('/'. Auth::user()->photo)}}" alt="" width="60" height="60">
+              @else
+              <img class="nav-item dropdown rounded-circle" src="{{asset('/img/avatar-48.png')}}" alt="" width="60" height="60">
+              @endif
               <div class="px-2">
                 <p class="m-0 font-weight-bold" >{{Auth::user()->name}}</p>
                 <p class="m-0" >{{Auth::user()->email}}</p>
@@ -88,8 +95,7 @@
             </li>
             <li><a class="dropdown-item" href="{{'/users/' . Auth::user()->_id}}">Perfil</a></li>
             <li><a class="dropdown-item" href="#">Contribuições</a></li>
-            <li><a class="dropdown-item" href="#">Meus Álbuns</a></li>
-            <li><a class="dropdown-item" href="#">Museu Aberto</a></li>
+            <li><a class="dropdown-item" href="/albums">Meus Álbuns</a></li>
             <li><a class="dropdown-item" href="#">Configurações</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a href="/users/logout" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2">Sair</a></li>
