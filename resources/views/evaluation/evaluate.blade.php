@@ -50,7 +50,7 @@
 					<!--   FIM - NOME / STATUS DA FOTO   -->
 
           <!--   FOTO   -->
-					<a class="fancybox" href="{{ URL::to("/arquigrafia-images")."/".$photos->id."_view.jpg" }}" title="{{ $photos->name }}" ><img class="single_view_image" style="" src="{{ URL::to("/arquigrafia-images")."/".$photos->id."_view.jpg" }}" /></a>
+					<a class="fancybox" href="{{ URL::to("/arquigrafia-images")."/".$photos->_id."_view.jpg" }}" title="{{ $photos->name }}" ><img class="single_view_image" style="" src="{{ URL::to("/arquigrafia-images")."/".$photos->_id."_view.jpg" }}" /></a>
 
 
 				</div>
@@ -331,13 +331,14 @@
             <?php $count = $binomials->count() - 1; ?>
             @foreach($binomials->reverse() as $binomial)
               <?php
-                if ( isset($userEvaluations) && ! $userEvaluations->isEmpty() && $userEvaluations!=null) {
-                  $userEvaluation = $userEvaluations->get($count);
-                  if($userEvaluations!=null)
-                   { $diff = $userEvaluation->evaluationPosition; }
-                } else {
-                  $diff = $binomial->defaultValue;
-                }
+                // if ( isset($userEvaluations) && ! $userEvaluations->isEmpty() && $userEvaluations!=null) {
+                //   $userEvaluation = $userEvaluations->get($count);
+                //   if($userEvaluations!=null)
+                //    { $diff = $userEvaluation->evaluationPosition; }
+                // } else {
+                //   $diff = $binomial->defaultValue;
+                // }
+							$diff= 1;
               ?>
               <p>
                 <table border="0" width="230">
@@ -386,7 +387,7 @@
               <?php $count-- ?>
             @endforeach
 
-               <a href="{{ URL::to('/photos/' . $photos->id) }}" class='btn right'>VOLTAR</a>
+               <a href="{{ URL::to('/photos/' . $photos->_id) }}" class='btn right'>VOLTAR</a>
                @if (Auth::check() && $owner != null && $owner->id == Auth::user()->id && !Session::has('institutionId'))
                 {{ Form::submit('ENVIAR', ['id'=>'evaluation_button','class'=>'btn right']) }}
                @endif

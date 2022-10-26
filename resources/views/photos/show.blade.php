@@ -295,7 +295,7 @@
               </div>
               <div class="eleven columns omega row">
                 <small id={{"$comment->id"}}>
-                  <a href={{"/users/" . $comment->user->id}}>{{ $comment->user->name }}</a> - {{ $comment->created_at->format('d/m/Y h:i') }}
+                  <a href={{"/users/" . $comment->user->id}}>{{ $comment->user->name }}</a> - {{ $comment->created_at }}
                   <!--<img src="{{ URL::to("/") }}/img/commentNB.png" / ><small class='likes'>{{ $comment->likes->count() }}</small>-->
                 </small>
                 <p>{{ $comment->text }}</p>

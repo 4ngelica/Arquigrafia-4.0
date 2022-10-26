@@ -47,14 +47,13 @@ class PhotosController extends Controller {
 
   public function show($id)
   {
-    // This page has a gamified variant, get the gamified variant
-    // $variationId = Gamified::getGamifiedVariationId();
-    // $isGamified = Gamified::isGamified($variationId);
-    // Getting photo by id
-    $photos = Photo::where('_id', $id)->first();
-    // $photos = DB::collection('photos')->join('users', 'photos.user_id', '=', 'users._id')->where('_id', $id)->get();
 
-    // dd($photos);
+    // Getting photo by id
+    $photos = Photo::where('_id', (int)$id)->first();
+    if(!$photos) {
+      $photos = Photo::where('_id', $id)->first();
+    }
+    // $photos = DB::collection('photos')->join('users', 'photos.user_id', '=', 'users._id')->where('_id', $id)->get();
 
     // If didn't find the photo, go to home
     if ( !isset($photos) ) {
