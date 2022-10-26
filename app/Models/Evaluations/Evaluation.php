@@ -34,10 +34,36 @@ class Evaluation extends Model {
 	}
 
 	public static function average($id) {
-		 return \DB::table('binomial_evaluation')
+		// dd(\DB::collection('binomial_evaluation')
+		//  ->select('binomial_id', \DB::raw('AVG(evaluationPosition)'))
+		//  ->where('photo_id', $id)
+		//  ->orderBy('binomial_id', 'asc')
+		//  ->groupBy('binomial_id')->get()
+	 // );
+	 // dd(Binomial::where('photo_id', $id)->orderBy('binomial_id', 'asc')->get());
+
+	 // return (Binomial::where('photo_id', $id)->orderBy('binomial_id', 'asc')->get());
+	// 	->orderBy('binomial_id', 'asc')
+	// 	->groupBy('binomial_id')->get()
+	// );
+
+	// dd( \DB::collection('binomial_evaluation')
+	// 			->select('binomial_id', \DB::raw('oi', '{ "$group" : { "_id" : null, "averageValues" : { "$avg" : "$value"}}'))
+	// 			->where('photo_id', $id)
+	// 			->avg('binomial_id'));
+
+				// dd( \DB::collection('binomial_evaluation')
+				// 			->avg('evaluationPosition'));
+
+	// dd( \DB::collection('binomial_evaluation')
+	// 			->select('binomial_id', \DB::raw('oi', '{ "$group" : { "_id" : null, "averageValues" : { "$avg" : "$value"}}'))
+	// 			->where('photo_id', $id)
+	// 			->groupBy('binomial_id')->get());
+	// dd(\DB::collection('binomial_evaluation')
+	//  ->where('photo_id', $id)->get());
+		 return \DB::collection('binomial_evaluation')
 			->select('binomial_id', \DB::raw('avg(evaluationPosition) as avgPosition'))
 			->where('photo_id', $id)
-			->orderBy('binomial_id', 'asc')
 			->groupBy('binomial_id')->get();
 	}
 

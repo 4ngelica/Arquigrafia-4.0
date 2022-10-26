@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Photos\Photo;
+use App\Models\Photos\Author;
 use App\Models\Users\User;
 use App\Models\Photos\Author;
 use App\lib\log\EventLogger;
@@ -204,7 +205,7 @@ class APIPhotosController extends Controller {
 	 */
 	public function show($id)
 	{
-		$photo = Photo::find($id);
+		$photo = Photo::where('_id', $id)->first();
 		$sender = User::find($photo->user_id);
 		$user_id = \Request::get("user_id");
 		$tags = $photo->tags->pluck('name');
@@ -347,7 +348,7 @@ class APIPhotosController extends Controller {
 	    }
 		//Photo e salva para gerar ID automatico
 
-        if ($request->hasFile('photo') and \Input::file('photo')->isValid()) {
+        if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
         	$file = $request->file('photo');
 
 			$ext = $file->getClientOriginalExtension();
@@ -355,11 +356,11 @@ class APIPhotosController extends Controller {
 
 
 
-	  		$metadata       = Image::make($request->file('photo'))->exif();
-		        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-		        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
-		        $public_image   = Image::make($request->file('photo'))->encode('jpg', 80);
-		        $original_image = Image::make($request->file('photo'));
+	  		$metadata       = \Image::make($request->file('photo'))->exif();
+		        // $public_image   = \Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
+		        // $original_image = \Image::make($request->file('photo'))->rotate($angle);
+		        $public_image   = \Image::make($request->file('photo'))->encode('jpg', 80);
+		        $original_image = \Image::make($request->file('photo'));
 
 		    $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
 	        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');

@@ -22,14 +22,12 @@ use Session;
 
 class Photo extends Model {
 
-	// use DraftingTrait;
-	// use SoftDeletingTrait;
 	use LikableGamificationTrait;
 
 	protected $connection = 'mongodb';
 	protected $collection = 'photos';
-	// protected $keyType = 'int';
-	// protected $primaryKey = 'id';
+	protected $keyType = 'string';
+	protected $primaryKey = '_id';
 
 	protected $softDelete = true;
 
@@ -334,7 +332,7 @@ class Photo extends Model {
 				$flag=false;
 
 				foreach ($avgPhotosBinomials as $avgPhotoBinomial) {
-
+					// dd($avgPhotosBinomials);
 					if(abs($avgPhotoBinomial->avgPosition - $avg->avgPosition)<=25){
 						$flag=true;
 						array_push($arrayPhotosId,$avgPhotoBinomial->photo_id);
