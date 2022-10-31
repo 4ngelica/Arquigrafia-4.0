@@ -2,7 +2,7 @@
   <div class="user-profile">
     <div class="container user-header">
       <div class="d-flex">
-        <img v-if="user.photo" class="px-2" :src="'..' + user.photo" alt="" width="80" height="100">
+        <img v-if="user.photo" class="px-2" :src="user.photo" alt="" width="80" height="100">
         <img v-else class="px-2" src="/img/avatar-48.png" alt="" width="100" height="100">
         <h1 class="px-2">{{user.name}}</h1>
       </div>
@@ -40,7 +40,7 @@
           <div class="d-flex flex-row justify-content-between">
             <h3>Seguidores</h3>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-              ver mais
+              ver todos
             </button>
           </div>
           <hr>
@@ -49,9 +49,16 @@
           </div>
         </div>
         <div class="following mb-2">
-          <h3>Seguindo</h3>
+          <div class="d-flex flex-row justify-content-between">
+            <h3>Seguindo</h3>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              ver todos
+            </button>
+          </div>
           <hr>
-          Seguindo
+          <div class="d-flex flex-row">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-followers" v-for="(photo, index) in photos" :key="index">
+          </div>
         </div>
       </div>
     </div>
