@@ -39,7 +39,7 @@
         <div class="followers mb-2">
           <div class="d-flex flex-row justify-content-between">
             <h3>Seguidores</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load(followers)">
               ver todos
             </button>
           </div>
@@ -51,7 +51,7 @@
         <div class="following mb-2">
           <div class="d-flex flex-row justify-content-between">
             <h3>Seguindo</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load(following)">
               ver todos
             </button>
           </div>
@@ -87,14 +87,11 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clear()"></button>
           </div>
           <div class="modal-body">
-            ...
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Understood</button>
+            {{this.followers}}
+            {{this.following}}
           </div>
         </div>
       </div>
@@ -125,8 +122,6 @@ export default {
   },
   methods: {
     get () {
-      // console.log(this.user);
-
       fetch(`/images/${count}`)
       .then((res) => {
         return res.json();
@@ -139,8 +134,14 @@ export default {
         // this.loading = false;
       });
     },
-    loadMore() {
+    load(property) {
+      console.log(property)
+      property.push('teste');
     },
+    clear() {
+      this.followers =[];
+      this.following =[];
+    }
   },
   mounted () {
     this.get();
