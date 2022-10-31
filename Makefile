@@ -1,4 +1,4 @@
-arquigrafia:
+bash:
 	sudo docker-compose exec arquigrafia "/bin/bash"
 mysql:
 	sudo docker-compose exec mysql "/bin/bash"
