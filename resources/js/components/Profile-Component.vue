@@ -1,8 +1,8 @@
 <template>
-  <div class="">
+  <div class="user-profile">
     <div class="container user-header">
       <div class="d-flex">
-        <img v-if="user.photo" class="px-2" :src="user.photo" alt="" width="80" height="100">
+        <img v-if="user.photo" class="px-2" :src="'..' + user.photo" alt="" width="80" height="100">
         <img v-else class="px-2" src="/img/avatar-48.png" alt="" width="100" height="100">
         <h1 class="px-2">{{user.name}}</h1>
       </div>
@@ -11,7 +11,11 @@
       </div>
     </div>
     <div class="container-fluid">
-      Fotos carousel
+      <carousel v-if="photos.length > 0" :items="6">
+          <div v-for="(photo, index) in photos" :key="index">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+          </div>
+      </carousel>
     </div>
     <div class="container d-flex flex-column flex-md-row justify-content-start">
       <div class="user-profile col-md-8 col-12 px-2">
@@ -33,9 +37,16 @@
           Conquistas
         </div>
         <div class="followers mb-2">
-          <h3>Seguidores</h3>
+          <div class="d-flex flex-row justify-content-between">
+            <h3>Seguidores</h3>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              ver mais
+            </button>
+          </div>
           <hr>
-          seguidores
+          <div class="d-flex flex-row">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-followers" v-for="(photo, index) in photos" :key="index">
+          </div>
         </div>
         <div class="following mb-2">
           <h3>Seguindo</h3>
@@ -47,12 +58,39 @@
     <div class="container px-2">
       <h3>Albuns</h3>
       <hr>
-      Albuns
+        <carousel v-if="photos.length > 0" :items="6">
+            <div v-for="(photo, index) in photos" :key="index">
+                <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+            </div>
+        </carousel>
     </div>
     <div class="container px-2">
       <h3>Imagens interpretadas</h3>
       <hr>
-      Imagens
+        <carousel v-if="photos.length > 0" :items="6">
+            <div v-for="(photo, index) in photos" :key="index">
+                <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+            </div>
+        </carousel>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -60,10 +98,13 @@
 
 <script>
 
+import carousel from 'vue-owl-carousel'
+
 const count = 20;
 
 export default {
   props: ['user'],
+  components: { carousel },
   data () {
     return {
       followers: [],
@@ -71,19 +112,20 @@ export default {
       badges: [],
       albuns: [],
       photos: [],
-      evaluations: []
+      evaluations: [],
+      photos: []
     }
   },
   methods: {
     get () {
-      console.log(this.user);
+      // console.log(this.user);
 
-      fetch(`/images/${id}`)
+      fetch(`/images/${count}`)
       .then((res) => {
         return res.json();
       })
       .then(data => {
-        // this.photos.push(...data);
+        this.photos.push(...data);
         // this.loading = false;
       })
       .catch(err => {

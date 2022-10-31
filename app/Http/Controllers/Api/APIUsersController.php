@@ -85,9 +85,12 @@ class APIUsersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($name)
+	public function show($id)
 	{
-		$user = User::where('login', $name)->first();
+		$user = User::where('_id', (int)$id)->first();
+		if(!$user) {
+			$user = User::where('_id', $id)->first();
+		}
 		return \Response::json(array_merge($user->toArray(), ["followers" => count($user->followers), "following" => (count($user->following) + count($user->followingInstitution)), "photos" => count($user->photos)]));
 	}
 
