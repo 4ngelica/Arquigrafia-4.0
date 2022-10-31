@@ -50,8 +50,11 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    $user = User::where('_id', $id)->first();
-
+    $user = User::where('_id', (int)$id)->first();
+    if(!$user) {
+      $user = User::where('_id', $id)->first();
+    }
+    
     return view('new_front.users.show', compact(['user']));
     // // This page has a gamified variant, get the gamified variant
     // $variationId = Gamified::getGamifiedVariationId();
@@ -594,16 +597,19 @@ class UsersController extends Controller {
       return Redirect::to('/home');
     }
 
-    $user = User::find($id);
+    $user = User::where('_id', (int)$id)->first();
+    if(!$user) {
+      $user = User::where('_id', $id)->first();
+    }
 
     $logged_user = Auth::User();
     if ($logged_user == null) {
-      return Redirect::action('PagesController@home');
+      return Redirect::action('App\Http\Controllers\Photos\PagesController@home');
     }
     elseif ($logged_user->id == $user->id) {
       return view('users.edit')->with( ['user' => $user] );
     }
-    return Redirect::action('PagesController@home');
+    return Redirect::action('App\Http\Controllers\Photos\PagesController@home');
   }
 
   public function update(Request $request, $id) {

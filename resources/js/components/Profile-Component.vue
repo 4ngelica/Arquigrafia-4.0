@@ -2,7 +2,8 @@
   <div class="">
     <div class="container user-header">
       <div class="d-flex">
-        <img class="px-2" :src="user.photo" alt="" width="80" height="100">
+        <img v-if="user.photo" class="px-2" :src="user.photo" alt="" width="80" height="100">
+        <img v-else class="px-2" src="/img/avatar-48.png" alt="" width="100" height="100">
         <h1 class="px-2">{{user.name}}</h1>
       </div>
       <div class="p-2">
@@ -26,7 +27,7 @@
         </ul>
       </div>
       <div class="user-social col-md-4 col-12 px-2">
-        <div class="conquistas mb-2">
+        <div class="conquistas mb-2 d-none">
           <h3>Conquistas</h3>
           <hr>
           Conquistas

@@ -187,7 +187,7 @@
 
           <div class="two columns alpha"><p>{{ Form::label('institution', 'Instituição:') }}</p></div>
           <div class="two columns omega">
-            <p>{{ Form::text('institution', $user->occupation != null && $user->occupation->institution != null ? $user->occupation->institution : null) }} <br>
+            <p>{{ Form::text('institution', $user->institution != null ? $user->occupation->institution : null) }} <br>
               <div class="error">{{ $errors->first('institution') }} </div>
             </p>
           </div>
