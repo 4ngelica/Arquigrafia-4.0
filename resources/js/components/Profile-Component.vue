@@ -7,7 +7,8 @@
         <h1 class="px-2">{{user.name}}</h1>
       </div>
       <div class="p-2">
-        Seguir
+        <button v-on:click="follow(user.id)">Seguir</button>
+        <button v-on:click="unfollow(user.id)">Deixar de seguir</button>
       </div>
     </div>
     <div class="container-fluid">
@@ -45,7 +46,9 @@
           </div>
           <hr>
           <div class="d-flex flex-row">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-followers" v-for="(photo, index) in photos" :key="index">
+            <a :href="'/photos/' + photo._id" v-for="(photo, index) in photos" :key="index">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-followers">
+            </a>
           </div>
         </div>
         <div class="following mb-2">
@@ -57,7 +60,9 @@
           </div>
           <hr>
           <div class="d-flex flex-row">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-followers" v-for="(photo, index) in photos" :key="index">
+            <a :href="'/photos/' + photo._id" v-for="(photo, index) in photos" :key="index">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-following">
+            </a>
           </div>
         </div>
       </div>
@@ -67,7 +72,9 @@
       <hr>
         <carousel v-if="photos.length > 0" :items="6">
             <div v-for="(photo, index) in photos" :key="index">
+              <a :href="'/photos/' + photo._id">
                 <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+              </a>
             </div>
         </carousel>
     </div>
@@ -76,7 +83,9 @@
       <hr>
         <carousel v-if="photos.length > 0" :items="6">
             <div v-for="(photo, index) in photos" :key="index">
+              <a :href="'/photos/' + photo._id">
                 <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+              </a>
             </div>
         </carousel>
     </div>
@@ -86,7 +95,8 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+            <h5 class="modal-title" id="staticBackdropLabel" v-if="this.followers.length > 0">Seguidores</h5>
+            <h5 class="modal-title" id="staticBackdropLabel" v-if="this.following.length > 0">Seguindo</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clear()"></button>
           </div>
           <div class="modal-body">
@@ -141,6 +151,23 @@ export default {
     clear() {
       this.followers =[];
       this.following =[];
+    },
+    follow(id) {
+        window.axios.get("/friends/follow/" + this.$props.user._id).then((response) => {
+          console.log(response);
+
+        }).catch((error) => {
+          console.log('erro')
+        });
+    },
+    unfollow(id) {
+      window.axios.get("/friends/unfollow/" + this.$props.user._id).then((response) => {
+        console.log(response);
+
+      }).catch((error) => {
+        console.log('erro')
+      });
+
     }
   },
   mounted () {

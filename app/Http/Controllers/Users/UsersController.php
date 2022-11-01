@@ -50,11 +50,8 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    $user = User::where('_id', (int)$id)->first();
-    if(!$user) {
-      $user = User::where('_id', $id)->first();
-    }
-    
+    $user = User::find($id);
+
     return view('new_front.users.show', compact(['user']));
     // // This page has a gamified variant, get the gamified variant
     // $variationId = Gamified::getGamifiedVariationId();
@@ -543,7 +540,7 @@ class UsersController extends Controller {
     if ($user_id != $logged_user->id && !$following->contains($user_id)) {
       //Envio da Notificação
 
-      Event::dispatch('user.followed', array($logged_user->id, (int)$user_id));
+      // Event::dispatch('user.followed', array($logged_user->id, (int)$user_id));
 
       $logged_user->following()->attach($user_id);
 
@@ -597,10 +594,7 @@ class UsersController extends Controller {
       return Redirect::to('/home');
     }
 
-    $user = User::where('_id', (int)$id)->first();
-    if(!$user) {
-      $user = User::where('_id', $id)->first();
-    }
+    $user = User::find($id);
 
     $logged_user = Auth::User();
     if ($logged_user == null) {

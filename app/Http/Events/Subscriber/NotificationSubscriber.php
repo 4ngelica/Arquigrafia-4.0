@@ -2,7 +2,7 @@
 namespace App\Http\Events\Subscriber;
 
 use App\Models\Notifications\Notification as Notification;
-use User;
+use App\Models\Users\User;
 
 class NotificationSubscriber {
 	public function onUserFollowed($followingUserId, $followedUserId)

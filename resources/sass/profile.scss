@@ -12,8 +12,9 @@
   object-fit: cover;
 }
 
-.user-profile .photo-followers {
+.user-profile .photo-followers,  .photo-following {
   width: 40px;
-  // height: 200px;
+  height: 40px;
   object-fit: cover;
+  padding: 2px;
 }

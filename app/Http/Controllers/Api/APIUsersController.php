@@ -7,6 +7,8 @@ use App\Models\Collaborative\Tag;
 use lib\log\EventLogger;
 use App\Http\Controllers\Controller;
 use App\Models\Users\User;
+use App\Models\Collaborative\Friendship;
+
 
 class APIUsersController extends Controller {
 
@@ -87,13 +89,33 @@ class APIUsersController extends Controller {
 	 */
 	public function show($id)
 	{
-		$user = User::where('_id', (int)$id)->first();
-		if(!$user) {
-			$user = User::where('_id', $id)->first();
-		}
+		$user = User::find($id);
+		dd($user);
+
+		dd($user->followers->toArray());
+
+
+		$teste = User::raw(function($collection)
+		{
+		    return $collection->aggregate([
+		    [
+		      '$match' => [
+		        'to_id' => auth()->id()
+		      ]
+		    ],
+        [
+            '$group' => [
+                '_id' => '$from_id',
+                'messages_count' => [
+                    '$sum' => 1
+                ]
+            ]
+        ]
+		   ]);
+		});
+
 		return \Response::json(array_merge($user->toArray(), ["followers" => count($user->followers), "following" => (count($user->following) + count($user->followingInstitution)), "photos" => count($user->photos)]));
 	}
-
 
 
 	/**

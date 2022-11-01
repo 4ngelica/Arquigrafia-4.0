@@ -9,7 +9,7 @@ use Jenssegers\Mongodb\Eloquent\Model as Model;
 class Like extends Model {
 
 	use LikableGamificationTrait;
-	protected $table = "likes";
+	protected $collection = "likes";
 	protected $fillable = [ 'user_id', 'likable_id', 'likable_type' ];
 
 	public function user()
