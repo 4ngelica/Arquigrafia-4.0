@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Evaluations\Evaluation;
+use App\Http\Controllers\Controller;
+use App\Models\Users\User;
+
 
 class APIProfilesController extends Controller {
 
 	public function getProfile($id) {
-		$user = \User::find($id);
+		$user = User::find($id);
 		return \Response::json(array_merge($user->toArray(), ["followers" => count($user->followers), "following" => (count($user->following) + count($user->followingInstitution)), "photos" => count($user->photos)]));
 	}
 
@@ -38,12 +41,12 @@ class APIProfilesController extends Controller {
 	}
 
 	public function getFollowers($id) {
-		$user = \User::find($id);
-		return \Response::json($user->followers);
+		$user = User::find($id);
+		return \Response::json($user->followers->map->only('name', '_id', 'photo'));
 	}
 
 	public function getFollowing($id) {
-		$user = \User::find($id);
-		return \Response::json(["users" => $user->following, "institutions" => $user->followingInstitution]);
+		$user = User::find($id);
+		return \Response::json(["users" => $user->following->map->only('name', '_id', 'photo'), "institutions" => $user->followingInstitution]);
 	}
 }

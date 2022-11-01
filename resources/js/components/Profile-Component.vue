@@ -1,12 +1,12 @@
 <template>
   <div class="user-profile">
     <div class="container user-header">
-      <div class="d-flex">
+      <div class="d-flex pb-2">
         <img v-if="user.photo" class="px-2" :src="user.photo" alt="" width="80" height="100">
         <img v-else class="px-2" src="/img/avatar-48.png" alt="" width="100" height="100">
         <h1 class="px-2">{{user.name}}</h1>
       </div>
-      <div class="p-2">
+      <div v-if="user._id !== auth._id" class="p-2">
         <button v-on:click="follow(user.id)">Seguir</button>
         <button v-on:click="unfollow(user.id)">Deixar de seguir</button>
       </div>
@@ -117,7 +117,7 @@ import carousel from 'vue-owl-carousel'
 const count = 20;
 
 export default {
-  props: ['user'],
+  props: ['user', 'auth'],
   components: { carousel },
   data () {
     return {
