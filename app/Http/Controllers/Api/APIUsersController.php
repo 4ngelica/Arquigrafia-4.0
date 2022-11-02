@@ -11,6 +11,7 @@ use App\Models\Collaborative\Friendship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\ImageManagerStatic as Image;
 
 
 
@@ -143,7 +144,7 @@ class APIUsersController extends Controller {
  	{
 			$user = User::find($id);
 			$input =  $request->only('name', 'login', 'email', 'scholarity', 'lastName', 'site', 'birthday', 'country', 'state', 'city',
-				'photo', 'gender', 'institution', 'occupation', 'visibleBirthday', 'visibleEmail','old_password','user_password','user_password_confirmation');
+				 'gender', 'institution', 'occupation', 'visibleBirthday', 'visibleEmail','old_password','user_password','user_password_confirmation');
 
 			$rules = array(
 					'name' => 'required',
@@ -168,7 +169,7 @@ class APIUsersController extends Controller {
 			$validator = Validator::make($input, $rules);
 
 			foreach ($input as $key => $value) {
-				if(!is_null($value) && $key !== 'old_password' && $key !== 'user_password' && $key !== 'user_password_confirmation'){
+				if($key !== 'old_password' && $key !== 'user_password' && $key !== 'user_password_confirmation'){
 					$user->$key = $value;
 				}
 			}

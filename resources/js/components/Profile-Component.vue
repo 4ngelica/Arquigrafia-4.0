@@ -2,8 +2,8 @@
   <div class="user-profile">
     <div class="container user-header">
       <div class="d-flex pb-2">
-        <img v-if="user.photo" class="px-2" :src="user.photo" alt="" width="80" height="100">
-        <img v-else class="px-2" src="/img/avatar-48.png" alt="" width="100" height="100">
+        <img v-if="user.photo" :src="user.photo" alt="" width="80" height="80">
+        <img v-else src="/img/avatar-48.png" alt="" width="80" height="80">
         <h1 class="px-2">{{user.name}}</h1>
       </div>
       <div v-if="user._id !== auth._id" class="p-2">
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="container-fluid">
-      <carousel v-if="photos.length > 0" :nav="false" :responsive="{1:{items:1},600:{items:3}, 1000:{items:6} }">
+      <carousel v-if="photos.length > 0" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index">
               <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
           </div>
@@ -20,8 +20,17 @@
     </div>
     <div class="container d-flex flex-column flex-md-row justify-content-start">
       <div class="user-profile col-md-8 col-12 px-2">
-        <h3>Perfil</h3>
-        <a v-if="user._id == auth._id" :href="'/users/'+ user._id +'/edit'">editar</a>
+        <div class="d-flex ">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+          </svg>
+          <h3>Perfil</h3>
+          <a v-if="user._id == auth._id" :href="'/users/'+ user._id +'/edit'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="22" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+              <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+            </svg>
+          </a>
+        </div>
         <hr>
         <ul class="user-attributes list-group">
           <li>Nome completo: {{ user.name + ' ' + (user.lastName ? user.lastName : '') }} </li>
@@ -30,6 +39,8 @@
           <li v-if="user.scholarity">Escolaridade: {{ user.scholarity }} </li>
           <li v-if="user.institution">Instituição: {{ user.institution }} </li>
           <li v-if="user.occupation">Ocupação: {{ user.occupation }} </li>
+          <!-- <li v-if="user.email && user.visibleEmail">Email: {{ user.email }} </li>
+          <li v-if="user.birthday && user.visibleBirthday">Aniversário: {{ user.birthday }} </li> -->
         </ul>
       </div>
       <div class="user-social col-md-4 col-12 px-2">
@@ -39,14 +50,19 @@
           Conquistas
         </div>
         <div class="followers mb-2">
-          <div class="d-flex flex-row justify-content-between">
+          <div class="d-flex flex-row align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+              <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+              <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+            </svg>
             <h3>Seguidores</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('followers')">
+            <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('followers')">
               ver todos
             </button>
           </div>
           <hr>
-          <div class="d-flex flex-row">
+          <div class="d-flex flex-row flex-wrap">
             <a :href="'/users/' + user._id" v-for="(user, index) in followers" :key="index">
               <img v-if="user.photo" :src="user.photo" class="photo-following">
               <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
@@ -54,14 +70,19 @@
           </div>
         </div>
         <div class="following mb-2">
-          <div class="d-flex flex-row justify-content-between">
+          <div class="d-flex flex-row align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+              <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+              <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+            </svg>
             <h3>Seguindo</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('following')">
+            <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('following')">
               ver todos
             </button>
           </div>
           <hr>
-          <div class="d-flex flex-row">
+          <div class="d-flex flex-row flex-wrap">
             <a :href="'/users/' + user._id" v-for="(user, index) in following" :key="index">
               <img v-if="user.photo" :src="user.photo" class="photo-following">
               <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-following">
@@ -71,9 +92,15 @@
       </div>
     </div>
     <div class="container px-2">
-      <h3>Albuns</h3>
+      <div class="d-flex flex-row align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
+          <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+          <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z"/>
+        </svg>
+        <h3>Albuns</h3>
+      </div>
       <hr>
-        <carousel v-if="photos.length > 0" :items="6">
+        <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
             <div v-for="(photo, index) in photos" :key="index">
               <a :href="'/photos/' + photo._id">
                 <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
@@ -82,9 +109,14 @@
         </carousel>
     </div>
     <div class="container px-2">
-      <h3>Imagens interpretadas</h3>
+      <div class="d-flex flex-row align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-bar-graph-fill" viewBox="0 0 16 16">
+          <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm.5 10v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1z"/>
+        </svg>
+        <h3>Imagens interpretadas</h3>
+      </div>
       <hr>
-        <carousel v-if="photos.length > 0" :items="6">
+        <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
             <div v-for="(photo, index) in photos" :key="index">
               <a :href="'/photos/' + photo._id">
                 <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
@@ -107,15 +139,15 @@
               <img v-if="user.photo" :src="user.photo" class="photo-following">
               <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
               <p>{{user.name}}</p>
-              <button v-on:click="follow(user.id)" class="ms-auto">Seguir</button>
-              <button v-on:click="unfollow(user.id)" class="ms-auto">Deixar de seguir</button>
+              <button v-on:click="follow(user.id)" class="btn btn-primary ms-auto">Seguir</button>
+              <button v-on:click="unfollow(user.id)" class="btn btn-primary ms-auto">Deixar de seguir</button>
             </div>
-              <div v-if="allFollowing" :href="'/users/' + user._id" v-for="(user, index) in allFollowing" class="d-flex">
+              <div v-if="allFollowing" :href="'/users/' + user._id" v-for="(user, index) in allFollowing" class="d-flex m-1">
                 <img v-if="user.photo" :src="user.photo" class="photo-following">
                 <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
                 <p>{{user.name}}</p>
-                <button v-on:click="follow(user.id)" class="ms-auto">Seguir</button>
-                <button v-on:click="unfollow(user.id)" class="ms-auto">Deixar de seguir</button>
+                <button v-on:click="follow(user.id)" class="btn btn-primary ms-auto">Seguir</button>
+                <!-- <button v-on:click="unfollow(user.id)" class="btn btn-primary ms-auto">Deixar de seguir</button> -->
               </div>
           </div>
         </div>

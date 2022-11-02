@@ -41,7 +41,7 @@
               <div v-if="errors && errors.email" class="text-danger">{{ errors.email[0] }}</div>
 
               <label for="visibleEmail">Visível no perfil público</label>
-              <input type="checkbox" class="form-check-input" name="visibleEmail" id="visibleEmail" value="visibleEmail" v-model="formData.visibleEmail" />
+              <input type="checkbox" class="form-check-input" name="visibleEmail" id="visibleEmail" :value="visibleEmail" v-model="formData.visibleEmail" />
               <div v-if="errors && errors.visibleEmail" class="text-danger">{{ errors.visibleEmail[0] }}</div>
           </div>
 
@@ -51,7 +51,7 @@
               <div v-if="errors && errors.birthday" class="text-danger">{{ errors.birthday[0] }}</div>
 
               <label for="visibleBirthday">Visível no perfil público</label>
-              <input type="checkbox" class="form-check-input" name="visibleBirthday" id="visibleBirthday" value="visibleBirthday" v-model="formData.visibleBirthday" />
+              <input type="checkbox" class="form-check-input" name="visibleBirthday" id="visibleBirthday" :value="visibleBirthday" v-model="formData.visibleBirthday" />
               <div v-if="errors && errors.visibleBirthday" class="text-danger">{{ errors.visibleBirthday[0] }}</div>
           </div>
 
@@ -153,27 +153,26 @@ export default {
   components: { carousel },
   data () {
     return {
-      gender: null,
       formData: {
-        name: this.$props.user.name ?? null,
-        login: this.$props.user.login ?? null,
-        email: this.$props.user.email ?? null,
-        scholarity: this.$props.user.scholarity ?? null,
-        lastName: this.$props.user.lastName ?? null,
-        site: this.$props.user.site ?? null,
-        birthday: this.$props.user.birthday ?? null,
-        country: this.$props.user.country ?? null,
-        state: this.$props.user.state ?? null,
-        city: this.$props.user.city ?? null,
-        photo: null,
-        gender: this.$props.user.gender ?? null,
-        institution: this.$props.user.institution ?? null,
-        occupation: this.$props.user.occupation ?? null,
-        visibleBirthday: this.$props.user.visibleBirthday ?? null,
-        visibleEmail: this.$props.user.visibleEmail ?? null,
-        old_password: null,
-        user_password: null,
-        user_password_confirmation: null,
+        name: this.$props.user.name ?? '',
+        login: this.$props.user.login ?? '',
+        email: this.$props.user.email ?? '',
+        scholarity: this.$props.user.scholarity ?? '',
+        lastName: this.$props.user.lastName ?? '',
+        site: this.$props.user.site ?? '',
+        birthday: this.$props.user.birthday ?? '',
+        country: this.$props.user.country ?? '',
+        state: this.$props.user.state ?? '',
+        city: this.$props.user.city ?? '',
+        photo: '',
+        gender: this.$props.user.gender ?? '',
+        institution: this.$props.user.institution ?? '',
+        occupation: this.$props.user.occupation ?? '',
+        visibleBirthday: this.$props.user.visibleBirthday ?? '',
+        visibleEmail: this.$props.user.visibleEmail ?? '',
+        old_password: '',
+        user_password: '',
+        user_password_confirmation: '',
       },
       errors: {},
       success: false,
