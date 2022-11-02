@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Evaluations\Evaluation;
 use App\Http\Controllers\Controller;
 use App\Models\Users\User;
+use Illuminate\Http\Request;
 
 
 class APIProfilesController extends Controller {
@@ -40,18 +41,29 @@ class APIProfilesController extends Controller {
 		return \Response::json(["photos" => \Photo::whereIn('id', $evaluations->lists('photo_id'))->get(), "max_id" => $evaluations[count($evaluations)-1]->id]);
 	}
 
-	public function getFollowers($id, $limit = null) {
+	public function getFollowers(Request $request, $id) {
+		// dd($request->query->all()['limit']);
 		$user = User::find($id);
 		$followers = $user->followers->map->only('name', '_id', 'photo');
 
-		if($limit) {
-			$followers = $followers->limit($limit);
+		if(array_key_exists('limit', $request->query->all())) {
+			$limit = $request->query->all()['limit'];
+			$followers = $followers->take($limit);
 		}
 		return \Response::json($followers);
 	}
 
-	public function getFollowing($id) {
+	public function getFollowing(Request $request, $id) {
 		$user = User::find($id);
-		return \Response::json(["users" => $user->following->map->only('name', '_id', 'photo'), "institutions" => $user->followingInstitution]);
+		$users = $user->following->map->only('name', '_id', 'photo');
+		$institutions =  $user->followingInstitution;
+
+		if(array_key_exists('limit', $request->query->all())) {
+			$limit = $request->query->all()['limit'];
+			$users = $users->take($limit);
+			$institutions = $institutions->take($limit);
+		}
+
+		return \Response::json(["users" => $users, "institutions" => $institutions]);
 	}
 }

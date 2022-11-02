@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="container-fluid">
-      <carousel v-if="photos.length > 0" :items="6">
+      <carousel v-if="photos.length > 0" :nav="false" :responsive="{1:{items:1},600:{items:3}, 1000:{items:6} }">
           <div v-for="(photo, index) in photos" :key="index">
               <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
           </div>
@@ -40,28 +40,30 @@
         <div class="followers mb-2">
           <div class="d-flex flex-row justify-content-between">
             <h3>Seguidores</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load(followers)">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('followers')">
               ver todos
             </button>
           </div>
           <hr>
           <div class="d-flex flex-row">
-            <a :href="'/photos/' + photo._id" v-for="(photo, index) in photos" :key="index">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-followers">
+            <a :href="'/users/' + user._id" v-for="(user, index) in followers" :key="index">
+              <img v-if="user.photo" :src="user.photo" class="photo-following">
+              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
             </a>
           </div>
         </div>
         <div class="following mb-2">
           <div class="d-flex flex-row justify-content-between">
             <h3>Seguindo</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load(following)">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('following')">
               ver todos
             </button>
           </div>
           <hr>
           <div class="d-flex flex-row">
-            <a :href="'/photos/' + photo._id" v-for="(photo, index) in photos" :key="index">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-following">
+            <a :href="'/users/' + user._id" v-for="(user, index) in following" :key="index">
+              <img v-if="user.photo" :src="user.photo" class="photo-following">
+              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-following">
             </a>
           </div>
         </div>
@@ -95,13 +97,13 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel" v-if="this.followers.length > 0">Seguidores</h5>
-            <h5 class="modal-title" id="staticBackdropLabel" v-if="this.following.length > 0">Seguindo</h5>
+            <h5 class="modal-title" id="staticBackdropLabel" v-if="this.allFollowers.length > 0">Seguidores</h5>
+            <h5 class="modal-title" id="staticBackdropLabel" v-if="this.allFollowing.length > 0">Seguindo</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clear()"></button>
           </div>
           <div class="modal-body">
-            {{this.followers}}
-            {{this.following}}
+            {{this.allFollowers}}
+            {{this.allFollowing}}
           </div>
         </div>
       </div>
@@ -123,6 +125,8 @@ export default {
     return {
       followers: [],
       following: [],
+      allFollowers: [],
+      allFollowing: [],
       badges: [],
       albuns: [],
       photos: [],
@@ -144,29 +148,71 @@ export default {
         // this.loading = false;
       });
     },
-    getFollowers() {
-      window.axios.get("/api/profile/" + this.$props.user._id + "/followers").then((response) => {
-        console.log(response);
+    getFollowers(query_param = '') {
+      window.axios.get("/api/profile/" + this.$props.user._id + "/followers" + query_param).then((response) => {
 
+        if(query_param){
+          if(response.data.length){
+            response.data.forEach((item, i) => {
+              this.followers.push(item);
+            });
+          }
+        }else{
+          if(response.data.length){
+            response.data.forEach((item, i) => {
+              this.allFollowers.push(item);
+            });
+          }
+        }
       }).catch((error) => {
-        console.log('erro')
+        console.log('Erro ao buscar seguidores')
       });
     },
-    getFollowing() {
-      window.axios.get("/api/profile/" + this.$props.user._id + "/following").then((response) => {
-        console.log(response);
+    getFollowing(query_param = '') {
+      window.axios.get("/api/profile/" + this.$props.user._id + "/following" + query_param).then((response) => {
 
+        if(query_param) {
+          if(response.data.users.length){
+            response.data.users.forEach((item, i) => {
+              this.following.push(item);
+            });
+          }
+
+          if(response.data.institutions.length){
+            response.data.institutions.forEach((item, i) => {
+              this.following.push(item);
+            });
+          }
+        }else {
+          if(response.data.users.length){
+            response.data.users.forEach((item, i) => {
+              this.allFollowing.push(item);
+            });
+          }
+
+          if(response.data.institutions.length){
+            response.data.institutions.forEach((item, i) => {
+              this.allFollowing.push(item);
+            });
+          }
+        }
       }).catch((error) => {
-        console.log('erro')
+        console.log('Erro ao buscar seguindo')
       });
     },
     load(property) {
-      console.log(property)
-      property.push('teste');
+
+        if(property == 'followers') {
+          this.getFollowers();
+        }
+
+        if(property == 'following') {
+          this.getFollowing();
+        }
     },
     clear() {
-      this.followers =[];
-      this.following =[];
+      this.allFollowers =[];
+      this.allFollowing =[];
     },
     follow(id) {
         window.axios.get("/friends/follow/" + this.$props.user._id).then((response) => {
@@ -188,8 +234,8 @@ export default {
   },
   mounted () {
     this.get();
-    this.getFollowers();
-    this.getFollowing();
+    this.getFollowers('?limit=8');
+    this.getFollowing('?limit=8');
   }
 };
 

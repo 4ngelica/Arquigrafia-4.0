@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\APITagsController;
 use App\Http\Controllers\Api\APIPhotosController;
 use App\Http\Controllers\Api\APIAuthorsController;
 use App\Http\Controllers\Api\APILogInController;
+use App\Http\Controllers\Api\APIProfilesController;
+
 // use App\Http\Controllers\Api\NewApis\APIPhotosController;
 
 /*
@@ -44,8 +46,10 @@ Route::get('loadMore/{id}', 'modules\api\controllers\APIFeedController@loadMoreF
 Route::get('profile/{id}', 'modules\api\controllers\APIProfilesController@getProfile');
 Route::get('userPhotos/{id}', 'modules\api\controllers\APIProfilesController@getUserPhotos');
 Route::get('moreUserPhotos/{id}', 'modules\api\controllers\APIProfilesController@getMoreUserPhotos');
-Route::get('profile/{id}/followers', 'modules\api\controllers\APIProfilesController@getFollowers');
-Route::get('profile/{id}/following', 'modules\api\controllers\APIProfilesController@getFollowing');
+Route::get('profile/{id}/followers', [APIProfilesController::class, 'getFollowers']);
+Route::get('profile/{id}/following', [APIProfilesController::class, 'getFollowing']);
+
+// Route::get('profile/{id}/following', 'modules\api\controllers\APIProfilesController@getFollowing');
 Route::get('profile/{id}/evaluatedPhotos', 'modules\api\controllers\APIProfilesController@getUserEvaluations');
 Route::get('profile/{id}/moreEvaluatedPhotos', 'modules\api\controllers\APIProfilesController@getMoreUserEvaluations');
 /* Controlador de avaliações */

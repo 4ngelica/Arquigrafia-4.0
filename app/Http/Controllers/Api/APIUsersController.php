@@ -90,9 +90,8 @@ class APIUsersController extends Controller {
 	public function show($id)
 	{
 		$user = User::find($id);
-		dd($user);
 
-		dd($user->followers->toArray());
+		dd($user->followers);
 
 
 		$teste = User::raw(function($collection)
