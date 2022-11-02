@@ -40,27 +40,27 @@ Route::post('login_facebook', [APILogInController::class, 'verify_credentials_fa
 Route::post('auth', [APILogInController::class, 'validate_mobile_token']);
 Route::post('logout', [APILogInController::class, 'log_out']);
 /* Controlador de feed */
-Route::get('feed/{id}', 'modules\api\controllers\APIFeedController@loadFeed');
-Route::get('loadMore/{id}', 'modules\api\controllers\APIFeedController@loadMoreFeed');
+// Route::get('feed/{id}', 'modules\api\controllers\APIFeedController@loadFeed');
+// Route::get('loadMore/{id}', 'modules\api\controllers\APIFeedController@loadMoreFeed');
 /* Controlador de perfis */
-Route::get('profile/{id}', 'modules\api\controllers\APIProfilesController@getProfile');
-Route::get('userPhotos/{id}', 'modules\api\controllers\APIProfilesController@getUserPhotos');
-Route::get('moreUserPhotos/{id}', 'modules\api\controllers\APIProfilesController@getMoreUserPhotos');
+// Route::get('profile/{id}', 'modules\api\controllers\APIProfilesController@getProfile');
+// Route::get('userPhotos/{id}', 'modules\api\controllers\APIProfilesController@getUserPhotos');
+// Route::get('moreUserPhotos/{id}', 'modules\api\controllers\APIProfilesController@getMoreUserPhotos');
 Route::get('profile/{id}/followers', [APIProfilesController::class, 'getFollowers']);
 Route::get('profile/{id}/following', [APIProfilesController::class, 'getFollowing']);
 
 // Route::get('profile/{id}/following', 'modules\api\controllers\APIProfilesController@getFollowing');
-Route::get('profile/{id}/evaluatedPhotos', 'modules\api\controllers\APIProfilesController@getUserEvaluations');
-Route::get('profile/{id}/moreEvaluatedPhotos', 'modules\api\controllers\APIProfilesController@getMoreUserEvaluations');
-/* Controlador de avaliações */
-Route::get('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@retrieveEvaluation');
-Route::post('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@storeEvaluation');
-Route::get('photos/{photoId}/averageEvaluation/{userId}', 'modules\api\controllers\APIEvaluationController@averageEvaluationValues');
-/* Controlador de busca */
-Route::get('recent', 'modules\api\controllers\APIFeedController@loadRecentPhotos');
-Route::get('moreRecent', 'modules\api\controllers\APIFeedController@loadMoreRecentPhotos');
-Route::post('search', 'modules\api\controllers\APISearchController@search');
-Route::post('moreSearch', 'modules\api\controllers\APISearchController@moreSearch');
+// Route::get('profile/{id}/evaluatedPhotos', 'modules\api\controllers\APIProfilesController@getUserEvaluations');
+// Route::get('profile/{id}/moreEvaluatedPhotos', 'modules\api\controllers\APIProfilesController@getMoreUserEvaluations');
+// /* Controlador de avaliações */
+// Route::get('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@retrieveEvaluation');
+// Route::post('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@storeEvaluation');
+// Route::get('photos/{photoId}/averageEvaluation/{userId}', 'modules\api\controllers\APIEvaluationController@averageEvaluationValues');
+// /* Controlador de busca */
+// Route::get('recent', 'modules\api\controllers\APIFeedController@loadRecentPhotos');
+// Route::get('moreRecent', 'modules\api\controllers\APIFeedController@loadMoreRecentPhotos');
+// Route::post('search', 'modules\api\controllers\APISearchController@search');
+// Route::post('moreSearch', 'modules\api\controllers\APISearchController@moreSearch');
 
 // Route::get('/photos', [APIPhotosController::class, 'index']);
 // Route::get('/photos/{id}', [APIPhotosController::class, 'show']);

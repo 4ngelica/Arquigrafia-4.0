@@ -8,6 +8,10 @@ use lib\log\EventLogger;
 use App\Http\Controllers\Controller;
 use App\Models\Users\User;
 use App\Models\Collaborative\Friendship;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+
 
 
 class APIUsersController extends Controller {
@@ -135,10 +139,71 @@ class APIUsersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
-		//
-	}
+	 public function update(Request $request, $id)
+ 	{
+			$user = User::find($id);
+			$input =  $request->only('name', 'login', 'email', 'scholarity', 'lastName', 'site', 'birthday', 'country', 'state', 'city',
+				'photo', 'gender', 'institution', 'occupation', 'visibleBirthday', 'visibleEmail','old_password','user_password','user_password_confirmation');
+
+			$rules = array(
+					'name' => 'required',
+					'login' => 'required',
+					'email' => 'required|email',
+					'user_password' => 'nullable|min:6|regex:/^[a-z0-9-@_]{6,10}$/|confirmed',
+					'birthday' => 'nullable|date|date_format:"d/m/Y"',
+					'photo' => 'max:2048|mimes:jpeg,jpg,png,gif'
+			);
+
+
+			if ($input['email'] !== $user->email)
+			{
+				$rules['email'] = 'required|email|unique:users';
+			}
+
+			if ($input['login'] !== $user->login)
+			{
+				$rules['login'] = 'required|unique:users';
+			}
+
+			$validator = Validator::make($input, $rules);
+
+			foreach ($input as $key => $value) {
+				if(!is_null($value) && $key !== 'old_password' && $key !== 'user_password' && $key !== 'user_password_confirmation'){
+					$user->$key = $value;
+				}
+			}
+
+			if(Hash::check($input["old_password"], $user->password)){
+
+						if(!empty($input['user_password']) || trim($input['user_password']) != ""){
+								$user->password = Hash::make($input["user_password"]);
+						}else{
+									$messages = array('user_password'=>array('Inserir uma senha válida com mínimo 6 caracteres'));
+									return \Response::json($messages, 500);
+						}
+			 } else if(!empty($input['old_password']) || trim($input['old_password']) != ""){
+						$messages = array('old_password'=>array('Antiga senha incorreta'));
+						return \Response::json($messages, 500);
+			 } else if(!empty($input['user_password']) || trim($input['user_password']) != "" ){
+						$messages = array('old_password'=>array('Precisa inserir a senha antiga'));
+						return \Response::json($messages, 500);
+			 }
+
+			if ( $request->hasFile('photo') and  $request->file('photo')->isValid())  {
+				$file =  $request->file('photo');
+				$ext = $file->getClientOriginalExtension();
+
+				$user->photo = "/arquigrafia-avatars/".$user->id.".jpg";
+				$image = Image::make( $request->file('photo'))->encode('jpg', 80);
+
+				$image->save(public_path().'/arquigrafia-avatars/'.$user->id.'.jpg');
+				$file->move(public_path().'/arquigrafia-avatars', $user->id."_original.".strtolower($ext));
+			}
+			$user->touch();
+			$user->save();
+
+			return \Response::json($user, 200);
+ 	}
 
 
 	/**

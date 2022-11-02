@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Photos\Photo;
-use App\Models\Photos\Author;
 use App\Models\Users\User;
 use App\Models\Photos\Author;
 use App\lib\log\EventLogger;

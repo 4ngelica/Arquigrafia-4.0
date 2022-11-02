@@ -27,6 +27,8 @@ use App\Http\Controllers\Collaborative\GroupsController;
 use App\Http\Controllers\Collaborative\LikesController;
 use App\Http\Controllers\Collaborative\ReportsController;
 use App\Http\Controllers\Collaborative\TagsController;
+use App\Http\Controllers\Gamification\QuestionsController;
+use App\Http\Controllers\Scores\ScoresController;
 use App\Http\Controllers\Drafts\DraftsController;
 
 
@@ -226,11 +228,11 @@ Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModal
 //Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');
 
 /* GAMIFICATION */
-Route::get('/photos/{id}/get/field', [QuestionsController::class,'getField']);
-Route::post('/photos/{id}/set/field', [QuestionsController::class,'setField']);
-Route::get('/rank/get', [ScoresController::class,'getRankEval']);
-Route::get('/leaderboard', [ScoresController::class,'getLeaderboard']);
-Route::get('/badges/{id}', [BadgesController::class,'show']);
+// Route::get('/photos/{id}/get/field', [QuestionsController::class,'getField']);
+// Route::post('/photos/{id}/set/field', [QuestionsController::class,'setField']);
+// Route::get('/rank/get', [ScoresController::class,'getRankEval']);
+// Route::get('/leaderboard', [ScoresController::class,'getLeaderboard']);
+// Route::get('/badges/{id}', [BadgesController::class,'show']);
 
 /* LOG */
 // Route::post('/logs', 'modules\logs\controllers\LogsController@create');

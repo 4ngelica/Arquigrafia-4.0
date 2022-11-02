@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
 
     <title>Arquigrafia - Seu universo de imagens de arquitetura</title>
 
     <!-- Scripts -->
+    <script>window.Laravel = {csrfToken: '{{ csrf_token() }}'}</script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
 

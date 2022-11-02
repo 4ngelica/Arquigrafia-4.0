@@ -24,6 +24,7 @@ Vue.component('home-component', require('./components/Home-Component.vue').defau
 Vue.component('search-component', require('./components/Search-Component.vue').default);
 Vue.component('profile-component', require('./components/Profile-Component.vue').default);
 Vue.component('photo-component', require('./components/Photo-Component.vue').default);
+Vue.component('user-edit-component', require('./components/User-Edit-Component.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

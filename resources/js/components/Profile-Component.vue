@@ -21,6 +21,7 @@
     <div class="container d-flex flex-column flex-md-row justify-content-start">
       <div class="user-profile col-md-8 col-12 px-2">
         <h3>Perfil</h3>
+        <a v-if="user._id == auth._id" :href="'/users/'+ user._id +'/edit'">editar</a>
         <hr>
         <ul class="user-attributes list-group">
           <li>Nome completo: {{ user.name + ' ' + (user.lastName ? user.lastName : '') }} </li>
@@ -94,7 +95,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel" v-if="this.allFollowers.length > 0">Seguidores</h5>
@@ -102,8 +103,20 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clear()"></button>
           </div>
           <div class="modal-body">
-            {{this.allFollowers}}
-            {{this.allFollowing}}
+            <div v-if="allFollowers" :href="'/users/' + user._id" v-for="(user, index) in allFollowers" class="d-flex">
+              <img v-if="user.photo" :src="user.photo" class="photo-following">
+              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
+              <p>{{user.name}}</p>
+              <button v-on:click="follow(user.id)" class="ms-auto">Seguir</button>
+              <button v-on:click="unfollow(user.id)" class="ms-auto">Deixar de seguir</button>
+            </div>
+              <div v-if="allFollowing" :href="'/users/' + user._id" v-for="(user, index) in allFollowing" class="d-flex">
+                <img v-if="user.photo" :src="user.photo" class="photo-following">
+                <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
+                <p>{{user.name}}</p>
+                <button v-on:click="follow(user.id)" class="ms-auto">Seguir</button>
+                <button v-on:click="unfollow(user.id)" class="ms-auto">Deixar de seguir</button>
+              </div>
           </div>
         </div>
       </div>

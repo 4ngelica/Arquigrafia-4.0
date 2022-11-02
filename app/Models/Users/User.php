@@ -214,9 +214,9 @@ class User extends Authenticatable {
 
 	}
 
-	public function setBirthdayAttribute($birthday) {
-		$this->attributes['birthday'] = $this->date->formatDate($birthday);
-	}
+	// public function setBirthdayAttribute($birthday) {
+	// 	$this->attributes['birthday'] = $this->date->formatDate($birthday);
+	// }
 
 	public function updateAccount($password) {
 		$this->oldAccount = 0;
