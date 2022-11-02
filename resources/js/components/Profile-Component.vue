@@ -144,6 +144,22 @@ export default {
         // this.loading = false;
       });
     },
+    getFollowers() {
+      window.axios.get("/api/profile/" + this.$props.user._id + "/followers").then((response) => {
+        console.log(response);
+
+      }).catch((error) => {
+        console.log('erro')
+      });
+    },
+    getFollowing() {
+      window.axios.get("/api/profile/" + this.$props.user._id + "/following").then((response) => {
+        console.log(response);
+
+      }).catch((error) => {
+        console.log('erro')
+      });
+    },
     load(property) {
       console.log(property)
       property.push('teste');
@@ -172,6 +188,8 @@ export default {
   },
   mounted () {
     this.get();
+    this.getFollowers();
+    this.getFollowing();
   }
 };
 

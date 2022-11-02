@@ -40,9 +40,14 @@ class APIProfilesController extends Controller {
 		return \Response::json(["photos" => \Photo::whereIn('id', $evaluations->lists('photo_id'))->get(), "max_id" => $evaluations[count($evaluations)-1]->id]);
 	}
 
-	public function getFollowers($id) {
+	public function getFollowers($id, $limit = null) {
 		$user = User::find($id);
-		return \Response::json($user->followers->map->only('name', '_id', 'photo'));
+		$followers = $user->followers->map->only('name', '_id', 'photo');
+
+		if($limit) {
+			$followers = $followers->limit($limit);
+		}
+		return \Response::json($followers);
 	}
 
 	public function getFollowing($id) {

@@ -95,13 +95,13 @@ class User extends Authenticatable {
 	//seguidores
 	public function followers()
 	{
-		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'followed_id', 'following_id');
+		return $this->belongsToMany('App\Models\Users\User', null, 'followed_id', 'following_id');
 	}
 
 	//seguindo
 	public function following()
 	{
-		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'following_id', 'followed_id');
+		return $this->belongsToMany('App\Models\Users\User', null, 'following_id', 'followed_id');
 	}
 
 	public function institutions(){
