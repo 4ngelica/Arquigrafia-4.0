@@ -1,10 +1,10 @@
 <template>
-    <div class="container">
+    <div class="container edit-profile">
       <h1>Edição de perfil do usuário</h1>
-      <img v-if="user.photo" :src="user.photo" alt="" width="80" height="100">
-      <img v-else src="/img/avatar-48.png" alt="" width="100" height="100">
+      <img v-if="user.photo" :src="user.photo" alt="" width="80" height="80">
+      <img v-else src="/img/avatar-48.png" alt="" width="80" height="80">
 
-      <form @submit.prevent="submit">
+      <form @submit.prevent="submit" class="my-3">
 
         <div class="form-group">
             <label for="customFile">Alterar foto</label>
@@ -14,7 +14,7 @@
 
         Campos obrigatórios (*)
 
-        <div class="form-group d-flex flex-wrap flex-md-nowrap justify-content-between">
+        <div class="form-group d-flex flex-wrap flex-md-nowrap justify-content-between my-4">
           <div class="col-12 col-md-4 mx-1">
               <label for="name">Nome *</label>
               <input type="text" class="form-control" name="name" id="name" v-model="formData.name" />
@@ -133,7 +133,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Editar</button>
+        <button type="submit" class="btn btn-primary my-4 mx-1">Editar</button>
 
         <div v-if="success" class="alert alert-success mt-3">
             Perfil editado com sucesso!
