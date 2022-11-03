@@ -9,26 +9,35 @@
             <h1>{{photo.name}}</h1>
           </div>
           <div class="col-12 col-md-4 d-flex justify-content-md-end">
-            <span>Inserido em: {{photo.dataUpload}}</span>
-            <span><i>i</i>0</span>
-            <span><i>i</i>0</span>
+            <span>Inserido em: {{photo.created_at}}</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+              </svg>0</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
+                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>0</span>
           </div>
         </div>
-        <img class="img-fluid" :src="'../arquigrafia-images/' + photo.id + '_view.jpg'" alt="" width="100%">
-        <div class="d-flex flex-column flex-md-row">
+        <img class="img-fluid" :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="" width="100%">
+        <div class="d-flex flex-column flex-md-row my-3">
           <div class="col-12 col-md-2">
-            Voltar
+            <button type="button" name="button">Voltar</button>
           </div>
           <div v-if="auth" class="col-12 col-md-8 d-flex justify-content-md-center">
             ahsdushudh
           </div>
           <div v-else="auth" class="col-12 col-md-8">
-            Faça o <a href="users/login">login</a> para fazer o download e comentar as imagens.
+            Faça o <a href="/users/login">login</a> para fazer o download e comentar as imagens.
           </div>
           <div class="col-12 col-md-2 d-flex justify-content-md-end">
-            <i>t</i>
-            <i>t</i>
-            <i>t</i>
+            <ul id="single_view_social_network_buttons">
+              <li><a href="#" class="google addthis_button_google_plusone_share"><span class="google"></span></a></li>
+              <li><a href="#" class="facebook addthis_button_facebook"><span class="facebook"></span></a></li>
+              <li><a href="#" class="twitter addthis_button_twitter"><span class="twitter"></span></a></li>
+            </ul>
           </div>
         </div>
         <div class="tags">
@@ -47,8 +56,9 @@
         <!-- Author information -->
         <div class="author-header mb-2">
           <div class="d-flex">
-            <img class="" :src="'../arquigrafia-avatars/' + photo.id + '_view.jpg'" alt="" width="80" height="100">
+            <img class="" :src="user.photo" alt="" width="80" height="80">
             <h3 class="px-2 d-flex">{{photo.imageAuthor}}</h3>
+            <h3 class="px-2 d-flex">{{user.name}}</h3>
             <a class="px-2" href="#">Seguir</a>
           </div>
         </div>
@@ -56,58 +66,109 @@
         <div class="info mb-2">
           <i></i>
           <h3 class="border-bottom" >Informações</h3>
-          <h4>Descrição:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.description">Descrição:</h4>
+          <p v-if="photo.description">{{photo.description}}</p>
 
-          <h4>Coleção:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.collection">Coleção:</h4>
+          <p v-if="photo.collection">{{photo.collection}}</p>
 
-          <h4>Autor(es) da Imagem:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.imageAuthor">Autor(es) da Imagem:</h4>
+          <p v-if="photo.imageAuthor">sdasdada</p>
 
-          <h4>Data da Imagem:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.dataCriacao">Data da Imagem:</h4>
+          <p v-if="photo.dataCriacao">{{photo.imageAuthor}}</p>
 
-          <h4>Autor(es) do Projeto:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.project_author">Autor(es) do Projeto:</h4>
+          <p>{{photo.project_author}}</p>
 
-          <h4>Data de conclusão da obra:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.workDate">Data de conclusão da obra:</h4>
+          <p v-if="photo.workDate">{{photo.workDate}}</p>
 
-          <h4>Endereço:</h4>
-          <p>sdasdada</p>
+          <h4 v-if="photo.city || photo.state || photo.street || photo.country || photo.district">Endereço:</h4>
+          <p v-if="photo.city">{{photo.city}}</p>
+          <p v-if="photo.street">{{photo.street}}</p>
+          <p v-if="photo.district">{{photo.district}}</p>
+          <p v-if="photo.state">{{photo.state}}</p>
+          <p v-if="photo.country">{{photo.country}}</p>
 
-          <div class="institution">
-            <h4 v-if="auth">Essas informações foram definidas pelo Acervo da Biblioteca da FAUUSP.</h4>
+          <div v-if="photo.institution_id" class="institution">
+            <h4>Essas informações foram definidas pelo Acervo da Biblioteca da FAUUSP.</h4>
             <p>Se você tem alguma informação adicional sobre esta imagem, por favor, envie um email para maticon_bibfau@usp.br</p>
           </div>
 
+          <div v-if="photo.institution_id == null && photo.type !== 'video'" class="institution">
+            <div class="modal-wrapper">
+              <div class="title2">Você conhece mais informações sobre esta arquitetura?</div>
+              <div class="title1">
+                Por exemplo:
+              </div>
+              <div class="modal-button OpenModal">
+                <a v-if="auth" href="#" data-origin="button">Ajude a completar dados!</a>
+                <a v-else href="#" data-origin="button">Faça o login e contribua com mais informações sobre esta imagem!</a>
+              </div>
+            </div>
+            <div class="modal-wrapper">
+              <div class="title1">A revisão desta imagem está temporariamente bloqueada até que a análise de sugestões feitas por membros do Arquigrafia seja concluída.</div>
+            </div>
+            <div class="modal-wrapper">
+              <div class="title2">Essas informações foram definidas por membros do Arquigrafia.</div>
+              <div class="title1">
+                <p style="text-align: justify;">
+                  Se você tem alguma informação adicional sobre esta imagem, por favor,
+                  envie um email para <a href="mailto:arquigrafiabrasil@gmail.com">arquigrafiabrasil@gmail.com</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
           <h4>Licença:</h4>
-          <p>sdasdada</p>
+          <a class="tooltip_license"
+            :href="'http://creativecommons.org/licenses/'+ user.name +'/3.0/deed.pt_BR'" target="_blank" >
+            <img :src="'img/ccIcons/' + user.name + '88x31.png'" id="ccicons"
+              alt="Creative Commons License" />
+            <span>
+              <strong>Você é proprietário(a) desta imagem</strong>
+              <strong>O proprietário desta imagem "{{photo.imageAuthor}}":</strong>
+              <strong>O proprietário desta imagem "{{photo.imageAuthor}}":</strong>
+              <br/>
+            </span>
+          </a>
 
           <h4>Localização:</h4>
-          <p>sdasdada</p>
+          <div id="map_canvas" class="single_view_map" style="width:300px; height:250px;">
+            <gmap-map :center="center" :zoom="12" style="width:300px;  height: 250px;">
+                  <gmap-marker
+                    :key="index"
+                    v-for="(m, index) in markers"
+                    :position="m.position"
+                    @click="center=m.position"
+                  ></gmap-marker>
+                </gmap-map>
+          </div>
 
           <h4>Interpretações da arquitetura:</h4>
-          <p>sdasdada</p>
+          <img src="/img/GraficoFixo.png" />
         </div>
       </div>
     </div>
 
     <!-- Similiar evaluations -->
-    <div class="container px-2">
+    <!-- <div class="container px-2">
       <h3>Imagens interpretadas com média similar</h3>
       <span v-if="auth">comentariossss</span>
       <span v-else>Faça o <a href="users/login">Login</a> e comente sobre a Residência do arquiteto Paulo Mendes da Rocha</span>
-    </div>
+    </div> -->
   </div>
 
 </template>
 
 <script>
 
+import VueGoogleMap from 'vuejs-google-maps';
+import 'vuejs-google-maps/dist/vuejs-google-maps.css';
+
 export default {
-  props: ['photo', 'auth'],
+  props: ['photo', 'auth', 'user', 'comments'],
   data () {
     return {
       followers: [],

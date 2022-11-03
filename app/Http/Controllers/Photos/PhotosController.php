@@ -48,63 +48,63 @@ class PhotosController extends Controller {
   public function show($id)
   {
 
-    // Getting photo by id
-    $photos = Photo::where('_id', (int)$id)->first();
-    if(!$photos) {
-      $photos = Photo::where('_id', $id)->first();
-    }
-    // $photos = DB::collection('photos')->join('users', 'photos.user_id', '=', 'users._id')->where('_id', $id)->get();
-
-    // If didn't find the photo, go to home
-    if ( !isset($photos) ) {
-      return redirect('/home');
-    }
-    $user = null;
-    $user = Auth::user();
-    $photo_owner = $photos->user;
-    $photo_institution = $photos->institution;
-
-    $tags = $photos->tags;
-    $binomials = Binomial::all()->keyBy('id');
-    $average = Evaluation::average($photos->id);
-    $evaluations = null;
-    $photoliked = null;
-    $follow = true;
-    $followInstitution = true;
-    $belongInstitution = false;
-    $hasInstitution = false;
-    $institution = null;
-    $currentPage = null;
-    $urlBack = URL::previous();
-
-    if (Auth::check()) {
-      if(Session::has('institutionId')){
-        $belongInstitution = Institution::belongInstitution($photos->id,Session::get('institutionId'));
-
-        $hasInstitution = Institution::belongSomeInstitution($photos->id);
-        $institution = Institution::find(Session::get('institutionId'));
-      } else{
-        $hasInstitution = Institution::belongSomeInstitution($photos->id);
-
-        if($user->followingInstitution){
-          if(!is_null($photo_institution) && $user->followingInstitution->contains($photo_institution->id)){
-
-             $followInstitution = false;
-          }}
-        }
-      $evaluations =  Evaluation::where("user_id", $user->id)->where("photo_id", $id)->orderBy("binomial_id", "asc")->get();
-
-      if($user->following){
-        if ($user->following->contains($photo_owner->id)) {
-          $follow = false;
-        }
-      }
-    }
+    // // Getting photo by id
+    // $photos = Photo::where('_id', (int)$id)->first();
+    // if(!$photos) {
+    //   $photos = Photo::where('_id', $id)->first();
+    // }
+    // // $photos = DB::collection('photos')->join('users', 'photos.user_id', '=', 'users._id')->where('_id', $id)->get();
+    //
+    // // If didn't find the photo, go to home
+    // if ( !isset($photos) ) {
+    //   return redirect('/home');
+    // }
+    // $user = null;
+    // $user = Auth::user();
+    // $photo_owner = $photos->user;
+    // $photo_institution = $photos->institution;
+    //
+    // $tags = $photos->tags;
+    // $binomials = Binomial::all()->keyBy('id');
+    // $average = Evaluation::average($photos->id);
+    // $evaluations = null;
+    // $photoliked = null;
+    // $follow = true;
+    // $followInstitution = true;
+    // $belongInstitution = false;
+    // $hasInstitution = false;
+    // $institution = null;
+    // $currentPage = null;
+    // $urlBack = URL::previous();
+    //
+    // if (Auth::check()) {
+    //   if(Session::has('institutionId')){
+    //     $belongInstitution = Institution::belongInstitution($photos->id,Session::get('institutionId'));
+    //
+    //     $hasInstitution = Institution::belongSomeInstitution($photos->id);
+    //     $institution = Institution::find(Session::get('institutionId'));
+    //   } else{
+    //     $hasInstitution = Institution::belongSomeInstitution($photos->id);
+    //
+    //     if($user->followingInstitution){
+    //       if(!is_null($photo_institution) && $user->followingInstitution->contains($photo_institution->id)){
+    //
+    //          $followInstitution = false;
+    //       }}
+    //     }
+    //   $evaluations =  Evaluation::where("user_id", $user->id)->where("photo_id", $id)->orderBy("binomial_id", "asc")->get();
+    //
+    //   if($user->following){
+    //     if ($user->following->contains($photo_owner->id)) {
+    //       $follow = false;
+    //     }
+    //   }
+    // }
 
     EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
-    $license = Photo::licensePhoto($photos);
-    $authorsList = $photos->authors->pluck('name');
+    // $license = Photo::licensePhoto($photos);
+    // $authorsList = $photos->authors->pluck('name');
 
     // $querySearch = "";
     // $typeSearch = "";
@@ -249,28 +249,34 @@ class PhotosController extends Controller {
     // $completeness['present'] = round(10 * ($completeness['present'] / $total)) * 10;
     // $completeness['reviewing'] = round(10 * ($completeness['reviewing'] / $total)) * 10;
 
-    return view('/photos/show',
-      ['photos' => $photos, 'owner' => $photo_owner, 'follow' => $follow, 'tags' => $tags,
-      'commentsCount' => $photos->comments->count(),
-      'commentsMessage' => Comment::createCommentsMessage($photos->comments->count()),
-      'average' => $average, 'userEvaluations' => $evaluations, 'binomials' => $binomials,
-      'architectureName' => Photo::composeArchitectureName($photos->name),
-      'license' => $license,
-      'belongInstitution' => $belongInstitution,
-      'hasInstitution' => $hasInstitution,
-      'ownerInstitution' => $photo_institution,
-      'institution' => $institution,
-      'authorsList' => $authorsList,
-      'followInstitution' => $followInstitution,
-      'user' => $user,
-      'currentPage' => $currentPage,
-      'urlBack' => $urlBack,
-      'institutionId' => $photos->institution_id,
-      'type'=> $photos->type,
-      // 'missing' => $final,
-      // 'isReviewing' => $isReviewing,
-      // 'completeness' => $completeness,
-    ]);
+    // return view('/photos/show',
+    //   ['photos' => $photos, 'owner' => $photo_owner, 'follow' => $follow, 'tags' => $tags,
+    //   'commentsCount' => $photos->comments->count(),
+    //   'commentsMessage' => Comment::createCommentsMessage($photos->comments->count()),
+    //   'average' => $average, 'userEvaluations' => $evaluations, 'binomials' => $binomials,
+    //   'architectureName' => Photo::composeArchitectureName($photos->name),
+    //   'license' => $license,
+    //   'belongInstitution' => $belongInstitution,
+    //   'hasInstitution' => $hasInstitution,
+    //   'ownerInstitution' => $photo_institution,
+    //   'institution' => $institution,
+    //   'authorsList' => $authorsList,
+    //   'followInstitution' => $followInstitution,
+    //   'user' => $user,
+    //   'currentPage' => $currentPage,
+    //   'urlBack' => $urlBack,
+    //   'institutionId' => $photos->institution_id,
+    //   'type'=> $photos->type,
+    //   // 'missing' => $final,
+    //   // 'isReviewing' => $isReviewing,
+    //   // 'completeness' => $completeness,
+    // ]);
+
+    $photo = Photo::find($id);
+    $user = $photo->user()->first();
+    $comments = $photo->comments()->get();
+
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments']));
   }
 
   // upload form

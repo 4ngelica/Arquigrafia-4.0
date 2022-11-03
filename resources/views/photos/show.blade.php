@@ -72,9 +72,7 @@
     initialize();
   });
   </script>
-  <link rel="stylesheet" type="text/css" media="screen" href="{{ URL::to("/") }}/css/jquery.fancybox.css" />
-  <script type="text/javascript" src="{{ URL::to("/") }}/js/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="{{ URL::to("/") }}/js/photo.js"></script>
+
 @stop
 
 @section('content')

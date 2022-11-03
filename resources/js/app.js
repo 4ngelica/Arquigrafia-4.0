@@ -32,6 +32,17 @@ Vue.component('user-edit-component', require('./components/User-Edit-Component.v
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+ import VueGoogleMap from 'vuejs-google-maps'
+ import 'vuejs-google-maps/dist/vuejs-google-maps.css'
+
+ Vue.use(VueGoogleMap, {
+     load: {
+         apiKey: 'AIzaSyBuBk5ghbTdpdm_nBWg6xHEzdRXdryK6rU',
+         libraries: ['places']
+     },
+     installComponents: true
+ })
+
 const app = new Vue({
     el: '#app',
 });

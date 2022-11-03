@@ -27,6 +27,7 @@
         "jquery": "^3.6.1",
         "popper.js": "^1.16.1",
         "vue-infinite-scroll": "^2.0.2",
-        "vue-owl-carousel": "^2.0.3"
+        "vue-owl-carousel": "^2.0.3",
+        "vuejs-google-maps": "^0.2.0"
     }
 }

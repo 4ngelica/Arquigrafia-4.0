@@ -41,12 +41,14 @@ class PagesController extends Controller {
     return view('new_front.users.show', compact(['user']));
   }
 
-  public function NovoPhotosShow($id)
-  {
-    $photo = Photo::find($id);
-
-    return view('new_front.photos.show', compact(['photo']));
-  }
+  // public function NovoPhotosShow($id)
+  // {
+  //   $photo = Photo::find($id);
+  //   $user = $photo->user()->first();
+  //   $comments = $photo->comments()->get();
+  //
+  //   return view('new_front.photos.show', compact(['photo', 'user', 'comments']));
+  // }
 
   public function images($count) {
 
