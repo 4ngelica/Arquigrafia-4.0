@@ -51,76 +51,11 @@ class UsersController extends Controller {
   public function show($id)
   {
     $user = User::find($id);
+    $photos = $user->photos;
+    $albums = $user->albums;
+    $evaluations = $user->evaluations;
 
-    return view('new_front.users.show', compact(['user']));
-    // // This page has a gamified variant, get the gamified variant
-    // $variationId = Gamified::getGamifiedVariationId();
-    // $isGamified = Gamified::isGamified($variationId);
-    //
-    // // Getting user info
-    // $user = User::find($id);
-    // $institutionFollowed = $user->followingInstitution;
-    // $photos = $user->photos()->get()->reverse();
-    //
-    // // Starting suggestions variables as a empty array
-    // $acceptedSuggestions = [];
-    // $waitingSuggestions = [];
-    // $refusedSuggestions = [];
-    // // Also, userPoints and userWaitingPoints start value is 0
-    // $userPoints = 0;
-    // $userWaitingPoints = 0;
-    // // If you're logged in
-    // if (Auth::check()) {
-    //   // Marking if you're following the user
-    //   if (Auth::user()->following) {
-    //     if (Auth::user()->following->contains($user->id)){
-    //       $follow = false;
-    //     }else {
-    //       $follow = true;
-    //     }
-    //
-    //     // If the current user is the user that we wanna show the profile
-    //     if ($user->equal(Auth::user())) {
-    //       // Getting the acceptedSuggestions for user
-    //       $acceptedSuggestions = $user->suggestions()->where('accepted', '=', 1)->get();
-    //       foreach ($acceptedSuggestions as $suggestion) {
-    //         // Adding the suggestion numPoints to user points
-    //         $userPoints += $suggestion->numPoints();
-    //       }
-    //       // Getting waiting points for user
-    //       $waitingSuggestions = $user->suggestions()->where('accepted', '=', null)->get();
-    //       foreach ($waitingSuggestions as $suggestion) {
-    //         // Adding the suggestions numPoints to the waiting points
-    //         $userWaitingPoints += $suggestion->numPoints();
-    //       }
-    //       // Getting refused suggestions
-    //       $refusedSuggestions = $user->suggestions()->where('accepted', '=', 0)->get();
-    //     }
-    //   }
-    //
-    // } else {
-    //   $follow = true;
-    //   $followInstitution = true;
-    // }
-    //
-    // $albums = $user->userAlbums;
-    //
-    // EventLogger::printEventLogs(null, "select_user", ["target_userId" => $id], "Web");
-    //
-    // return view('/users/show',['user' => $user, 'photos' => $photos, 'follow' => $follow ?? '',
-    //   'evaluatedPhotos' => Photo::getEvaluatedPhotosByUser($user),
-    //   'lastDateUpdatePhoto' => Photo::getLastUpdatePhotoByUser($id),
-    //   'lastDateUploadPhoto' => Photo::getLastUploadPhotoByUser($id),
-    //   'albums' => $albums,
-    //   'institutionFollowed' => $institutionFollowed,
-    //   'userPoints' => $userPoints,
-    //   'acceptedSuggestions' => $acceptedSuggestions,
-    //   'userWaitingPoints' => $userWaitingPoints,
-    //   'waitingSuggestions' => $waitingSuggestions,
-    //   'refusedSuggestions' => $refusedSuggestions,
-    //   'gamified' => $isGamified,
-    //   'variationId' => $variationId
-    //   ]);
+    return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations']));
   }
 
   // show create account form

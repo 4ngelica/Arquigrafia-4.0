@@ -56,10 +56,18 @@ class EvaluationsController extends Controller {
 
 
 
-   public function viewEvaluation($photoId, $userId)
-   {
-      return static::getEvaluation($photoId, $userId, false);
-   }
+   // public function viewEvaluation($photoId, $userId)
+   // {
+   //    return static::getEvaluation($photoId, $userId, false);
+   // }
+
+	 public function viewEvaluation($photoId, $userId)
+	 {
+		 	$photo = Photo::find($photoId);
+			$user = User::find($userId);
+
+			return view('new_front.evaluation.show', compact(['photo', 'user']));
+	 }
 
    public function showSimilarAverage($photoId) {
       $isOwner = false;
@@ -72,11 +80,8 @@ class EvaluationsController extends Controller {
 
 	 private function getEvaluation($photoId, $userId, $isOwner) {
 
-		 $photo = Photo::where('_id', $photoId)->first();
+		 $photo = Photo::find($photoId);
 
-		 if(!$photo) {
-			 $photo = Photo::where('_id', (int)$photoId)->first();
-		 }
      $binomials = Binomial::all()->keyBy('id');
      $average = Evaluation::average($photo->_id);
      $evaluations = null;

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 use lib\log\EventLogger;
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+
 
 class APIEvaluationController extends Controller {
 
@@ -24,9 +28,9 @@ class APIEvaluationController extends Controller {
         return \Response::json($result);
 	}
 
-	public function storeEvaluation($photoId, $userId) {
-		$input = \Input::all();
-		$input = $input["params"]["data"];
+	public function storeEvaluation(Request $request, $photoId, $userId) {
+		$input = $request->all();
+		// $input = $input["params"]["data"];
 
 		$evaluations =  Evaluation::where("user_id",
         $userId)->where("photo_id", $photoId)->orderBy("binomial_id", "asc")->get();
@@ -46,21 +50,21 @@ class APIEvaluationController extends Controller {
          	}
 
             /* Registro de logs */
-            EventLogger::printEventLogs($photoId, 'insert_evaluation',
-                                        ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
+            // EventLogger::printEventLogs($photoId, 'insert_evaluation',
+                                        // ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
         }
         else {
         	foreach ($evaluations as $evaluation) {
         		$evaluation->knownArchitecture = $input["knownArchitecture"];
           		$evaluation->areArchitecture = $input["areArchitecture"];
-          		$evaluation->evaluationPosition = $input[$evaluation->binomial_id];
+          		$evaluation->evaluationPosition = $input['evaluationPosition'];
           		$evaluation->save();
-                $evaluation_sentence = $evaluation_sentence . Binomial::find($evaluation->binomial_id)->firstOption . "-" . Binomial::find($evaluation->binomial_id)->secondOption . ": " . $input[$evaluation->binomial_id] . ", ";
+                // $evaluation_sentence = $evaluation_sentence . Binomial::find($evaluation->binomial_id)->firstOption . "-" . Binomial::find($evaluation->binomial_id)->secondOption . ": " . $input[$evaluation->binomial_id] . ", ";
         	}
 
             /* Registro de logs */
-            EventLogger::printEventLogs($photoId, 'edit_evaluation',
-                                        ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
+            // EventLogger::printEventLogs($photoId, 'edit_evaluation',
+                                        // ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
         }
 		\Response::json($input);
 	}

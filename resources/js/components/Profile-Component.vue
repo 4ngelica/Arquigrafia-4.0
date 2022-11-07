@@ -12,9 +12,11 @@
       </div>
     </div>
     <div class="container-fluid">
-      <carousel v-if="photos.length > 0" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
+      <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index">
+            <a :href="'/photos/' + photo._id">
               <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+            </a>
           </div>
       </carousel>
     </div>
@@ -100,13 +102,18 @@
         <h3>Albuns</h3>
       </div>
       <hr>
-        <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
-            <div v-for="(photo, index) in photos" :key="index">
-              <a :href="'/photos/' + photo._id">
-                <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+        <carousel v-if="albums.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+            <div v-for="(album, index) in albums" :key="index">
+              <a v-if="album.cover_id" :href="'/albums/' + album._id">
+                <img :src="'/arquigrafia-images/' + album.cover_id + '_view.jpg'" :alt="album.title" class="photo-carousel">
+              </a>
+              <a v-else="album.cover_id" :href="'/albums/' + album._id">
+                <p class="album-without-cover">Album sem capa</p>
               </a>
             </div>
         </carousel>
+        <p v-else-if="auth._id == user._id">  Você ainda não tem nenhum álbum. Crie um <a href="#">aqui</a></p>
+        <p v-else>O usuário ainda não possui albums.</p>
     </div>
     <div class="container px-2">
       <div class="d-flex flex-row align-items-center">
@@ -116,13 +123,15 @@
         <h3>Imagens interpretadas</h3>
       </div>
       <hr>
-        <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
-            <div v-for="(photo, index) in photos" :key="index">
-              <a :href="'/photos/' + photo._id">
-                <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+        <carousel v-if="evaluations.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+            <div v-for="(evaluation, index) in evaluations" :key="index">
+              <a :href="'/evaluations/' + evaluation.photo_id + '/viewEvaluation/' + user._id">
+                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
               </a>
             </div>
         </carousel>
+        <p v-else-if="auth._id == user._id">Você ainda não realizou nenhuma avaliação. Selecione uma imagem e avalie a arquitetura apresentada nela.</p>
+        <p v-else>O usuário ainda não realizou nenhuma avaliação.</p>
     </div>
 
     <!-- Modal -->
@@ -164,7 +173,7 @@ import carousel from 'vue-owl-carousel'
 const count = 20;
 
 export default {
-  props: ['user', 'auth'],
+  props: ['user', 'auth', 'photos', 'albums', 'evaluations'],
   components: { carousel },
   data () {
     return {
@@ -172,11 +181,6 @@ export default {
       following: [],
       allFollowers: [],
       allFollowing: [],
-      badges: [],
-      albuns: [],
-      photos: [],
-      evaluations: [],
-      photos: []
     }
   },
   methods: {
@@ -278,7 +282,7 @@ export default {
     }
   },
   mounted () {
-    this.get();
+    // this.get();
     this.getFollowers('?limit=8');
     this.getFollowing('?limit=8');
   }

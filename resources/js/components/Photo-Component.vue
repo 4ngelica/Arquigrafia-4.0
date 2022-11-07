@@ -135,7 +135,7 @@
           </a>
 
           <h4>Localização:</h4>
-          <div id="map_canvas" class="single_view_map" style="width:300px; height:250px;">
+          <!-- <div id="map_canvas" class="single_view_map" style="width:300px; height:250px;">
             <gmap-map :center="center" :zoom="12" style="width:300px;  height: 250px;">
                   <gmap-marker
                     :key="index"
@@ -144,7 +144,7 @@
                     @click="center=m.position"
                   ></gmap-marker>
                 </gmap-map>
-          </div>
+          </div> -->
 
           <h4>Interpretações da arquitetura:</h4>
           <img src="/img/GraficoFixo.png" />
@@ -164,8 +164,8 @@
 
 <script>
 
-import VueGoogleMap from 'vuejs-google-maps';
-import 'vuejs-google-maps/dist/vuejs-google-maps.css';
+// import VueGoogleMap from 'vuejs-google-maps';
+// import 'vuejs-google-maps/dist/vuejs-google-maps.css';
 
 export default {
   props: ['photo', 'auth', 'user', 'comments'],
