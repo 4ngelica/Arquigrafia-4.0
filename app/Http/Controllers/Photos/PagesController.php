@@ -72,6 +72,7 @@ class PagesController extends Controller {
 
   public function home() {
 
+
     if(Session::has('institutionId')) {
       $institution = Institution::find(Session::get('institutionId'));
     } else {
@@ -80,7 +81,7 @@ class PagesController extends Controller {
 
     EventLogger::printEventLogs(null, "home", null, "Web");
 
-    return view('new_front.home');
+    return view('new_front.home', compact(['institution']));
   }
 
   public function panel() {

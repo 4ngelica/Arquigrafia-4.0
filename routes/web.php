@@ -99,7 +99,7 @@ Route::prefix('/users')->group(function () {
   Route::get('/verify/',[UsersController::class, 'verifyError']);
   Route::get('/login', [UsersController::class, 'loginForm']);
   Route::post('/login', [UsersController::class, 'login']);
-  Route::post('/institutionalLogin', [UsersController::class, 'institutionalLogin']);
+  Route::post('/institutionalLogin', [UsersController::class, 'institutionalLogin'])->name('institutional.login');
   Route::get('/logout', [UsersController::class, 'logout']);
   Route::get('/forget', [UsersController::class, 'forgetForm']);
   Route::post('/forget', [UsersController::class, 'forget']);

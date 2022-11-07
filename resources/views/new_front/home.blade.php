@@ -1,5 +1,5 @@
 @extends('new_front.app')
 
 @section('content')
-  <home-component></home-component>
+  <home-component :institution="{{$institution ?? 0}}"></home-component>
 @endsection

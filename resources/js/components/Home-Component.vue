@@ -107,6 +107,7 @@ import infiniteScroll from 'vue-infinite-scroll'
       loading: false
       }
     },
+    props: ['institution'],
     methods: {
       loadMore() {
         if(! this.loading){

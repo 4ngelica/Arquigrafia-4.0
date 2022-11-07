@@ -3,6 +3,7 @@ namespace App\Models\Institutions;
 
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
+use App\Models\Users\Role;
 use Illuminate\Support\Collection as Collection;
 use Session;
 use App\Models\Institutions\Employee;
@@ -75,7 +76,7 @@ class Institution extends Model {
 
  	public static function RoleOfInstitutionalUser($userId)
 	{
-		$roles = \Role::where('name', 'LIKE', '%Respon%')->first();
+		$roles = Role::where('name', 'LIKE', '%Respon%')->first();
         $query = Employee::where('user_id', '=', $userId)
                             ->where('institution_id', '=', Session::get('institutionId'))
                             ->where('role_id', '=',$roles->id)

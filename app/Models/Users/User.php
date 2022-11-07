@@ -17,6 +17,10 @@ use App\Models\Collaborative\Like;
 use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class User extends Authenticatable {
 
@@ -32,6 +36,8 @@ class User extends Authenticatable {
 	protected $fillable = ['id','name','email','password','login','verify_code'];
 
 	protected $date;
+
+	use HasApiTokens, HasFactory, Notifiable;
 
 	// public function __construct($attributes = array(), Date $date = null) {
 	// 	parent::__construct($attributes);

@@ -20,6 +20,8 @@ window.axios.defaults.baseURL = process.env.APP_URL;
 // window.axios.defaults.headers.common['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
 axios.defaults.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
+axios.defaults.withCredentials = true;
+
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

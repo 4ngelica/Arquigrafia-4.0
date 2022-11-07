@@ -714,7 +714,6 @@ class UsersController extends Controller {
 
   public function institutionalLogin(Request $request) {
     Log::info("Login Institution");
-    dd($request);
     $login = $request->get('login');
     $institutionId = $request->get('institution');
     $password = $request->get('password');
@@ -734,7 +733,7 @@ class UsersController extends Controller {
         return Redirect::to('/home');
     } else {
       Log::info("Invalid access, return message");
-      return Response::json(false);
+      return \Response::json(false);
     }
   }
 

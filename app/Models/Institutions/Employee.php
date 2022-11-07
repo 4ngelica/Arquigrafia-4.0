@@ -10,7 +10,7 @@ class Employee extends Model {
 
 	protected $fillable = ['user_id','institution_id'];
 
-	protected $table = 'employees';
+	protected $collection = 'employees';
 
 	public function user()
 	{
