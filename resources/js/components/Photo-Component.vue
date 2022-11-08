@@ -42,12 +42,17 @@
         </div>
         <div class="tags">
           <h3>Tags</h3>
-          asdasdasda
+          <ul :v-if="tags">
+            <li v-for="(tag, index) in tags" :key="index"> {{tag.name}}</li>
+          </ul>
         </div>
         <div class="comments">
           <h3>Comentários</h3>
-          <span v-if="auth">comentariossss</span>
-          <span v-else>Faça o <a href="users/login">Login</a> e comente sobre a Residência do arquiteto Paulo Mendes da Rocha</span>
+          <form v-if="auth">
+            <textarea name="name" rows="8" cols="80"></textarea>
+            <button type="button" name="button"></button>
+          </form>
+          <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
         </div>
       </div>
 
@@ -168,7 +173,7 @@
 // import 'vuejs-google-maps/dist/vuejs-google-maps.css';
 
 export default {
-  props: ['photo', 'auth', 'user', 'comments'],
+  props: ['photo', 'auth', 'user', 'comments', 'tags'],
   data () {
     return {
       followers: [],

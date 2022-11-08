@@ -52,8 +52,9 @@ class PhotosController extends Controller {
     $photo = Photo::find($id);
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
+    $tags = $photo->tags;
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments']));
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags']));
   }
 
   // upload form

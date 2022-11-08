@@ -8,18 +8,6 @@
           <div class="col-12 col-md-8">
             <h1>{{photo.name}}</h1>
           </div>
-          <div class="col-12 col-md-4 d-flex justify-content-md-end">
-            <span>Inserido em: {{photo.created_at}}</span>
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-              </svg>0</span>
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
-                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-              </svg>0</span>
-          </div>
         </div>
         <img class="img-fluid" :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="" width="100%">
         <div class="d-flex flex-column flex-md-row my-3">
@@ -42,12 +30,9 @@
         </div>
         <div class="tags">
           <h3>Tags</h3>
-          asdasdasda
-        </div>
-        <div class="comments">
-          <h3>Comentários</h3>
-          <span v-if="auth">comentariossss</span>
-          <span v-else>Faça o <a href="users/login">Login</a> e comente sobre a Residência do arquiteto Paulo Mendes da Rocha</span>
+          <ul :v-if="tags">
+            <li v-for="(tag, index) in tags" :key="index"> {{tag.name}}</li>
+          </ul>
         </div>
       </div>
 
@@ -56,13 +41,81 @@
         <!-- Photo information -->
         <div class="info mb-2">
           <h4>Interpretação da {{photo.name}} realizada por {{user.name}}:</h4>
+          <form @submit.prevent="submit" class="my-3">
+            <div class="form-group my-4">
+              <label for="knownArchitecture">Eu conheço pessoalmente esta arquitetura.</label>
+              <input type="checkbox" name="knownArchitecture" v-model="formData.knownArchitecture">
+
+              <label for="areArchitecture">Estou no local.</label>
+              <input type="checkbox" name="areArchitecture"  v-model="formData.areArchitecture">
+              <div class="col-12 d-flex flex-column my-4">
+
+                <p class="mb-4">Para cada um dos pares abaixo, quais são as qualidades predominantes na arquitetura que são visíveis nesta imagem?</p>
+
+                <label for="aberta" class="d-flex justify-content-between">
+                  <p>Aberta ({{100 - formData.fechada}}%)</p>
+                  <p>Fechada ({{formData.fechada}}%)</p>
+                </label>
+                <input type="range" name="fechada" class="form-control-range mb-4" id="fechada" v-model="formData.fechada" min="0" max="100" step="1">
+
+                <label for="externa" class="d-flex justify-content-between">
+                  <p>Interna ({{100 - formData.externa}}%)</p>
+                  <p>Externa ({{formData.externa}}%)</p>
+                </label>
+                <input type="range" name="externa" class="form-control-range mb-4" id="externa" v-model="formData.externa" min="0" max="100" step="1">
+
+                <label for="simples" class="d-flex justify-content-between">
+                  <p>Complexa ({{100 - formData.simples}}%)</p>
+                  <p>Simples ({{formData.simples}}%)</p>
+                </label>
+                <input type="range" name="simples" class="form-control-range mb-4" id="simples" v-model="formData.simples" min="0" max="100" step="1">
+
+                <label for="assimetrica" class="d-flex justify-content-between">
+                  <p>Simétrica ({{100 - formData.assimetrica}}%)</p>
+                  <p>Assimétrica ({{formData.assimetrica}}%)</p>
+                </label>
+                <input type="range" name="assimetrica" class="form-control-range mb-4" id="assimetrica" v-model="formData.assimetrica" min="0" max="100" step="1">
+
+                <label for="opaca" class="d-flex justify-content-between">
+                  <p>Translúcida ({{100 - formData.opaca}}%)</p>
+                  <p>Opaca ({{formData.opaca}}%)</p>
+                </label>
+                <input type="range" name="opaca" class="form-control-range mb-4" id="opaca" v-model="formData.opaca" min="0" max="100" step="1">
+
+                <label for="vertical" class="d-flex justify-content-between">
+                  <p>Horizontal ({{100 - formData.vertical}}%)</p>
+                  <p>Vertical ({{formData.vertical}}%)</p>
+                </label>
+                <input type="range" name="vertical" class="form-control-range mb-4" id="vertical" v-model="formData.vertical" min="0" max="100" step="1">
+              </div>
+
+
+              <!-- _token: rFFGjAN7ZNLgW7ETRQDdsQJCQXGnCT5uyApWGCrw
+              value-21: 50
+              value-20: 50
+              value-19: 50
+              value-16: 50
+              value-14: 50
+              value-13: 50 -->
+            </div>
+            <button type="submit" class="btn btn-primary my-4 mx-1">Enviar</button>
+            <div v-if="success" class="alert alert-success mt-3">
+                Interpretação enviada com sucesso!
+            </div>
+        </form>
         </div>
       </div>
     </div>
 
-    Similiar evaluations
     <div class="container px-2">
       <h3>Imagens interpretadas com média similar</h3>
+        <carousel v-if="evaluations.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+            <div v-for="(evaluation, index) in evaluations" :key="index">
+              <a :href="'/photos/' + evaluation.photo_id">
+                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
+              </a>
+            </div>
+        </carousel>
     </div>
   </div>
 
@@ -74,28 +127,60 @@ export default {
   props: ['photo', 'auth', 'user'],
   data () {
     return {
-      evaluations: []
+      evaluations: [],
+      formData: {
+        aberta: 50,
+        fechada: 50,
+        interna: 50,
+        externa: 50,
+        complexa: 50,
+        simples: 50,
+        simetrica: 50,
+        assimetrica: 50,
+        translucida: 50,
+        opaca: 50,
+        horizontal: 50,
+        vertical: 50,
+        knownArchitecture: '',
+        areArchitecture: ''
+      },
+      errors: [],
+      success: false,
     }
   },
   methods: {
-    get () {
-      // alert(this.auth)
-      // console.log(this.auth);
+    submit() {
+        this.errors = null
+        this.formData.aberta = 100 - this.formData.fechada
+        this.formData.interna = 100 - this.formData.externa
+        this.formData.complexa = 100 - this.formData.simples
+        this.formData.simetrica = 100 - this.formData.assimetrica
+        this.formData.translucida = 100 - this.formData.opaca
+        this.formData.horizontal = 100 - this.formData.vertical
 
-      fetch(`/api/photos/${this.photo.id}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then(data => {
-        console.log(data.user)
+        let formData = new FormData()
 
-      })
-      .catch(err => {
-      });
-    },
+        _.each(this.formData, (value, key) => {
+          formData.append(key, value)
+        })
+
+        console.log(formData)
+
+        window.axios.post('/api/users/', formData ).then(response => {
+
+        }).catch(err => {
+          if (err.response.status === 422) {
+            this.errors = []
+            _.each(err.response.data.errors, error => {
+              _.each(error, e => {
+                this.errors.push(e)
+              })
+            })
+          }
+        });
+      },
   },
   mounted () {
-    // this.get();
   }
 };
 

@@ -145,7 +145,7 @@ Route::get('/photos/download/{photo_id}',[PhotosController::class, 'download']);
 Route::get('/photos/completeness', [PhotosController::class, 'showCompleteness']);
 Route::get('/photos/to_complete', [PhotosController::class, 'getCompletenessPhotos']);
 
-Route::resource('/photos',PhotosController::class);
+Route::get('/photos/{id}', [PhotosController::class, 'show']);
 
 /* SEARCH PAGE */
 Route::get('/search/paginate/other/photos', [PagesController::class, 'paginatePhotosResult']);

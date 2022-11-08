@@ -24,7 +24,7 @@ Vue.component('home-component', require('./components/Home-Component.vue').defau
 Vue.component('search-component', require('./components/Search-Component.vue').default);
 Vue.component('profile-component', require('./components/Profile-Component.vue').default);
 Vue.component('photo-component', require('./components/Photo-Component.vue').default);
-Vue.component('evaluation-component', require('./components/Photo-Component.vue').default);
+Vue.component('evaluation-component', require('./components/Evaluation-Component.vue').default);
 Vue.component('user-edit-component', require('./components/Evaluation-Component.vue').default);
 Vue.component('login-component', require('./components/Login-Component.vue').default);
 
