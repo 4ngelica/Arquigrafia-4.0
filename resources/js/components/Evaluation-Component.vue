@@ -124,7 +124,7 @@
 <script>
 
 export default {
-  props: ['photo', 'auth', 'user'],
+  props: ['photo', 'auth', 'user', 'tags'],
   data () {
     return {
       evaluations: [],

@@ -65,8 +65,9 @@ class EvaluationsController extends Controller {
 	 {
 		 	$photo = Photo::find($photoId);
 			$user = User::find($userId);
+			$tags = $photo->tags;
 
-			return view('new_front.evaluation.show', compact(['photo', 'user']));
+			return view('new_front.evaluation.show', compact(['photo', 'user', 'tags']));
 	 }
 
    public function showSimilarAverage($photoId) {

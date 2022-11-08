@@ -41,7 +41,7 @@
               <div v-if="errors && errors.email" class="text-danger">{{ errors.email[0] }}</div>
 
               <label for="visibleEmail">Visível no perfil público</label>
-              <input type="checkbox" class="form-check-input" name="visibleEmail" id="visibleEmail" :value="visibleEmail" v-model="formData.visibleEmail" />
+              <input type="checkbox" class="form-check-input" name="visibleEmail" id="visibleEmail" :value="formData.visibleEmail" v-model="formData.visibleEmail" />
               <div v-if="errors && errors.visibleEmail" class="text-danger">{{ errors.visibleEmail[0] }}</div>
           </div>
 
@@ -51,7 +51,7 @@
               <div v-if="errors && errors.birthday" class="text-danger">{{ errors.birthday[0] }}</div>
 
               <label for="visibleBirthday">Visível no perfil público</label>
-              <input type="checkbox" class="form-check-input" name="visibleBirthday" id="visibleBirthday" :value="visibleBirthday" v-model="formData.visibleBirthday" />
+              <input type="checkbox" class="form-check-input" name="visibleBirthday" id="visibleBirthday" :value="formData.visibleBirthday" v-model="formData.visibleBirthday" />
               <div v-if="errors && errors.visibleBirthday" class="text-danger">{{ errors.visibleBirthday[0] }}</div>
           </div>
 
@@ -177,6 +177,7 @@ export default {
       errors: {},
       success: false,
       loaded: true,
+      photo: '',
     }
   },
   methods: {
@@ -215,13 +216,10 @@ export default {
       },
       handleFileObject() {
         this.photo = this.$refs.file.files[0]
-        this.photoName = this.photo.name
       }
     },
   mounted () {
-    // this.get();
-    // this.getFollowers('?limit=8');
-    // this.getFollowing('?limit=8');
+
   }
 };
 
