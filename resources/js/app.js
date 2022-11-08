@@ -27,6 +27,7 @@ Vue.component('photo-component', require('./components/Photo-Component.vue').def
 Vue.component('evaluation-component', require('./components/Evaluation-Component.vue').default);
 Vue.component('user-edit-component', require('./components/Evaluation-Component.vue').default);
 Vue.component('login-component', require('./components/Login-Component.vue').default);
+Vue.component('album-component', require('./components/Album-Component.vue').default);
 
 
 /**

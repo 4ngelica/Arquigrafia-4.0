@@ -65,22 +65,26 @@ class AlbumsController extends Controller {
 
 	public function show($id) {
 		$album = Album::find($id);
-		$institutionlogged = false;
+
 		if (is_null($album)) {
 			return redirect()->to('/home');
 		}
 
-		$photos = $album->photos;
-		if (!is_null($album->institution)){
-			$user = $album->institution;
-			$other_albums = Album::withInstitution($user)->except($album)->get();
-		} else {
-			$user = $album->user;
-			$other_albums = Album::with('user')->where('user_id', $user->id)->whereNull('institution_id')->where('id', '!=', $album->id)->get();
+		$user = $album->user;
 
-		}
-		if(Session::has('institutionId'))
-			$institutionlogged = true;
+		$photos = $album->photos;
+		$other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
+		// $other_albums =
+		// if (!is_null($album->institution)){
+		// 	$user = $album->institution;
+		// 	$other_albums = Album::withInstitution($user)->except($album)->get();
+		// } else {
+		// 	$user = $album->user;
+		// 	$other_albums = Album::with('user')->where('user_id', $user->id)->whereNull('institution_id')->where('id', '!=', $album->id)->get();
+		//
+		// }
+		// if(Session::has('institutionId'))
+		// 	$institutionlogged = true;
 
 		return view('albums.show')
 			->with([
@@ -88,7 +92,7 @@ class AlbumsController extends Controller {
 				'album' => $album,
 				'user' => $user,
 				'other_albums' => $other_albums,
-				'institutionlogged'=> $institutionlogged
+				// 'institutionlogged'=> $institutionlogged
 			]);
 	}
 
