@@ -177,7 +177,7 @@ Route::get('/suggestions', [SuggestionsController::class, 'edit']);
 // Route::post('users/suggestions', [SuggestionsController::class, 'update']);
 
 // Route::get('/contributions', [ContributionsController::class, 'showContributions']);
-Route::get('users/contributions', [ContributionsController::class, 'showContributions']);
+Route::get('/contributions', [ContributionsController::class, 'showContributions']);
 
 // Route::resource('/users/contributions', ContributionsController::class);
 
