@@ -107,7 +107,7 @@ Route::prefix('/users')->group(function () {
   Route::get('/{id}/edit', [UsersController::class, 'edit']);
   // Route::put('/{id}', [UsersController::class, 'store']);
   Route::get('/', [UsersController::class, 'index']);
-  Route::post('/', [UsersController::class, 'store']);
+  Route::post('/', [UsersController::class, 'store'])->name('register');
 });
 Route::get('/getPicture', [UsersController::class, 'getFacebookPicture']);
 

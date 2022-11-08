@@ -11,63 +11,41 @@
       </p>
     </div>
 
-    <div class="five columns offset-by-three mb-3">
+      <form method="POST" class="my-3" action="{{route('register')}}">
+        @csrf
 
-      {{ Form::open(array('url' => 'users')) }}
-        <div class="six columns alpha"><p>{{ Form::label('name', 'Nome*:') }}</p></div>
-        <div class="six columns omega">
-          <p>{{ Form::text('name') }} <br>
-          <div class="error">{{ $errors->first('name') }} </div>
-          </p>
+        <div class="form-group my-4 d-flex flex-column justify-content-center">
+        <div class="col-12  mx-1">
+            <label for="name">Nome:</label>
+            <input type="text" class="form-control" name="name" id="name"  />
         </div>
 
+          <div class="col-12  mx-1">
+              <label for="login">Login:</label>
+              <input type="text" class="form-control" name="login" id="login"  />
+          </div>
 
-        <div class="six columns alpha"><p>{{ Form::label('login', 'Login*:') }}</p></div>
-        <div class="six columns omega">
-          <p>{{ Form::text('login') }} <br>
-          <div class="error">{{ $errors->first('login') }}</div>
-          </p>
-        </div>
+          <div class="col-12  mx-1">
+              <label for="email">Email:</label>
+              <input type="text" class="form-control" name="email" id="email"  />
+          </div>
 
-        <div class="six columns alpha"><p>{{ Form::label('email', 'E-mail*:') }}</p></div>
-        <div class="six columns omega">
-          <p>{{ Form::text('email') }}<br>
-          <div class="error">{{ $errors->first('email') }}</div>
-          </p>
-        </div>
+          <div class="col-12 mx-1">
+              <label for="password">Senha:</label>
+              <input type="password" class="form-control" name="password" id="password" />
+          </div>
 
-        <div class="six columns alpha"><p>{{ Form::label('password', 'Senha*:') }}</p></div>
-        <div class="six columns omega">
-          <p>{{ Form::password('password') }}<br>
-          <div class="error">{{ $errors->first('password') }}</div>
-          </p>
-        </div>
+          <div class="col-12 mx-1">
+              <label for="password_confirmation">Repita a senha:</label>
+              <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" />
+          </div>
 
-        <div class="six columns row alpha"><p>{{ Form::label('password_confirmation', 'Repita a senha*:') }}</p></div>
-        <div class="six columns row omega"><p>{{ Form::password('password_confirmation') }}</p></div>
+          <div class="col-12 mx-1">
+              <label for="terms">Li e aceito os <a href="{{ URL::to('/termos') }}" target="_blank" style="text-decoration: underline;">termos de compromisso</a> </label>
+              <input class="form-check-input" type="checkbox" class="form-control" name="terms" id="terms" />
+          </div>
 
-        <small>* Campos obrigatórios.</small>
-
-        <div class="twelve columns alpha omega">
-
-          <p>Li e aceito os <a href="{{ URL::to('/termos') }}" target="_blank" style="text-decoration: underline;">termos de compromisso</a>: {{ Form::checkbox('terms', 'read') }}</p>
-    <p><a href="http://creativecommons.org/licenses/?lang=pt" id="creative_commons" style="text-decoration:underline;">Creative Commons</a></p>
-          <p>
-            <div class="error">{{ $errors->first('terms') }}</div>
-          </p>
-
-          <br>
-          <p>{{ Form::submit("CADASTRAR", array('class'=>'btn right')) }}</p>
-
-        </div>
-
-      {{ Form::close() }}
-
-      <p>&nbsp;</p>
-
-    </div>
-
-  </div>
-
-</div>
+        <button type="submit" class="btn btn-primary my-4 mx-1">Registrar</button>
+      </div>
+    </form>
 @endsection
