@@ -5,6 +5,7 @@ namespace App\Models\Photos;
 use App\Traits\Drafts\DraftingTrait;
 use App\lib\date\Date;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Log;
 use App\Traits\Gamification\LikableGamificationTrait;
@@ -23,6 +24,7 @@ use Session;
 class Photo extends Model {
 
 	use LikableGamificationTrait;
+		use SoftDeletes;
 
 	protected $connection = 'mongodb';
 	protected $collection = 'photos';
