@@ -95,7 +95,7 @@
               </div>
             </li>
             <li><a class="dropdown-item" href="{{'/users/' . Auth::user()->_id}}">Perfil</a></li>
-            <li><a class="dropdown-item" href="#">Contribuições</a></li>
+            <li><a class="dropdown-item" href="/contributions">Contribuições</a></li>
             <li><a class="dropdown-item" href="/albums">Meus Álbuns</a></li>
             <li><a class="dropdown-item" href="{{'/users/' . Auth::user()->_id . '/edit'}}">Configurações</a></li>
             <li><hr class="dropdown-divider"></li>

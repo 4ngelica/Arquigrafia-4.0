@@ -27,14 +27,20 @@
             <button type="button" name="button">Voltar</button>
           </div>
           <div v-if="auth" class="col-12 col-md-8 d-flex justify-content-md-center">
-            ahsdushudh
+            <ul class="single_view_image_buttons d-flex">
+              <li><a href="#" title="Adicione aos seus álbuns"></a> </li>
+              <li><a href="#" title="Faça o download" class="download" target="_blank"></a></li>
+              <li><a href="#" title="Registre suas impressões sobre" ><span class="button_evaluate"></span> </a></li>
+              <li><a href="#" class="like_button" title="Curtir"></a></li>
+              <li><a href="#" title="Denunciar imagem"></a></li>
+            </ul>
           </div>
           <div v-else="auth" class="col-12 col-md-8">
             Faça o <a href="/users/login">login</a> para fazer o download e comentar as imagens.
           </div>
           <div class="col-12 col-md-2 d-flex justify-content-md-end">
-            <ul id="single_view_social_network_buttons">
-              <li><a href="#" class="google addthis_button_google_plusone_share"><span class="google"></span></a></li>
+            <ul class="single_view_social_network_buttons d-flex">
+              <li><a href="#" class="google addthis_button_google_plusone_share"><span class="google">&#8203;</span></a></li>
               <li><a href="#" class="facebook addthis_button_facebook"><span class="facebook"></span></a></li>
               <li><a href="#" class="twitter addthis_button_twitter"><span class="twitter"></span></a></li>
             </ul>
@@ -49,8 +55,14 @@
         <div class="comments">
           <h3>Comentários</h3>
           <form v-if="auth">
-            <textarea name="name" rows="8" cols="80"></textarea>
-            <button type="button" name="button"></button>
+            <img src="" alt="">
+            <div class="d-flex flex-wrap">
+              <img :src="auth.photo" alt="" width="80" height="80">
+              <h3 class="px-2 d-flex">{{auth.name}}</h3>
+              <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label>
+            </div>
+            <textarea class="form-control my-2" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <button type="button" name="button">COMENTAR</button>
           </form>
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
         </div>

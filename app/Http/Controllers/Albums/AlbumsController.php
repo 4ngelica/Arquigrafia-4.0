@@ -74,6 +74,8 @@ class AlbumsController extends Controller {
 
 		$photos = $album->photos;
 		$other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
+		// $other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
+
 		// $other_albums =
 		// if (!is_null($album->institution)){
 		// 	$user = $album->institution;
