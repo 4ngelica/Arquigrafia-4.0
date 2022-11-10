@@ -75,8 +75,9 @@ Route::get('/info/', function(){ return view('i'); });
 Route::get('/landing/{language?}', [PagesController::class, 'landing']);
 Route::get('/home', [PagesController::class, 'home']);
 // Route::get('/panel', [PagesController::class, 'panel']);
-Route::get('/project', function() { return view('project'); });
-Route::get('/faq', function() { return view('faq'); });
+Route::get('/faq', [PagesController::class, 'faq']);
+Route::get('/project', [PagesController::class, 'project']);
+
 Route::get('/chancela', function() { return view('chancela'); });
 Route::get('/termos', function() { return view('termos'); });
 
