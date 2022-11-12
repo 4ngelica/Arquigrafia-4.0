@@ -1,3 +1,8 @@
+// .footer {
+//   position: absolute;
+//   bottom: 0;
+// }
+
 .user-attributes {
   list-style-type: none;
 }
@@ -19,8 +24,12 @@
   padding: 2px;
 }
 
+.user-profile h1{
+  font-size: 25px;
+}
+
 .user-profile h3{
-  font-size: 1.3rem !important;
+  font-size: 1.17em !important;
   margin-bottom: 0;
   margin-left: 2px;
 }
@@ -35,4 +44,24 @@
     background: gray;
     color: #FFF;
     text-align: center;
+}
+
+.friendship-button {
+  text-decoration: none;
+  text-transform: uppercase;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+  border-color: #9b9b9b;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.friendship-button:hover {
+  color: #FFF;
+  background: #9b9b9b;
+  border: solid 1px #9b9b9b;
+  border-radius: 2px;
 }

@@ -28,6 +28,8 @@ Vue.component('evaluation-component', require('./components/Evaluation-Component
 Vue.component('user-edit-component', require('./components/User-Edit-Component.vue').default);
 Vue.component('login-component', require('./components/Login-Component.vue').default);
 Vue.component('album-component', require('./components/Album-Component.vue').default);
+Vue.component('footer-component', require('./components/Footer-Component.vue').default);
+
 
 
 /**
