@@ -1,3 +1,7 @@
+.photo-display h1 {
+    font-size: 2em;
+}
+
 .sidebar h3{
   display: block;
   font-size: 1.17em;
@@ -23,12 +27,6 @@
 .single_view_social_network_buttons {
   list-style-type: none;
 }
-
-// #single_view_social_network_buttons li, a.delicious, .google, .facebook, .twitter {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-// }
 
 .info i {
   padding: 5px 24px 0 0;
@@ -56,43 +54,3 @@ ul {
 .single_view_image_buttons {
   list-style-type: none;
 }
-
-// #plus {
-//     background: url(../img/sprite.png) -470px 0;
-//     /* padding-top: 4px; */
-// }
-//
-// #download {
-//     background: url(../img/sprite.png) -505px 0;
-// }
-
-// span.button_evaluate {
-//     background: url(../img/evaluate.png);
-// }
-// #evaluate {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-//     margin-left: 4px;
-// }
-//
-// #like_button {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-//     margin-left: 4px;
-//     background-image: url(../img/like.png);
-// }
-//
-// #denounce_photo {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-//     margin-left: 4px;
-//     background-image: url(../img/i-denounce.png);
-// }
-//
-// #single_view_image_buttons {
-//     margin: 2px 5px;
-//     float: left;
-// }

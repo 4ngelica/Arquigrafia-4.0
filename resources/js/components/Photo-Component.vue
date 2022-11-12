@@ -6,7 +6,7 @@
       <div class="photo-display col-md-8 col-12">
         <div class="d-flex flex-column flex-md-row">
           <div class="col-12 col-md-8">
-            <h1>{{photo.name}}</h1>
+            <h1 class="fw-bold">{{photo.name}}</h1>
           </div>
           <div class="col-12 col-md-4 d-flex justify-content-md-end">
             <span>Inserido em: {{photo.created_at}}</span>

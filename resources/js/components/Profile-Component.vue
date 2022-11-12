@@ -12,7 +12,15 @@
       </div>
     </div>
     <div class="container-fluid mb-4">
-      <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
+      <carousel v-if="photos.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
+          <div v-for="(photo, index) in photos" :key="index">
+            <a :href="'/photos/' + photo._id">
+              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+            </a>
+          </div>
+      </carousel>
+
+      <carousel v-if="photos.length == 1" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index">
             <a :href="'/photos/' + photo._id">
               <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
@@ -93,7 +101,7 @@
         </div>
       </div>
     </div>
-    <div class="container px-2 mb-4">
+    <div class="albums-container px-2 mb-4">
       <div class="d-flex flex-row align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
           <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
@@ -102,7 +110,18 @@
         <h3 class="fw-bold">Albuns</h3>
       </div>
       <hr>
-        <carousel v-if="albums.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+        <carousel v-if="albums.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+            <div v-for="(album, index) in albums" :key="index">
+              <a v-if="album.cover_id" :href="'/albums/' + album._id">
+                <img :src="'/arquigrafia-images/' + album.cover_id + '_view.jpg'" :alt="album.title" class="photo-carousel">
+              </a>
+              <a v-else="album.cover_id" :href="'/albums/' + album._id">
+                <p class="album-without-cover">Album sem capa</p>
+              </a>
+            </div>
+        </carousel>
+
+        <carousel v-else-if="albums.length == 1" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(album, index) in albums" :key="index">
               <a v-if="album.cover_id" :href="'/albums/' + album._id">
                 <img :src="'/arquigrafia-images/' + album.cover_id + '_view.jpg'" :alt="album.title" class="photo-carousel">
@@ -115,7 +134,7 @@
         <p v-else-if="auth._id == user._id">  Você ainda não tem nenhum álbum. Crie um <a href="#">aqui</a></p>
         <p v-else>O usuário ainda não possui albums.</p>
     </div>
-    <div class="container-md px-2 mb-4">
+    <div class="evaluations-container px-2 mb-4">
       <div class="d-flex flex-row align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-bar-graph-fill" viewBox="0 0 16 16">
           <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm.5 10v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1z"/>
@@ -123,7 +142,15 @@
         <h3 class="fw-bold">Imagens interpretadas</h3>
       </div>
       <hr>
-        <carousel v-if="evaluations.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+        <carousel v-if="evaluations.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+            <div v-for="(evaluation, index) in evaluations" :key="index">
+              <a :href="'/evaluations/' + evaluation.photo_id + '/viewEvaluation/' + user._id">
+                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
+              </a>
+            </div>
+        </carousel>
+
+        <carousel v-else-if="evaluations.length == 1" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(evaluation, index) in evaluations" :key="index">
               <a :href="'/evaluations/' + evaluation.photo_id + '/viewEvaluation/' + user._id">
                 <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
