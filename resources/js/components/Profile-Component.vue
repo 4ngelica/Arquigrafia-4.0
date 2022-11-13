@@ -2,8 +2,8 @@
   <div class="user-profile">
     <div class="container user-header">
       <div class="d-flex pb-2">
-        <img v-if="user.photo" :src="user.photo" alt="" width="60" height="60">
-        <img v-else src="/img/avatar-48.png" alt="" width="60" height="60">
+          <img v-if="user.photo" :src="user.photo" alt="" width="60" height="60">
+          <img v-else src="/img/avatar-48.png" alt="" width="60" height="60">
         <h1 class="px-2 fw-bold">{{user.name}}</h1>
       </div>
       <div v-if="user._id !== auth._id" class="p-2">

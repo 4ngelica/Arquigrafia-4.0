@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Response;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\DB;
 
 class APIPhotosController extends Controller {
 
@@ -404,6 +405,25 @@ class APIPhotosController extends Controller {
 
 	    EventLogger::printEventLogs($photo->id, 'delete', ['user' => $photo->user_id], 'mobile');
 	    return \Response::json(array(
+				'code' => 200,
+				'message' => 'Operacao realizada com sucesso'));
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  string  $id
+	 * @return Response
+	 */
+	public function likes($id)
+	{
+		// $photo = Photo::find($id);
+		$likes = DB::collection('likes')->where('likable_id', $id)->get();
+
+
+		dd($likes);
+
+			return \Response::json(array(
 				'code' => 200,
 				'message' => 'Operacao realizada com sucesso'));
 	}

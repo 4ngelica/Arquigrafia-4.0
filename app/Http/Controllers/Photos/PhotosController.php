@@ -53,10 +53,23 @@ class PhotosController extends Controller {
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
     $tags = $photo->tags;
-    $likes = $photo->likes;
+    $likes = $photo->likes->count();
     $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes']));
+    if (Auth::user()) {
+      $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
+
+      if($authLike) {
+        $authLike = 1;
+      }
+
+    }else {
+      $authLike = 0;
+    }
+
+    // dd($authLike);
+
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike']));
   }
 
   // upload form
