@@ -34,16 +34,51 @@
   background-repeat: no-repeat;
 }
 
-span.facebook {
+.album-button {
+  background: url(/img/sprite.png) -470px 0;
+  width: 24px;
+  height: 25px;
+}
+
+.download-button {
+  background: url(/img/sprite.png) -505px 0;
+  width: 24px;
+  height: 25px;
+}
+
+.evaluate-button {
+  background: url(/img/evaluate.png);
+  width: 20px;
+  height: 20px;
+}
+
+.like-button {
+  background-image: url(/img/like.png);
+  width: 20px;
+  height: 20px;
+}
+.denounce-button {
+  background-image: url(/img/i-denounce.png);
+  width: 20px;
+  height: 20px;
+}
+
+.facebook {
     background: url(/img/sprite.png) -42px -145px;
+    width: 20px;
+    height: 20px;
 }
 
-span.google {
+.google {
     background: url(/img/sprite.png) -21px -145px;
+    width: 20px;
+    height: 20px;
 }
 
-span.twitter  {
+.twitter  {
     background: url(/img/sprite.png) -63px -145px;
+    width: 20px;
+    height: 20px;
 }
 
 ul {

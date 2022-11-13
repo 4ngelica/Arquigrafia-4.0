@@ -53,8 +53,10 @@ class PhotosController extends Controller {
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
     $tags = $photo->tags;
+    $likes = $photo->likes;
+    $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags']));
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes']));
   }
 
   // upload form
