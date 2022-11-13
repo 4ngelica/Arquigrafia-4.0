@@ -50,9 +50,13 @@ class PhotosController extends Controller {
     EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
     $photo = Photo::find($id);
+    if (!$photo) {
+      return redirect('/home');
+    }
+
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
-    $tags = $photo->tags;
+    $tags = DB::collection('tag_assignments')->where('photo_id', $id)->get();
     $likes = $photo->likes->count();
     $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
 
