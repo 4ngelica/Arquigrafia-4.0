@@ -433,31 +433,31 @@ class APIPhotosController extends Controller {
 	public function comments($id)
 	{
 		// $comments = DB::collection('comments')->raw((function($collection) {
-   //    return $collection->aggregate([
-   //      [
-   //        '$lookup' => [
-   //          'from' => 'users',
-   //          'localField' => 'user_id',
-   //          'foreignField'=> '_id',
-   //          'as' => 'user'
-   //        ]
-   //      ]
-   //    ]);
-	 // }));
+	   //    return $collection->aggregate([
+	   //      [
+	   //        '$lookup' => [
+	   //          'from' => 'users',
+	   //          'localField' => 'user_id',
+	   //          'foreignField'=> '_id',
+	   //          'as' => 'user'
+	   //        ]
+	   //      ]
+	   //    ]);
+		 // }));
 
-	 $comments = Comment::raw((function($collection) {
-      return $collection->aggregate([
-        [
-					'$lookup' => [
-            'from' => 'users',
-            'localField' => 'user_id',
-            'foreignField'=> '_id',
-            'as' => 'user'
-          ]
-        ]
-      ]);
- }))->where('photo_id', $id);
+		 $comments = Comment::raw((function($collection) {
+				 return $collection->aggregate([
+					 [
+						'$lookup' => [
+							 'from' => 'users',
+							 'localField' => 'user_id',
+							 'foreignField'=> '_id',
+							 'as' => 'user'
+						 ]
+					 ]
+				 ]);
+		}))->where('photo_id', $id);
 
-		return \Response::json($comments->toArray(), 200);
+		return \Response::json( array_values($comments->toArray()), 200);
 	}
 }

@@ -18,7 +18,7 @@
                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                 <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
               </svg>
-              <small class="d-flex"> {{comments.length ? comments.length : 0}}</small>
+              <small class="d-flex"> {{this.comments.length ? this.comments.length : 0}}</small>
           </div>
         </div>
         <img class="img-fluid" :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="" width="100%">
@@ -54,7 +54,7 @@
           </ul>
         </div>
         <div class="comments">
-          <h3 class="fw-bold">Comentários</h3>
+          <h3 class="fw-bold pb-4">Comentários</h3>
           <form v-if="auth">
             <div class="d-flex flex-wrap">
               <img :src="auth.photo" alt="" width="60" height="60">
@@ -67,11 +67,13 @@
             <small>Cada usuário é responsável por seus próprios comentários. O Arquigrafia não se responsabiliza pelos comentários postados, mas apenas por tornar indisponível no site o conteúdo considerado infringente ou danoso por determinação judicial (art.19 da Lei 12.965/14).</small>
           </form>
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
-          <div v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"class="d-flex flex-wrap">
-            <img src="" alt="" width="60" height="60">
-            <div class="">
-              <h3 class="px-2 d-flex">{{auth.name}}</h3>
-              <p>{{comment.text}}</p>
+          <div v-if="this.comments.length > 0">
+            <div v-for="comment in comments" class="d-flex flex-wrap my-4">
+              <img :src="comment.user[0].photo" alt="" width="60" height="60">
+              <div class="px-2">
+                <h3>{{comment.user[0].name}}</h3>
+                <p>{{comment.text}}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -198,15 +200,16 @@
 // var dislikeButton = document.querySelector('.dislike-button');
 
 export default {
-  props: ['photo', 'auth', 'user', 'comments', 'tags', 'likes', 'auth_like'],
+  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like'],
   data () {
     return {
       photo_likes: this.$props.likes,
-      authLike: this.$props.auth_like
+      authLike: this.$props.auth_like,
+      comments: []
     }
   },
   methods: {
-    get () {
+    getLikes () {
       var likeButton = document.querySelector('.like-button');
       var dislikeButton = document.querySelector('.dislike-button');
 
@@ -218,6 +221,20 @@ export default {
         dislikeButton.classList.add("d-none");
       }
     },
+    getComments() {
+      window.axios.get("/api/comments/" + this.$props.photo._id).then((response) => {
+        if(response.data){
+          response.data.forEach((item, i) => {
+            this.comments.push(item);
+          });
+        }
+
+      }).catch((error) => {
+                // console.log(error)
+        console.log('erro')
+      });
+
+    },
     like() {
       var likeButton = document.querySelector('.like-button');
       var dislikeButton = document.querySelector('.dislike-button');
@@ -225,7 +242,6 @@ export default {
       window.axios.get('/like/' + this.$props.photo._id).then(response => {
         this.authLike = 1;
         this.photo_likes++;
-        console.log(this.photo_likes)
         likeButton.classList.add("d-none");
         dislikeButton.classList.remove("d-none");
       }).catch(err => {
@@ -247,7 +263,8 @@ export default {
     },
   },
   mounted () {
-    this.get();
+    this.getLikes();
+    this.getComments();
   }
 };
 
