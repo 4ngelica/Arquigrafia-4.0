@@ -8,7 +8,7 @@ use App\Models\Photos\Author;
 use App\lib\log\EventLogger;
 use Date;
 use App\Models\Collaborative\Tag;
-use App\Models\Institution\Institution;
+use App\Models\Institutions\Institution;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Response;
@@ -203,26 +203,26 @@ class APIPhotosController extends Controller {
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param  int  $id
+	 * @param  string  $id
 	 * @return Response
 	 */
 	public function show($id)
 	{
-		$photo = Photo::where('_id', $id)->first();
-		$sender = User::find($photo->user_id);
-		$user_id = \Request::get("user_id");
-		$tags = $photo->tags->pluck('name');
-		if (!is_null($photo->institution_id)) {
-			$sender = Institution::find($photo->institution_id);
+		$photo = Photo::find($id);
+
+		if(!$photo) {
+			return \Response::json(["error" => "Image not found" ], 404);
 		}
+
 		$license = Photo::licensePhoto($photo);
-		$authorsList = $photo->authors->pluck('name');
 
-		/* Registro de logs */
-		EventLogger::printEventLogs($id, 'select_photo', ['user' => $photo->user_id], 'mobile');
+		if (!is_null($photo->institution_id)) {
+			$sender = $photo->institution;
+		} else {
+			$sender = $photo->user;
+		}
 
-		return \Response::json(["photo" => $photo, "sender" => $sender, "license" => $license,
-			"authors" => $authorsList, "tags" => $tags]);
+		return \Response::json(["photo" => $photo,  "sender" => $sender], 200);
 	}
 
 
