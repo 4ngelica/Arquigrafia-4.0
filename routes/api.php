@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\APIAuthorsController;
 use App\Http\Controllers\Api\APILogInController;
 use App\Http\Controllers\Api\APIProfilesController;
 use App\Http\Controllers\Api\APIEvaluationController;
+use App\Http\Controllers\Api\APICommentsController;
+
 
 
 // use App\Http\Controllers\Api\NewApis\APIPhotosController;
@@ -33,6 +35,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('photos', APIPhotosController::class);
 Route::get('likes/{id}', [APIPhotosController::class, 'likes']);
 Route::get('comments/{id}', [APIPhotosController::class, 'comments']);
+Route::post('comments/{id}', [APIPhotosController::class, 'commentPhoto']);
 
 
 Route::resource('users', APIUsersController::class);

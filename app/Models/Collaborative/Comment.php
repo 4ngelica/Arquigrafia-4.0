@@ -12,7 +12,8 @@ use Jenssegers\Mongodb\Eloquent\Model as Model;
 class Comment extends Model {
 
 	use LikableGamificationTrait;
-
+	protected $connection = 'mongodb';
+	protected $collection = 'comments';
 	protected $fillable = ['text', 'user_id', 'photo_id'];
 
 	public function photo()

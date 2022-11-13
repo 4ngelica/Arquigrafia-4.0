@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\NewApis;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\Photos\Photo;
@@ -37,9 +37,24 @@ class APICommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+      $input = $request->all();
+      $rules = ['text' => 'required'];
+      $validator = \Validator::make($input, $rules);
+      if ($validator->fails()) {
+         $messages = $validator->messages();
+         return \Response::json('Error', 400);
+      } else {
+        $comment = ['text' => $input["text"], 'user_id' => Auth::user()->_id];
+        $comment = new Comment($comment);
+        $photo = Photo::find($id);
+        $photo->comments()->save($comment);
+
+        $user = Auth::user();
+
+        return \Response::json($comment, 200);
+      }
     }
 
     /**

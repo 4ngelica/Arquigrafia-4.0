@@ -15,6 +15,7 @@ use Response;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use App\Models\Collaborative\Comment;
+use Auth;
 
 
 class APIPhotosController extends Controller {
@@ -458,6 +459,50 @@ class APIPhotosController extends Controller {
 				 ]);
 		}))->where('photo_id', $id);
 
+		// dd($comments->where('_id', '63709eacb5bcdee23d0b6f72'));
+
+		// $tags = Photo::raw((function($collection) {
+		// 		return $collection->aggregate([
+		// 			[
+		// 			 '$lookup' => [
+		// 					'from' => 'tag_assignments',
+		// 					'localField' => 'photo_id',
+		// 					'foreignField'=> '_id',
+		// 					'as' => 'tags'
+		// 				]
+		// 			]
+		// 		]);
+	 // }))->where('_id', $id);
+
+	 // dd($tags);
+
 		return \Response::json( array_values($comments->toArray()), 200);
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function commentPhoto(Request $request, $id)
+	{
+		$input = $request->all();
+		$rules = ['text' => 'required'];
+		$validator = \Validator::make($input, $rules);
+		if ($validator->fails()) {
+			 $messages = $validator->messages();
+			 return \Response::json('Error', 400);
+		} else {
+			$comment = ['text' => $input["text"], 'user_id' => $input["user_id"], 'photo_id' => $id];
+			$comment = new Comment($comment);
+			$comment->save();
+			// $photo = Photo::find($id);
+			// $photo->comments()->save($comment);
+
+			// $user = Auth::user();
+
+			return \Response::json($comment, 200);
+		}
 	}
 }

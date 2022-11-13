@@ -55,23 +55,23 @@
         </div>
         <div class="comments">
           <h3 class="fw-bold pb-4">Comentários</h3>
-          <form v-if="auth">
+          <form v-if="auth" @submit.prevent="addComment">
             <div class="d-flex flex-wrap">
               <img :src="auth.photo" alt="" width="60" height="60">
               <h3 class="px-2 d-flex">{{auth.name}}</h3>
               <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label>
             </div>
-            <textarea class="form-control my-2" id="exampleFormControlTextarea1" rows="3"></textarea>
-            <button type="button" name="button">COMENTAR</button>
+            <textarea class="form-control my-2" id="exampleFormControlTextarea1" rows="3" v-model="formData.text"></textarea>
+            <button type="submit" name="button">COMENTAR</button>
             <br>
             <small>Cada usuário é responsável por seus próprios comentários. O Arquigrafia não se responsabiliza pelos comentários postados, mas apenas por tornar indisponível no site o conteúdo considerado infringente ou danoso por determinação judicial (art.19 da Lei 12.965/14).</small>
           </form>
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
           <div v-if="this.comments.length > 0">
             <div v-for="comment in comments" class="d-flex flex-wrap my-4">
-              <img :src="comment.user[0].photo" alt="" width="60" height="60">
+              <img v-if="comment.user[0]" :src="comment.user[0].photo" alt="" width="60" height="60">
               <div class="px-2">
-                <h3>{{comment.user[0].name}}</h3>
+                <h3 v-if="comment.user[0]" >{{comment.user[0].name}}</h3>
                 <p>{{comment.text}}</p>
               </div>
             </div>
@@ -205,7 +205,10 @@ export default {
     return {
       photo_likes: this.$props.likes,
       authLike: this.$props.auth_like,
-      comments: []
+      comments: [],
+      formData: {
+        text: '',
+      }
     }
   },
   methods: {
@@ -257,6 +260,20 @@ export default {
         this.photo_likes--;
         likeButton.classList.remove("d-none");
         dislikeButton.classList.add("d-none");
+      }).catch(err => {
+
+      });
+    },
+    addComment() {
+
+      let formData = new FormData()
+      formData.append('text', this.formData.text)
+      formData.append('user_id', this.$props.auth._id)
+
+      // formData.append('text', this.formData.text)
+
+      window.axios.post('/api/comments/' + this.$props.photo._id, formData).then(response => {
+        console.log(response)
       }).catch(err => {
 
       });
