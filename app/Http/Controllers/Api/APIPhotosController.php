@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Response;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
+use App\Models\Collaborative\Comment;
+
 
 class APIPhotosController extends Controller {
 
@@ -417,14 +419,45 @@ class APIPhotosController extends Controller {
 	 */
 	public function likes($id)
 	{
-		// $photo = Photo::find($id);
 		$likes = DB::collection('likes')->where('likable_id', $id)->get();
 
-
 		dd($likes);
+	}
 
-			return \Response::json(array(
-				'code' => 200,
-				'message' => 'Operacao realizada com sucesso'));
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  string  $id
+	 * @return Response
+	 */
+	public function comments($id)
+	{
+		// $comments = DB::collection('comments')->raw((function($collection) {
+   //    return $collection->aggregate([
+   //      [
+   //        '$lookup' => [
+   //          'from' => 'users',
+   //          'localField' => 'user_id',
+   //          'foreignField'=> '_id',
+   //          'as' => 'user'
+   //        ]
+   //      ]
+   //    ]);
+	 // }));
+
+	 $comments = Comment::raw((function($collection) {
+      return $collection->aggregate([
+        [
+					'$lookup' => [
+            'from' => 'users',
+            'localField' => 'user_id',
+            'foreignField'=> '_id',
+            'as' => 'user'
+          ]
+        ]
+      ]);
+ }))->where('photo_id', $id);
+
+		return \Response::json($comments->toArray(), 200);
 	}
 }

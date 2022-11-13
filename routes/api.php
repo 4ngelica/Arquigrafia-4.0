@@ -32,6 +32,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /* Controlador de fotos, usuários e adjacentes */
 Route::resource('photos', APIPhotosController::class);
 Route::get('likes/{id}', [APIPhotosController::class, 'likes']);
+Route::get('comments/{id}', [APIPhotosController::class, 'comments']);
+
 
 Route::resource('users', APIUsersController::class);
 Route::resource('tags', APITagsController::class);

@@ -67,6 +67,13 @@
             <small>Cada usuário é responsável por seus próprios comentários. O Arquigrafia não se responsabiliza pelos comentários postados, mas apenas por tornar indisponível no site o conteúdo considerado infringente ou danoso por determinação judicial (art.19 da Lei 12.965/14).</small>
           </form>
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
+          <div v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"class="d-flex flex-wrap">
+            <img src="" alt="" width="60" height="60">
+            <div class="">
+              <h3 class="px-2 d-flex">{{auth.name}}</h3>
+              <p>{{comment.text}}</p>
+            </div>
+          </div>
         </div>
       </div>
 
