@@ -216,7 +216,7 @@ Route::get('/comments/{comment_id}/dislike', [CommentsController::class,'comment
 /* LIKE E DISLIKE */
 Route::get('/like/{id}', [LikesController::class,'photoLike']);
 Route::get('/dislike/{id}', [LikesController::class,'photoDislike']);
-Route::resource('/likes', LikesController::class);
+// Route::resource('/likes', LikesController::class);
 
 /* GRUPOS */
 Route::resource('/groups',GroupsController::class);

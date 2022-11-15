@@ -15,7 +15,13 @@
             <button type="button" name="button">Voltar</button>
           </div>
           <div v-if="auth" class="col-12 col-md-8 d-flex justify-content-md-center">
-            ahsdushudh
+              <ul class="single_view_image_buttons d-flex">
+                <li><a href="#" title="Adicione aos seus álbuns"></a> </li>
+                <li><a href="#" title="Faça o download" class="download" target="_blank"></a></li>
+                <li><a href="#" title="Registre suas impressões sobre" ><span class="button_evaluate"></span> </a></li>
+                <li><a href="#" class="like_button" title="Curtir"></a></li>
+                <li><a href="#" title="Denunciar imagem"></a></li>
+              </ul>
           </div>
           <div v-else="auth" class="col-12 col-md-8">
             Faça o <a href="/users/login">login</a> para fazer o download e comentar as imagens.

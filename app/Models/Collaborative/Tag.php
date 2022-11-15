@@ -12,6 +12,8 @@ class Tag extends Model {
   public $timestamps = false;
 
   protected $fillable = ['name'];
+  protected $connection = 'mongodb';
+  protected $collection = 'tags';
 
   public function photos() {
     return $this->belongsToMany('App\Models\Photos\Photo', 'tag_assignments', 'tag_id', 'photo_id');

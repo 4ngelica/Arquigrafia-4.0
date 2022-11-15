@@ -1,4 +1,4 @@
-@extends('layouts.default')
+<!-- @extends('layouts.default')
 
 @section('head')
 
@@ -87,4 +87,4 @@
 		</div>
 	</div>
 	<!--   FIM - MODAL   -->
-@stop
+@stop -->

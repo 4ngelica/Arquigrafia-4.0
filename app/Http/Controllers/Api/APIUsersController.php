@@ -96,29 +96,27 @@ class APIUsersController extends Controller {
 	{
 		$user = User::find($id);
 
-		dd($user->followers);
 
+		// $teste = User::raw(function($collection)
+		// {
+		//     return $collection->aggregate([
+		//     [
+		//       '$match' => [
+		//         'to_id' => auth()->id()
+		//       ]
+		//     ],
+    //     [
+    //         '$group' => [
+    //             '_id' => '$from_id',
+    //             'messages_count' => [
+    //                 '$sum' => 1
+    //             ]
+    //         ]
+    //     ]
+		//    ]);
+		// });
 
-		$teste = User::raw(function($collection)
-		{
-		    return $collection->aggregate([
-		    [
-		      '$match' => [
-		        'to_id' => auth()->id()
-		      ]
-		    ],
-        [
-            '$group' => [
-                '_id' => '$from_id',
-                'messages_count' => [
-                    '$sum' => 1
-                ]
-            ]
-        ]
-		   ]);
-		});
-
-		return \Response::json(array_merge($user->toArray(), ["followers" => count($user->followers), "following" => (count($user->following) + count($user->followingInstitution)), "photos" => count($user->photos)]));
+		return \Response::json($user->toArray());
 	}
 
 

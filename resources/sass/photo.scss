@@ -1,3 +1,7 @@
+.photo-display h1 {
+    font-size: 2em;
+}
+
 .sidebar h3{
   display: block;
   font-size: 1.17em;
@@ -24,28 +28,64 @@
   list-style-type: none;
 }
 
-// #single_view_social_network_buttons li, a.delicious, .google, .facebook, .twitter {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-// }
-
 .info i {
   padding: 5px 24px 0 0;
   background: url(/img/sprite.png) 180px 10px;
   background-repeat: no-repeat;
 }
 
-span.facebook {
+.album-button {
+  background: url(/img/sprite.png) -470px 0;
+  width: 24px;
+  height: 25px;
+}
+
+.download-button {
+  background: url(/img/sprite.png) -505px 0;
+  width: 24px;
+  height: 25px;
+}
+
+.evaluate-button {
+  background: url(/img/evaluate.png);
+  width: 20px;
+  height: 20px;
+}
+
+.like-button {
+  background-image: url(/img/like.png);
+  width: 20px;
+  height: 20px;
+}
+
+.dislike-button {
+  background-image: url(/img/dislike.png);
+  width: 20px;
+  height: 20px;
+}
+
+.denounce-button {
+  background-image: url(/img/i-denounce.png);
+  width: 20px;
+  height: 20px;
+}
+
+.facebook {
     background: url(/img/sprite.png) -42px -145px;
+    width: 20px;
+    height: 20px;
 }
 
-span.google {
+.google {
     background: url(/img/sprite.png) -21px -145px;
+    width: 20px;
+    height: 20px;
 }
 
-span.twitter  {
+.twitter  {
     background: url(/img/sprite.png) -63px -145px;
+    width: 20px;
+    height: 20px;
 }
 
 ul {
@@ -56,43 +96,3 @@ ul {
 .single_view_image_buttons {
   list-style-type: none;
 }
-
-// #plus {
-//     background: url(../img/sprite.png) -470px 0;
-//     /* padding-top: 4px; */
-// }
-//
-// #download {
-//     background: url(../img/sprite.png) -505px 0;
-// }
-
-// span.button_evaluate {
-//     background: url(../img/evaluate.png);
-// }
-// #evaluate {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-//     margin-left: 4px;
-// }
-//
-// #like_button {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-//     margin-left: 4px;
-//     background-image: url(../img/like.png);
-// }
-//
-// #denounce_photo {
-//     display: block;
-//     width: 20px;
-//     height: 20px;
-//     margin-left: 4px;
-//     background-image: url(../img/i-denounce.png);
-// }
-//
-// #single_view_image_buttons {
-//     margin: 2px 5px;
-//     float: left;
-// }

@@ -50,11 +50,30 @@ class PhotosController extends Controller {
     EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
     $photo = Photo::find($id);
+    if (!$photo) {
+      return redirect('/home');
+    }
+
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
-    $tags = $photo->tags;
+    $tags = DB::collection('tag_assignments')->where('photo_id', $id)->get();
+    $likes = $photo->likes->count();
+    $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags']));
+    if (Auth::user()) {
+      $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
+
+      if($authLike) {
+        $authLike = 1;
+      }
+
+    }else {
+      $authLike = 0;
+    }
+
+    // dd($authLike);
+
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike']));
   }
 
   // upload form

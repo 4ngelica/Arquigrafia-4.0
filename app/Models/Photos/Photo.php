@@ -169,6 +169,11 @@ class Photo extends Model {
 		return $this->hasMany('App\Models\Collaborative\Comment');
 	}
 
+	public function likes()
+	{
+		return $this->hasMany('App\Models\Collaborative\Like', 'likable_id');
+	}
+
 	public function albums()
 	{
 		return $this->belongsToMany('App\Models\Albums\Album', 'album_elements');

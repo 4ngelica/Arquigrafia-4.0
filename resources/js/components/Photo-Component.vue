@@ -6,19 +6,19 @@
       <div class="photo-display col-md-8 col-12">
         <div class="d-flex flex-column flex-md-row">
           <div class="col-12 col-md-8">
-            <h1>{{photo.name}}</h1>
+            <h1 class="fw-bold">{{photo.name}}</h1>
           </div>
           <div class="col-12 col-md-4 d-flex justify-content-md-end">
-            <span>Inserido em: {{photo.created_at}}</span>
-            <span>
+            <small class="d-flex px-2">Inserido em: {{photo.dataUpload}}</small>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-              </svg>0</span>
-            <span>
+              </svg>
+              <small class="d-flex pe-2"> {{this.photo_likes}}</small>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                 <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-              </svg>0</span>
+              </svg>
+              <small class="d-flex"> {{this.comments.length ? this.comments.length : 0}}</small>
           </div>
         </div>
         <img class="img-fluid" :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="" width="100%">
@@ -28,11 +28,12 @@
           </div>
           <div v-if="auth" class="col-12 col-md-8 d-flex justify-content-md-center">
             <ul class="single_view_image_buttons d-flex">
-              <li><a href="#" title="Adicione aos seus álbuns"></a> </li>
-              <li><a href="#" title="Faça o download" class="download" target="_blank"></a></li>
-              <li><a href="#" title="Registre suas impressões sobre" ><span class="button_evaluate"></span> </a></li>
-              <li><a href="#" class="like_button" title="Curtir"></a></li>
-              <li><a href="#" title="Denunciar imagem"></a></li>
+              <li class="album-button"><a href="#" title="Adicione aos seus álbuns"></a> </li>
+              <li class="download-button"><a href="#" title="Faça o download" target="_blank"></a></li>
+              <li class="evaluate-button"><a href="#" title="Registre suas impressões sobre" ></a></li>
+              <li class="like-button" v-on:click="like()"><a href="#" title="Curtir"></a></li>
+              <li class="dislike-button" v-on:click="dislike()"><a href="#" title="Dislike"></a></li>
+              <li class="denounce-button"><a href="#" title="Denunciar imagem"></a></li>
             </ul>
           </div>
           <div v-else="auth" class="col-12 col-md-8">
@@ -40,31 +41,41 @@
           </div>
           <div class="col-12 col-md-2 d-flex justify-content-md-end">
             <ul class="single_view_social_network_buttons d-flex">
-              <li><a href="#" class="google addthis_button_google_plusone_share"><span class="google">&#8203;</span></a></li>
-              <li><a href="#" class="facebook addthis_button_facebook"><span class="facebook"></span></a></li>
-              <li><a href="#" class="twitter addthis_button_twitter"><span class="twitter"></span></a></li>
+              <li class="google"><a href="#"></a></li>
+              <li class="facebook"><a href="#"></a></li>
+              <li class="twitter"><a href="#"></a></li>
             </ul>
           </div>
         </div>
         <div class="tags">
-          <h3>Tags</h3>
+          <h3 class="fw-bold">Tags</h3>
           <ul :v-if="tags">
             <li v-for="(tag, index) in tags" :key="index"> {{tag.name}}</li>
           </ul>
         </div>
         <div class="comments">
-          <h3>Comentários</h3>
-          <form v-if="auth">
-            <img src="" alt="">
+          <h3 class="fw-bold pb-4">Comentários</h3>
+          <form v-if="auth" @submit.prevent="addComment">
             <div class="d-flex flex-wrap">
-              <img :src="auth.photo" alt="" width="80" height="80">
+              <img :src="auth.photo" alt="" width="60" height="60">
               <h3 class="px-2 d-flex">{{auth.name}}</h3>
               <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label>
             </div>
-            <textarea class="form-control my-2" id="exampleFormControlTextarea1" rows="3"></textarea>
-            <button type="button" name="button">COMENTAR</button>
+            <textarea class="form-control my-2" id="exampleFormControlTextarea1" rows="3" v-model="formData.text"></textarea>
+            <button type="submit" name="button">COMENTAR</button>
+            <br>
+            <small>Cada usuário é responsável por seus próprios comentários. O Arquigrafia não se responsabiliza pelos comentários postados, mas apenas por tornar indisponível no site o conteúdo considerado infringente ou danoso por determinação judicial (art.19 da Lei 12.965/14).</small>
           </form>
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
+          <div v-if="this.comments.length > 0">
+            <div v-for="comment in comments" class="d-flex flex-wrap my-4">
+              <img v-if="comment.user[0]" :src="comment.user[0].photo" alt="" width="60" height="60">
+              <div class="px-2">
+                <h3 v-if="comment.user[0]" >{{comment.user[0].name}}</h3>
+                <p>{{comment.text}}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -73,7 +84,9 @@
         <!-- Author information -->
         <div class="author-header mb-2">
           <div class="d-flex">
-            <img class="" :src="user.photo" alt="" width="80" height="80">
+            <a :href="'/users/' + user._id">
+              <img class="" :src="user.photo" alt="" width="60" height="60">
+            </a>
             <h3 class="px-2 d-flex">{{photo.imageAuthor}}</h3>
             <h3 class="px-2 d-flex">{{user.name}}</h3>
             <a class="px-2" href="#">Seguir</a>
@@ -90,7 +103,7 @@
           <p v-if="photo.collection">{{photo.collection}}</p>
 
           <h4 v-if="photo.imageAuthor">Autor(es) da Imagem:</h4>
-          <p v-if="photo.imageAuthor">sdasdada</p>
+          <p v-if="photo.imageAuthor">{{photo.imageAuthor}}</p>
 
           <h4 v-if="photo.dataCriacao">Data da Imagem:</h4>
           <p v-if="photo.dataCriacao">{{photo.imageAuthor}}</p>
@@ -183,42 +196,92 @@
 
 // import VueGoogleMap from 'vuejs-google-maps';
 // import 'vuejs-google-maps/dist/vuejs-google-maps.css';
+// var likeButton = document.querySelector('.like-button');
+// var dislikeButton = document.querySelector('.dislike-button');
 
 export default {
-  props: ['photo', 'auth', 'user', 'comments', 'tags'],
+  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like'],
   data () {
     return {
-      followers: [],
-      following: [],
-      badges: [],
-      albuns: [],
-      photos: [],
-      evaluations: []
+      photo_likes: this.$props.likes,
+      authLike: this.$props.auth_like,
+      comments: [],
+      formData: {
+        text: '',
+      }
     }
   },
   methods: {
-    get () {
-      // alert(this.auth)
-      // console.log(this.auth);
+    getLikes () {
+      var likeButton = document.querySelector('.like-button');
+      var dislikeButton = document.querySelector('.dislike-button');
 
-      fetch(`/api/photos/${this.photo.id}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then(data => {
-        console.log(data.user)
-        // this.photos.push(...data);
-        // this.loading = false;
-      })
-      .catch(err => {
-        // this.loading = false;
+      if (this.authLike) {
+        likeButton.classList.add("d-none");
+        dislikeButton.classList.remove("d-none");
+      }else{
+        likeButton.classList.remove("d-none");
+        dislikeButton.classList.add("d-none");
+      }
+    },
+    getComments() {
+      window.axios.get("/api/comments/" + this.$props.photo._id).then((response) => {
+        if(response.data){
+          response.data.forEach((item, i) => {
+            this.comments.push(item);
+          });
+        }
+
+      }).catch((error) => {
+                // console.log(error)
+        console.log('erro')
+      });
+
+    },
+    like() {
+      var likeButton = document.querySelector('.like-button');
+      var dislikeButton = document.querySelector('.dislike-button');
+
+      window.axios.get('/like/' + this.$props.photo._id).then(response => {
+        this.authLike = 1;
+        this.photo_likes++;
+        likeButton.classList.add("d-none");
+        dislikeButton.classList.remove("d-none");
+      }).catch(err => {
+
       });
     },
-    loadMore() {
+    dislike() {
+      var likeButton = document.querySelector('.like-button');
+      var dislikeButton = document.querySelector('.dislike-button');
+
+      window.axios.get('/dislike/' + this.$props.photo._id).then(response => {
+        this.authLike = 0;
+        this.photo_likes--;
+        likeButton.classList.remove("d-none");
+        dislikeButton.classList.add("d-none");
+      }).catch(err => {
+
+      });
+    },
+    addComment() {
+
+      let formData = new FormData()
+      formData.append('text', this.formData.text)
+      formData.append('user_id', this.$props.auth._id)
+
+      // formData.append('text', this.formData.text)
+
+      window.axios.post('/api/comments/' + this.$props.photo._id, formData).then(response => {
+        console.log(response)
+      }).catch(err => {
+
+      });
     },
   },
   mounted () {
-    this.get();
+    this.getLikes();
+    this.getComments();
   }
 };
 

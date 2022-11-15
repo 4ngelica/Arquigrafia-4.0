@@ -1,3 +1,8 @@
+.footer a{
+  color: #000;
+  text-decoration: none;
+}
+
 #footer {
   bottom: 0;
   clear: both;
@@ -18,6 +23,11 @@
   margin: 3px 8px 0 0;
   background: url("/img/logo.chou.2018.png") no-repeat;
   background-size: contain; }
+
+.footer-links:hover {
+  text-decoration: underline;
+
+}
 
 /*galeria do footer*/
 .footer_images {
@@ -99,96 +109,137 @@ a.footer_image {
   display: block;
   height: 40px; }
 
-#credits ul li #usp {
+#usp {
   background: url(/img/logos.png) 0 0;
-  width: 90px; }
+  width: 90px;
+  height: 40px;
+}
 
-#credits ul li #fapesp {
+#fapesp {
   background: url(/img/logos.png) 0 -50px;
-  width: 90px; }
+  width: 90px;
+  height: 40px;
 
-#credits ul li #rnp {
+}
+
+#rnp {
   background: url(/img/logos.png) 0 -100px;
-  width: 90px; }
+  width: 90px;
+  height: 40px;
+}
 
-#credits ul li #cnpq {
+#cnpq {
   background: url(/img/logos.png) -170px 0;
-  width: 90px; }
+  width: 90px;
+  height: 40px;
+}
 
-#credits ul li #ccsl {
+#ccsl {
   background: url(/img/logos.png) -170px -50px;
-  width: 90px; }
+  width: 90px;
+  height: 40px;
+}
 
-#credits ul li #chancela {
+#chancela {
   background: url(/img/logos.png) -170px -100px;
   width: 90px;
-  height: 50px; }
+  height: 50px;
+  height: 40px;
+}
 
-#credits ul li #fau {
+#fau {
   background: url(/img/logos.png) -350px 0;
-  width: 70px; }
+  width: 70px;
+  height: 40px;
+}
 
-#credits ul li #ime {
+#ime {
   background: url(/img/logos.png) -350px -50px;
-  width: 70px; }
+  width: 70px;
+  height: 40px;
+}
 
-#credits ul li #eca {
+#eca {
   background: url(/img/logos.png) -350px -100px;
-  width: 150px; }
+  width: 150px;
+  height: 40px;
+}
 
-#credits ul li #quapa {
+#quapa {
   background: url(/img/logos.png) -525px 0;
-  width: 70px; }
+  width: 70px;
+  height: 40px;
+}
 
-#credits ul li #vitruvius {
+#vitruvius {
   background: url(/img/logos.png) -525px -50px;
-  width: 70px; }
+  width: 70px;
+  height: 40px;
+}
 
-#credits ul li #archdaily {
+#archdaily {
   background: url(/img/archdaily-brasil.png) 0 0 no-repeat;
   width: 80px;
-  height: 40px; }
+  height: 40px;
+}
 
-#credits ul li #benchmark {
+#benchmark {
   background: url(/img/logos.png) -700px 0 no-repeat;
-  width: 55px; }
+  width: 55px;
+  height: 40px;
+}
 
-#credits ul li #brz {
+#brz {
   background: url(/img/logos.png) -700px -50px no-repeat;
-  width: 55px; }
+  width: 55px;
+  height: 40px;
+}
 
-#credits ul li #rckt {
+#rckt {
   background: url(/img/rckt.png) 15px 0 no-repeat;
   width: 70px;
-  margin-top: 5px; }
+  margin-top: 5px;
+  height: 40px;
+}
 
-#credits ul li #doctela {
+#doctela {
   background: url(/img/doctela.png) 0 0 no-repeat;
   width: 70px;
-  margin: 10px 0 0 -5px; }
+  margin: 10px 0 0 -5px;
+  height: 40px;
+}
 
-#copyright {
-  margin: 18px 0;
-  float: right; }
-  /* footer */
-  #credits ul {
-    width: 19%;
-    height: auto; }
-  #credits .footer-links {
-    text-align: left;
-    width: 150px;
-    height: auto;
-    margin: 4px 31px -10px 0;
-    border-bottom: none;
-    border-right: 1px solid #ddd; }
-  #credits .footer-links a {
-    font-weight: normal;
-    height: 23px; }
-  #credits .footer-links li {
-    display: block;
-    margin-left: 0; }
-  #credits .footer-last {
-    clear: both;
-    padding-top: 10px; }
-  #credits .footer-logos {
-    display: block; }
+.footer-logo {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 3px 8px 0 0;
+    background: url(/img/logo.chou.2018.png) no-repeat;
+    background-size: contain;
+}
+//
+// #copyright {
+//   margin: 18px 0;
+//   float: right; }
+//   /* footer */
+//   #credits ul {
+//     width: 19%;
+//     height: auto; }
+//   #credits .footer-links {
+//     text-align: left;
+//     width: 150px;
+//     height: auto;
+//     margin: 4px 31px -10px 0;
+//     border-bottom: none;
+//     border-right: 1px solid #ddd; }
+//   #credits .footer-links a {
+//     font-weight: normal;
+//     height: 23px; }
+//   #credits .footer-links li {
+//     display: block;
+//     margin-left: 0; }
+//   #credits .footer-last {
+//     clear: both;
+//     padding-top: 10px; }
+//   #credits .footer-logos {
+//     display: block; }

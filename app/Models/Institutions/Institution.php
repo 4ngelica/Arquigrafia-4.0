@@ -15,6 +15,9 @@ class Institution extends Model {
 	protected $fillable = ['name','country'];
 	protected $softDelete = true;
 
+	protected $connection = 'mongodb';
+	protected $collection = 'institutions';
+
 	public function employees()
 	{
 		return $this->hasMany('App\Models\Collaborative\Employee');
