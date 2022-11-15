@@ -31,6 +31,8 @@ use Session;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Redis;
+
 
 class UsersController extends Controller {
 
@@ -62,7 +64,15 @@ class UsersController extends Controller {
   public function account()
   {
     if (Auth::check()) return Redirect::to('/home');
-    return view('/modal/account');
+
+    if ( Redis::exists('account_page') ) {
+        return Redis::get('account_page');
+    } else {
+        $cachedData = view('/modal/account')->render();
+        Redis::set('account_page', $cachedData);
+        return $cachedData;
+    }
+    // return view('/modal/account');
   }
 
 
@@ -203,21 +213,15 @@ class UsersController extends Controller {
     if (Auth::check())
         return Redirect::to('/home');
 
+    // return view('/modal/login');
 
-    // session_start();
-    // $fb_config = Config::get('facebook');
-    // FacebookSession::setDefaultApplication($fb_config["id"], $fb_config["secret"]);
-    // $helper = new FacebookRedirectLoginHelper(url('/users/login/fb/callback'));
-    // $fburl = $helper->getLoginUrl(array(
-    //       'scope' => 'email',
-    // ));
-
-    // $institutions = Institution::institutionsList();
-
-    // if (!Session::has('filter.login') && !Session::has('login.message')) //nao foi acionado pelo filtro, retornar para pagina anterior
-    //      Session::put('url.previous', URL::previous());
-
-    return view('/modal/login');
+    if ( Redis::exists('login_page') ) {
+        return Redis::get('login_page');
+    } else {
+        $cachedData = view('/modal/login')->render();
+        Redis::set('login_page', $cachedData);
+        return $cachedData;
+    }
   }
 
    // validacao do login

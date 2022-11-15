@@ -6,6 +6,8 @@ use App\Models\Evaluations\Evaluation;
 use App\Http\Controllers\Controller;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
+use Cache;
+
 
 
 class APIProfilesController extends Controller {
@@ -42,15 +44,18 @@ class APIProfilesController extends Controller {
 	}
 
 	public function getFollowers(Request $request, $id) {
-		// dd($request->query->all()['limit']);
-		$user = User::find($id);
-		$followers = $user->followers->map->only('name', '_id', 'photo');
+		$result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id, $request) {
+			$user = User::find($id);
+			$followers = $user->followers->map->only('name', '_id', 'photo');
 
-		if(array_key_exists('limit', $request->query->all())) {
-			$limit = $request->query->all()['limit'];
-			$followers = $followers->take($limit);
-		}
-		return \Response::json($followers);
+			if(array_key_exists('limit', $request->query->all())) {
+				$limit = $request->query->all()['limit'];
+				$followers = $followers->take($limit);
+			}
+			return \Response::json($followers);
+		});
+		// dd($result);
+		return $result;
 	}
 
 	public function getFollowing(Request $request, $id) {
