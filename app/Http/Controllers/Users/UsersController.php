@@ -65,13 +65,13 @@ class UsersController extends Controller {
   {
     if (Auth::check()) return Redirect::to('/home');
 
-    if ( Redis::exists('account_page') ) {
-        return Redis::get('account_page');
-    } else {
-        $cachedData = view('/modal/account')->render();
-        Redis::set('account_page', $cachedData);
-        return $cachedData;
-    }
+    // if ( Redis::exists('account_page') ) {
+    //     return Redis::get('account_page');
+    // } else {
+    //     $cachedData = view('/modal/account')->render();
+    //     Redis::set('account_page', $cachedData);
+    //     return $cachedData;
+    // }
     // return view('/modal/account');
   }
 
@@ -213,15 +213,15 @@ class UsersController extends Controller {
     if (Auth::check())
         return Redirect::to('/home');
 
-    // return view('/modal/login');
+    return view('/modal/login');
 
-    if ( Redis::exists('login_page') ) {
-        return Redis::get('login_page');
-    } else {
-        $cachedData = view('/modal/login')->render();
-        Redis::set('login_page', $cachedData);
-        return $cachedData;
-    }
+    // if ( Redis::exists('login_page') ) {
+    //     return Redis::get('login_page');
+    // } else {
+    //     $cachedData = view('/modal/login')->render();
+    //     Redis::set('login_page', $cachedData);
+    //     return $cachedData;
+    // }
   }
 
    // validacao do login
