@@ -44,7 +44,7 @@ class APIProfilesController extends Controller {
 	}
 
 	public function getFollowers(Request $request, $id) {
-		$result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id, $request) {
+		// $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id, $request) {
 			$user = User::find($id);
 			$followers = $user->followers->map->only('name', '_id', 'photo');
 
@@ -53,22 +53,27 @@ class APIProfilesController extends Controller {
 				$followers = $followers->take($limit);
 			}
 			return \Response::json($followers);
-		});
+		// });
 		// dd($result);
-		return $result;
+		// return $result;
 	}
 
 	public function getFollowing(Request $request, $id) {
-		$user = User::find($id);
-		$users = $user->following->map->only('name', '_id', 'photo');
-		$institutions =  $user->followingInstitution;
+		// $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id, $request) {
 
-		if(array_key_exists('limit', $request->query->all())) {
-			$limit = $request->query->all()['limit'];
-			$users = $users->take($limit);
-			$institutions = $institutions->take($limit);
-		}
+			$user = User::find($id);
+			$users = $user->following->map->only('name', '_id', 'photo');
+			$institutions =  $user->followingInstitution;
 
-		return \Response::json(["users" => $users, "institutions" => $institutions]);
-	}
-}
+			if(array_key_exists('limit', $request->query->all())) {
+				$limit = $request->query->all()['limit'];
+				$users = $users->take($limit);
+				$institutions = $institutions->take($limit);
+			}
+
+			return \Response::json(["users" => $users, "institutions" => $institutions]);
+	// });
+
+	// return $result;
+
+}}
