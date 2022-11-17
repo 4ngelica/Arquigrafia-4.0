@@ -80,7 +80,7 @@ class UsersController extends Controller {
     //     Redis::set('account_page', $cachedData);
     //     return $cachedData;
     // }
-    // return view('/modal/account');
+    return view('/modal/account');
   }
 
 
