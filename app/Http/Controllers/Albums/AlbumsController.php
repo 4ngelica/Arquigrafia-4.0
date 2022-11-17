@@ -12,6 +12,7 @@ use App\Models\Users\User;
 use Auth;
 use Session;
 use Response;
+use Cache;
 
 
 class AlbumsController extends Controller {
@@ -64,16 +65,24 @@ class AlbumsController extends Controller {
 	}
 
 	public function show($id) {
-		$album = Album::find($id);
+		$result = Cache::remember('showAlbum_'. $id, 60 * 5, function() use ($id) {
 
-		if (is_null($album)) {
-			return redirect()->to('/home');
-		}
+			$album = Album::find($id);
 
-		$user = $album->user;
+			if (is_null($album)) {
+				return redirect()->to('/home');
+			}
 
-		$photos = $album->photos;
-		$other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
+			$user = $album->user;
+
+			$photos = $album->photos;
+			$other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
+
+			$albumInfo = ['photos' => $photos, 'album' => $album,	'user' => $user, 'other_albums' => $other_albums];
+
+			return $albumInfo;
+		});
+
 		// $other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
 
 		// $other_albums =
@@ -88,14 +97,7 @@ class AlbumsController extends Controller {
 		// if(Session::has('institutionId'))
 		// 	$institutionlogged = true;
 
-		return view('albums.show')
-			->with([
-				'photos' => $photos,
-				'album' => $album,
-				'user' => $user,
-				'other_albums' => $other_albums,
-				// 'institutionlogged'=> $institutionlogged
-			]);
+		return view('albums.show')->with($result);
 	}
 
 	public function store(Request $request) {

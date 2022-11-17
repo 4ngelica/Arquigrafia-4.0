@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
+use Cache;
 
 
 class UsersController extends Controller {
@@ -52,12 +53,19 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    $user = User::find($id);
-    $photos = $user->photos;
-    $albums = $user->albums;
-    $evaluations = $user->evaluations;
+    $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
 
-    return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations']));
+      $user = User::find($id);
+      $photos = $user->photos;
+      $albums = $user->albums;
+      $evaluations = $user->evaluations;
+
+      $profile = ['user' => $user, 'photos' => $photos, 'albums' => $albums, 'evaluations' => $evaluations];
+
+      return $profile;
+    });
+
+    return view('new_front.users.show')->with($result);
   }
 
   // show create account form

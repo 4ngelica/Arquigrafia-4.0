@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Log;
 use Session;
 use App\lib\date\Date;
 use File;
+use Cache;
 
 class PhotosController extends Controller {
   protected $date;
@@ -47,7 +48,9 @@ class PhotosController extends Controller {
 
   public function show($id)
   {
-    EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
+    // EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
+
+    $result = Cache::remember('showUser'. $id, 60 * 5, function() use ($id) {
 
     $photo = Photo::find($id);
     if (!$photo) {
@@ -60,6 +63,11 @@ class PhotosController extends Controller {
     $likes = $photo->likes->count();
     $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
 
+    return $userData = ['photo' => $photo, 'user' => $user, 'comments' => $comments, 'tags' => $tags, 'likes' => $likes];
+
+  });
+
+
     if (Auth::user()) {
       $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
 
@@ -70,10 +78,10 @@ class PhotosController extends Controller {
     }else {
       $authLike = 0;
     }
+    array_push($result, ['authLike' => $authLike]);
 
-    // dd($authLike);
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike']));
+    return view('new_front.photos.show')->with($result);
   }
 
   // upload form
