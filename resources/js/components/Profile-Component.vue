@@ -3,7 +3,7 @@
     <div class="container user-header">
       <div class="d-flex pb-2">
           <img v-if="user.photo" :src="user.photo" alt="" width="60" height="60">
-          <img v-else src="/img/avatar-48.png" alt="" width="60" height="60">
+          <img v-else src="/img_scenario4/avatar-48.webp" alt="" width="60" height="60">
         <h1 class="px-2 fw-bold">{{user.name}}</h1>
       </div>
       <div v-if="user._id !== auth._id" class="p-2">
@@ -15,7 +15,7 @@
       <carousel v-if="photos.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index">
             <a :href="'/photos/' + photo._id">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+              <img :src="'/arquigrafia-images-scenario4/' + photo._id + '_200h.webp'" :alt="photo.title" class="photo-carousel">
             </a>
           </div>
       </carousel>
@@ -23,7 +23,7 @@
       <carousel v-if="photos.length == 1" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index">
             <a :href="'/photos/' + photo._id">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+              <img :src="'/arquigrafia-images-scenario4/' + photo._id + '_200h.webp'" :alt="photo.title" class="photo-carousel">
             </a>
           </div>
       </carousel>
@@ -75,7 +75,7 @@
           <div class="d-flex flex-row flex-wrap">
             <a :href="'/users/' + user._id" v-for="(user, index) in followers" :key="index">
               <img v-if="user.photo" :src="user.photo" class="photo-following">
-              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
+              <img v-else="user.photo"  src="/img_scenario4/avatar-48.webp" class="photo-followers">
             </a>
           </div>
         </div>
@@ -95,7 +95,7 @@
           <div class="d-flex flex-row flex-wrap">
             <a :href="'/users/' + user._id" v-for="(user, index) in following" :key="index">
               <img v-if="user.photo" :src="user.photo" class="photo-following">
-              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-following">
+              <img v-else="user.photo"  src="/img_scenario4/avatar-48.webp" class="photo-following">
             </a>
           </div>
         </div>
@@ -113,7 +113,7 @@
         <carousel v-if="albums.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(album, index) in albums" :key="index">
               <a v-if="album.cover_id" :href="'/albums/' + album._id">
-                <img :src="'/arquigrafia-images/' + album.cover_id + '_view.jpg'" :alt="album.title" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + album.cover_id + '_200h.webp'" :alt="album.title" class="photo-carousel">
               </a>
               <a v-else="album.cover_id" :href="'/albums/' + album._id">
                 <p class="album-without-cover">Album sem capa</p>
@@ -124,7 +124,7 @@
         <carousel v-else-if="albums.length == 1" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(album, index) in albums" :key="index">
               <a v-if="album.cover_id" :href="'/albums/' + album._id">
-                <img :src="'/arquigrafia-images/' + album.cover_id + '_view.jpg'" :alt="album.title" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + album.cover_id + '_200h.webp'" :alt="album.title" class="photo-carousel">
               </a>
               <a v-else="album.cover_id" :href="'/albums/' + album._id">
                 <p class="album-without-cover">Album sem capa</p>
@@ -145,7 +145,7 @@
         <carousel v-if="evaluations.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(evaluation, index) in evaluations" :key="index">
               <a :href="'/evaluations/' + evaluation.photo_id + '/viewEvaluation/' + user._id">
-                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + evaluation.photo_id + '_200h.webp'" class="photo-carousel">
               </a>
             </div>
         </carousel>
@@ -153,7 +153,7 @@
         <carousel v-else-if="evaluations.length == 1" :margin="5" :nav="false" :responsive="{1:{items:1, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(evaluation, index) in evaluations" :key="index">
               <a :href="'/evaluations/' + evaluation.photo_id + '/viewEvaluation/' + user._id">
-                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + evaluation.photo_id + '_200h.webp'" class="photo-carousel">
               </a>
             </div>
         </carousel>
@@ -173,14 +173,14 @@
           <div class="modal-body">
             <div v-if="allFollowers" :href="'/users/' + user._id" v-for="(user, index) in allFollowers" class="d-flex">
               <img v-if="user.photo" :src="user.photo" class="photo-following">
-              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
+              <img v-else="user.photo"  src="/img_scenario4/avatar-48.webp" class="photo-followers">
               <p>{{user.name}}</p>
               <button v-on:click="follow(user.id)" class="btn btn-primary ms-auto">Seguir</button>
               <!-- <button v-on:click="unfollow(user.id)" class="btn btn-primary ms-auto">Deixar de seguir</button> -->
             </div>
               <div v-if="allFollowing" :href="'/users/' + user._id" v-for="(user, index) in allFollowing" class="d-flex m-1">
                 <img v-if="user.photo" :src="user.photo" class="photo-following">
-                <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
+                <img v-else="user.photo"  src="/img_scenario4/avatar-48.webp" class="photo-followers">
                 <p>{{user.name}}</p>
                 <button v-on:click="follow(user.id)" class="btn btn-primary ms-auto">Seguir</button>
                 <!-- <button v-on:click="unfollow(user.id)" class="btn btn-primary ms-auto">Deixar de seguir</button> -->

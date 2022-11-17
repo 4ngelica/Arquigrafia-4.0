@@ -4,7 +4,7 @@
       <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index">
             <a :href="'/photos/' + photo._id">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" :alt="photo.title" class="photo-carousel">
+              <img :src="'/arquigrafia-images-scenario4/' + photo._id + '_200h.webp'" :alt="photo.title" class="photo-carousel">
             </a>
           </div>
       </carousel>
@@ -36,7 +36,7 @@
         <carousel v-if="other_albums.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(other_albums, index) in other_albums" :key="index">
               <a v-if="album.cover_id" :href="'/albums/' + album._id">
-                <img :src="'/arquigrafia-images/' + album.cover_id + '_view.jpg'" :alt="album.title" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + album.cover_id + '_200h.webp'" :alt="album.title" class="photo-carousel">
               </a>
               <a v-else="album.cover_id" :href="'/albums/' + album._id">
                 <p class="album-without-cover">Album sem capa</p>
