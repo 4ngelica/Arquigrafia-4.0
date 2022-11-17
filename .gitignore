@@ -22,6 +22,8 @@ docker-compose.yml
 /public/arquigrafia-images/*
 !/public/arquigrafia-images/.gitkeep
 /public/arquigrafia-avatars/*
+/public/arquigrafia-avatars-scenario4/*
+/public/arquigrafia-images-scenario4/*
 !/public/arquigrafia-avatars/.gitkeep
 /storage/original-images/*
 !/storage/original-images/.gitkeep
