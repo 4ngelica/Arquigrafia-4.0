@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between w-100 mb-4">
 
     <div class="col-12 col-md-2">
-      <ul class="footer-links d-flex flex-md-column justify-content-around">
+      <ul class="footer-links d-flex flex-md-column justify-content-around p-0">
         @if( Auth::guest() )
         <li><a href="{{ URL::to("/users/login") }}">Login</a></li>
         <li><a href="{{ URL::to("/users/account") }}">Cadastrar-se</a></li>
