@@ -29,8 +29,8 @@
       </carousel>
     </div>
     <div class="container d-flex flex-column flex-md-row justify-content-start">
-      <div class="user-profile col-md-8 col-12 px-2">
-        <div class="d-flex align-items-center">
+      <div class="user-profile col-md-4 col-12 px-2">
+        <div class="d-flex align-items-center border-bottom user-profile-content-header">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
           </svg>
@@ -41,7 +41,6 @@
             </svg>
           </a>
         </div>
-        <hr>
         <ul class="user-attributes list-group">
           <li>Nome completo: {{ user.name + ' ' + (user.lastName ? user.lastName : '') }} </li>
           <li v-if="user.scholarity">Escolaridade: {{ user.scholarity }} </li>
@@ -53,54 +52,48 @@
           <li v-if="user.birthday && user.visibleBirthday">Aniversário: {{ user.birthday }} </li> -->
         </ul>
       </div>
-      <div class="user-social col-md-4 col-12 px-2">
-        <div class="conquistas mb-2 d-none">
-          <h3 class="fw-bold">Conquistas</h3>
-          <hr>
-          Conquistas
+
+      <div class="user-profile col-md-4 col-12 px-2">
+        <div class="d-flex align-items-center border-bottom user-profile-content-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill mb-1" viewBox="0 0 16 16">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+          </svg>
+          <h3 class="fw-bold">Seguindo</h3>
+          <button type="button" class="btn ms-auto friendship-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('following')">
+            ver todos
+          </button>
         </div>
-        <div class="followers mb-2">
-          <div class="d-flex flex-row align-items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill mb-1" viewBox="0 0 16 16">
-              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-              <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
-              <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-            </svg>
-            <h3 class="fw-bold">Seguidores</h3>
-            <button type="button" class="btn btn-primary ms-auto friendship-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('followers')">
-              ver todos
-            </button>
-          </div>
-          <hr>
-          <div class="d-flex flex-row flex-wrap">
-            <a :href="'/users/' + user._id" v-for="(user, index) in followers" :key="index">
-              <img v-if="user.photo" :src="user.photo" class="photo-following">
-              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
-            </a>
-          </div>
+        <div class="d-flex flex-row flex-wrap">
+          <a :href="'/users/' + user._id" v-for="(user, index) in following" :key="index">
+            <img v-if="user.photo" :src="user.photo" class="photo-following">
+            <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-following">
+          </a>
         </div>
-        <div class="following mb-2">
-          <div class="d-flex flex-row align-items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill mb-1" viewBox="0 0 16 16">
-              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-              <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
-              <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-            </svg>
-            <h3 class="fw-bold">Seguindo</h3>
-            <button type="button" class="btn ms-auto friendship-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('following')">
-              ver todos
-            </button>
-          </div>
-          <hr>
-          <div class="d-flex flex-row flex-wrap">
-            <a :href="'/users/' + user._id" v-for="(user, index) in following" :key="index">
-              <img v-if="user.photo" :src="user.photo" class="photo-following">
-              <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-following">
-            </a>
-          </div>
+      </div>
+
+      <div class="user-profile col-md-4 col-12 px-2">
+        <div class="d-flex align-items-center border-bottom user-profile-content-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill mb-1" viewBox="0 0 16 16">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+          </svg>
+          <h3 class="fw-bold">Seguidores</h3>
+          <button type="button" class="btn btn-primary ms-auto friendship-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" v-on:click="load('followers')">
+            ver todos
+          </button>
+        </div>
+        <div class="d-flex flex-row flex-wrap">
+          <a :href="'/users/' + user._id" v-for="(user, index) in followers" :key="index">
+            <img v-if="user.photo" :src="user.photo" class="photo-followers">
+            <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
+          </a>
         </div>
       </div>
     </div>
+
     <div class="albums-container px-2 mb-4">
       <div class="d-flex flex-row align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">

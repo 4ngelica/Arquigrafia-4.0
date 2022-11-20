@@ -56,7 +56,7 @@ class PhotosController extends Controller {
 
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
-    $tags = DB::collection('tag_assignments')->where('photo_id', $id)->get();
+    $tags = $photo->tags;
     $likes = $photo->likes->count();
     $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
 

@@ -68,11 +68,12 @@
           </form>
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
           <div v-if="this.comments.length > 0">
-            <div v-for="comment in comments" class="d-flex flex-wrap my-4">
-              <img v-if="comment.user[0]" :src="comment.user[0].photo" alt="" width="60" height="60">
-              <div class="px-2">
-                <h3 v-if="comment.user[0]" >{{comment.user[0].name}}</h3>
+            <div v-for="(comment, index) in comments" :key="index" class="d-flex flex-wrap my-4">
+              <img v-if="comment.user" :src="comment.user.photo" alt="" width="60" height="60">
+              <div class="px-2 d-flex">
+                <h3 v-if="comment.user" >{{comment.user.name}}</h3>
                 <p>{{comment.text}}</p>
+                <button class="ml-auto" type="button" name="button" v-on:click="deleteComment(comment, index)">Deletar</button>
               </div>
             </div>
           </div>
@@ -273,7 +274,18 @@ export default {
       // formData.append('text', this.formData.text)
 
       window.axios.post('/api/comments/' + this.$props.photo._id, formData).then(response => {
-        console.log(response)
+        // console.log(response.data)
+        // console.log(this.comments)
+        this.comments.push(response.data);
+      }).catch(err => {
+
+      });
+    },
+    deleteComment(comment, index) {
+      // console.log(comment, index)
+      // console.log(comment._id)
+      window.axios.delete('/api/comments/' + comment._id).then(response => {
+        this.comments.splice(index, 1);
       }).catch(err => {
 
       });

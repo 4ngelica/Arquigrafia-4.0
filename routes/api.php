@@ -36,7 +36,7 @@ Route::resource('photos', APIPhotosController::class);
 Route::get('likes/{id}', [APIPhotosController::class, 'likes']);
 Route::get('comments/{id}', [APIPhotosController::class, 'comments']);
 Route::post('comments/{id}', [APIPhotosController::class, 'commentPhoto']);
-
+Route::delete('comments/{id}', [APIPhotosController::class, 'deleteComment']);
 
 Route::resource('users', APIUsersController::class);
 Route::resource('tags', APITagsController::class);

@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Collaborative\Comment;
 use Auth;
 
-
 class APIPhotosController extends Controller {
 
 
@@ -446,20 +445,88 @@ class APIPhotosController extends Controller {
 	   //    ]);
 		 // }));
 
-		 $comments = Comment::raw((function($collection) {
-				 return $collection->aggregate([
-					 [
-						'$lookup' => [
-							 'from' => 'users',
-							 'localField' => 'user_id',
-							 'foreignField'=> '_id',
-							 'as' => 'user'
-						 ]
-					 ]
-				 ]);
-		}))->where('photo_id', $id);
+		 //official
+		//  $comments = Comment::raw((function($collection) {
+		// 		 return $collection->aggregate([
+		// 			 [
+		// 				'$lookup' => [
+		// 					 'from' => 'users',
+		// 					 'localField' => 'user_id',
+		// 					 'foreignField'=> '_id',
+		// 					 'as' => 'user'
+		// 				 ]
+		// 			 ]
+		// 		 ]);
+		// }))->where('photo_id', $id);
 
-		// dd($comments->where('_id', '63709eacb5bcdee23d0b6f72'));
+		$comments = Comment::where('photo_id', $id)->get()->toArray();
+
+		foreach($comments as &$comment){
+			$user = User::where('_id', $comment['user_id'])->get(['name', 'photo'])->first();
+			$comment += ['user' => $user];
+		}
+
+		//
+		//  $comments = Comment::raw((function($collection) {
+		// 		 return $collection->aggregate([
+		// 			 [
+		// 				'$lookup' => [
+		// 					 'from' => 'users',
+		// 					 'let' => ['searchId' => ['$toObjectId' => 'user_id']],
+		// 					 // 'let' => ['searchId' => ['$convert'=> ['input'=> '$user_id', 'to' => 'objectId', 'onError'=> '','onNull'=> '']]],
+		// 					 'pipeline' => [
+		// 						 [
+		// 							 '$match' => [
+		// 								 '$expr' => [
+		// 									 '_id'=> '$$searchId'
+		// 									]
+		// 								]
+		// 						 ]
+		// 					 ],
+		// 					 'as' => 'user'
+		// 				 ]
+		// 			 ]
+		// 		 ]);
+		// }));
+
+						// 	{
+            //     '$lookup': {
+            //       //searching collection name
+            //       'from': 'users',
+            //       //setting variable [searchId] where your string converted to ObjectId
+            //       'let': {"searchId": {$toObjectId: "$user_id"}},
+            //       //search query with our [searchId] value
+            //       "pipeline":[
+            //         //searching [searchId] value equals your field [_id]
+            //         {"$match": {"$expr":[ {"_id": "$$searchId"}]}}
+            //         //projecting only fields you reaaly need, otherwise you will store all - huge data loads
+            //         // {"$project":{"_id": 1}}
+						//
+            //       ],
+            //       'as': 'user'
+            //     }
+            // },
+
+		// dd($comments);
+		// dd(gettype($id), $comments->user);
+
+		// $comments = DB::collection('comments')->raw((function($collection) use ($id) {
+	  //     return $collection->aggregate([
+		// 			[
+		// 				// '$match' => ['photo_id' => ['$eq' => $id]],
+		// 				'$lookup' => [
+		// 										 'from' => 'users',
+		// 										 'localField' => 'user_id',
+		// 										 'foreignField'=> '_id',
+		// 										 'as' => 'user',
+		// 										 // '$match' => ['photo_id' => ['$eq' => $id]],
+		// 									 ]
+		// 			],
+		//
+		// 		]);
+		//  }));
+
+		// dd($comments->where('photo_id', $id));
 
 		// $tags = Photo::raw((function($collection) {
 		// 		return $collection->aggregate([
@@ -476,7 +543,7 @@ class APIPhotosController extends Controller {
 
 	 // dd($tags);
 
-		return \Response::json( array_values($comments->toArray()), 200);
+		return \Response::json( $comments, 200);
 	}
 
 	/**
@@ -489,6 +556,7 @@ class APIPhotosController extends Controller {
 	{
 		$input = $request->all();
 		$rules = ['text' => 'required'];
+		// dd( new MongoDB\BSON\ObjectID($input['user_id']));
 		$validator = \Validator::make($input, $rules);
 		if ($validator->fails()) {
 			 $messages = $validator->messages();
@@ -496,13 +564,35 @@ class APIPhotosController extends Controller {
 		} else {
 			$comment = ['text' => $input["text"], 'user_id' => $input["user_id"], 'photo_id' => $id];
 			$comment = new Comment($comment);
-			$comment->save();
+			$photo = Photo::find($id);
+			if($photo) {
+				$photo->comments()->save($comment);
+			}
 			// $photo = Photo::find($id);
 			// $photo->comments()->save($comment);
 
-			// $user = Auth::user();
+			// dd($comment->user->select(['name', 'photo'])->first());
+			$comment = $comment->toArray();
+			$user = User::find($input["user_id"]);
+			$comment += ['user' => ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo]];
 
 			return \Response::json($comment, 200);
 		}
 	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function deleteComment($id)
+	{
+
+		$comment = Comment::find($id);
+		$comment->delete();
+
+		return \Response::json(['msg' => 'Comentário excluído'], 200);
+		}
+
 }
