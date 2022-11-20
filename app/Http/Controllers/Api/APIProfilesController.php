@@ -6,6 +6,9 @@ use App\Models\Evaluations\Evaluation;
 use App\Http\Controllers\Controller;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Institutions\Institution;
+
 
 
 class APIProfilesController extends Controller {
@@ -42,28 +45,61 @@ class APIProfilesController extends Controller {
 	}
 
 	public function getFollowers(Request $request, $id) {
-		// dd($request->query->all()['limit']);
-		$user = User::find($id);
-		$followers = $user->followers->map->only('name', '_id', 'photo');
+
+		$users = [];
+
+		// dd(DB::collection('friendship')->get());
+
+		// dd(DB::collection('friendship')->where('followed_id', $id)->get());
 
 		if(array_key_exists('limit', $request->query->all())) {
 			$limit = $request->query->all()['limit'];
-			$followers = $followers->take($limit);
+			$followers = DB::collection('friendship')->where('followed_id', $id)->take($limit)->get(['following_id'])->toArray();
+		}else {
+			$followers = DB::collection('friendship')->where('followed_id', $id)->get(['following_id'])->toArray();
 		}
-		return \Response::json($followers);
+
+
+		foreach($followers as &$follower){
+			$user = User::where('_id', $follower['following_id'])->get(['name', 'photo']);
+
+			if($user->isNotEmpty()) {
+				array_push($users, $user->first());
+			}
+		}
+
+		return \Response::json(['users' => $users]);
 	}
 
 	public function getFollowing(Request $request, $id) {
-		$user = User::find($id);
-		$users = $user->following->map->only('name', '_id', 'photo');
-		$institutions =  $user->followingInstitution;
+
+		$users = [];
+		$institutions = [];
+		// dd(DB::collection('friendship')->get());
+
+		// dd(DB::collection('friendship')->where('following_id', $id)->get());
 
 		if(array_key_exists('limit', $request->query->all())) {
 			$limit = $request->query->all()['limit'];
-			$users = $users->take($limit);
-			$institutions = $institutions->take($limit);
+			$followeds = DB::collection('friendship')->where('following_id', $id)->take($limit)->get(['followed_id'])->toArray();
+		}else {
+			$followeds = DB::collection('friendship')->where('following_id', $id)->get(['followed_id'])->toArray();
 		}
 
-		return \Response::json(["users" => $users, "institutions" => $institutions]);
+		foreach($followeds as &$followed){
+			$user = User::where('_id', $followed['followed_id'])->get(['name', 'photo']);
+			$institution = Institution::where('_id', $followed['followed_id'])->get(['name', 'photo']);
+
+			if($user->isNotEmpty()) {
+				array_push($users, $user->first());
+			}
+
+			if($institution->isNotEmpty()) {
+				array_push($institutions, $institution->first());
+			}
+
+		}
+
+		return \Response::json(['users' => $users, 'institutions' => $institutions]);
 	}
 }

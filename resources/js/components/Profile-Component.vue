@@ -221,14 +221,14 @@ export default {
       window.axios.get("/api/profile/" + this.$props.user._id + "/followers" + query_param).then((response) => {
 
         if(query_param){
-          if(response.data.length){
-            response.data.forEach((item, i) => {
+          if(response.data.users.length){
+            response.data.users.forEach((item, i) => {
               this.followers.push(item);
             });
           }
         }else{
-          if(response.data.length){
-            response.data.forEach((item, i) => {
+          if(response.data.users.length){
+            response.data.users.forEach((item, i) => {
               this.allFollowers.push(item);
             });
           }
@@ -245,6 +245,8 @@ export default {
             response.data.users.forEach((item, i) => {
               this.following.push(item);
             });
+
+            // console.log(response.data.users)
           }
 
           if(response.data.institutions.length){
