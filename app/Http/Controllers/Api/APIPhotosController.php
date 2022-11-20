@@ -459,11 +459,19 @@ class APIPhotosController extends Controller {
 		// 		 ]);
 		// }))->where('photo_id', $id);
 
-		$comments = Comment::where('photo_id', $id)->get()->toArray();
+		$comments = Comment::where('photo_id', $id)->get();
 
 		foreach($comments as &$comment){
+
+			if(!$comment->created_at && $comment->postDate){
+				$comment->dataUpload = $comment->postDate->toDateTime()->format('d/m/Y');
+			}else {
+				$comment->dataUpload = date('d/m/Y', strtotime($comment->created_at));
+
+			}
+
 			$user = User::where('_id', $comment['user_id'])->get(['name', 'photo'])->first();
-			$comment += ['user' => $user];
+			$comment->user = $user;
 		}
 
 		//
@@ -572,9 +580,17 @@ class APIPhotosController extends Controller {
 			// $photo->comments()->save($comment);
 
 			// dd($comment->user->select(['name', 'photo'])->first());
-			$comment = $comment->toArray();
+
+			$comment->dataUpload = date('d/m/Y', strtotime($comment->created_at));
+
+			// $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
+
+			// $comment = $comment->toArray();
 			$user = User::find($input["user_id"]);
-			$comment += ['user' => ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo]];
+			$comment->user = ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo];
+
+			// dd($comment);
+			// $comment += ['user' => ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo]];
 
 			return \Response::json($comment, 200);
 		}

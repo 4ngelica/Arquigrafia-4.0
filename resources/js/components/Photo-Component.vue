@@ -70,10 +70,16 @@
           <div v-if="this.comments.length > 0">
             <div v-for="(comment, index) in comments" :key="index" class="d-flex flex-wrap my-4">
               <img v-if="comment.user" :src="comment.user.photo" alt="" width="60" height="60">
-              <div class="px-2 d-flex">
-                <h3 v-if="comment.user" >{{comment.user.name}}</h3>
+              <div class="px-2 d-flex flex-column">
+                <div class="d-flex">
+                  <h3 v-if="comment.user" >{{comment.user.name}}</h3>
+                  <small v-if="comment.dataUpload">- {{comment.dataUpload}}</small>
+                </div>
                 <p>{{comment.text}}</p>
-                <button class="ml-auto" type="button" name="button" v-on:click="deleteComment(comment, index)">Deletar</button>
+              </div>
+              <div class="d-flex ms-auto">
+                <button class="ml-auto me-2" type="button" name="button" v-on:click="likeComment(comment, index)">Curtir</button>
+                <button v-if="auth._id == comment.user._id" class="ml-auto" type="button" name="button" v-on:click="deleteComment(comment, index)">Deletar</button>
               </div>
             </div>
           </div>
