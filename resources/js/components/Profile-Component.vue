@@ -243,10 +243,11 @@ export default {
         if(query_param) {
           if(response.data.users.length){
             response.data.users.forEach((item, i) => {
-              this.following.push(item);
+              this.following.push(item.user[0]);
             });
 
-            // console.log(response.data.users)
+            console.log(this.following)
+
           }
 
           if(response.data.institutions.length){
