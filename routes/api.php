@@ -57,6 +57,8 @@ Route::post('logout', [APILogInController::class, 'log_out']);
 // Route::get('moreUserPhotos/{id}', 'modules\api\controllers\APIProfilesController@getMoreUserPhotos');
 Route::get('profile/{id}/followers', [APIProfilesController::class, 'getFollowers']);
 Route::get('profile/{id}/following', [APIProfilesController::class, 'getFollowing']);
+Route::post('follow/{id}', [APIProfilesController::class, 'follow']);
+Route::post('unfollow/{id}', [APIProfilesController::class, 'unfollow']);
 
 // Route::get('profile/{id}/following', 'modules\api\controllers\APIProfilesController@getFollowing');
 // Route::get('profile/{id}/evaluatedPhotos', 'modules\api\controllers\APIProfilesController@getUserEvaluations');
