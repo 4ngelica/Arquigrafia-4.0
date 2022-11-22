@@ -223,13 +223,13 @@ export default {
         if(query_param){
           if(response.data.users.length){
             response.data.users.forEach((item, i) => {
-              this.followers.push(item);
+              this.followers.push(item.user[0]);
             });
           }
         }else{
           if(response.data.users.length){
             response.data.users.forEach((item, i) => {
-              this.allFollowers.push(item);
+              this.allFollowers.push(item.user[0]);
             });
           }
         }
@@ -245,26 +245,23 @@ export default {
             response.data.users.forEach((item, i) => {
               this.following.push(item.user[0]);
             });
-
-            console.log(this.following)
-
           }
 
           if(response.data.institutions.length){
             response.data.institutions.forEach((item, i) => {
-              this.following.push(item);
+              this.following.push(item.user[0]);
             });
           }
         }else {
           if(response.data.users.length){
             response.data.users.forEach((item, i) => {
-              this.allFollowing.push(item);
+              this.allFollowing.push(item.user[0]);
             });
           }
 
           if(response.data.institutions.length){
             response.data.institutions.forEach((item, i) => {
-              this.allFollowing.push(item);
+              this.allFollowing.push(item.user[0]);
             });
           }
         }
