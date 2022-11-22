@@ -47,154 +47,120 @@ class APIProfilesController extends Controller {
 
 	public function getFollowers(Request $request, $id) {
 
-		$users = [];
-
-		// dd(DB::collection('friendship')->get());
-
-		// dd(DB::collection('friendship')->where('followed_id', $id)->get());
+		$users = Follow::raw((function($collection) use ($id) {
+				return $collection->aggregate([
+					[
+					 '$lookup' => [
+							'from' => 'users',
+							'localField' => 'following_id',
+							'foreignField'=> '_id',
+							'as' => 'user'
+						],
+				 ],
+				 [
+					 '$match' => [
+						 'followed_id' => $id,
+						 'user._id' => [
+							 '$exists'=> true
+						 ]
+					 ]
+				 ],
+						[
+							'$project' => [
+								'user.name' => 1,
+								'user.photo' => 1,
+							]
+					 ]
+				]);
+		}));
 
 		if(array_key_exists('limit', $request->query->all())) {
 			$limit = $request->query->all()['limit'];
-			$followers = DB::collection('friendship')->where('followed_id', $id)->take($limit)->get(['following_id'])->toArray();
-		}else {
-			$followers = DB::collection('friendship')->where('followed_id', $id)->get(['following_id'])->toArray();
+			$users = $users->take($limit);
 		}
 
-
-		foreach($followers as &$follower){
-			$user = User::where('_id', $follower['following_id'])->get(['name', 'photo']);
-
-			if($user->isNotEmpty()) {
-				array_push($users, $user->first());
-			}
-		}
+		// $users = [];
+		//
+		// if(array_key_exists('limit', $request->query->all())) {
+		// 	$limit = $request->query->all()['limit'];
+		// 	$followers = DB::collection('friendship')->where('followed_id', $id)->take($limit)->get(['following_id'])->toArray();
+		// }else {
+		// 	$followers = DB::collection('friendship')->where('followed_id', $id)->get(['following_id'])->toArray();
+		// }
+		//
+		//
+		// foreach($followers as &$follower){
+		// 	$user = User::where('_id', $follower['following_id'])->get(['name', 'photo']);
+		//
+		// 	if($user->isNotEmpty()) {
+		// 		array_push($users, $user->first());
+		// 	}
+		// }
 
 		return \Response::json(['users' => $users]);
 	}
 
 	public function getFollowing(Request $request, $id) {
 
-		// $users = DB::collection('friendship')->raw((function($collection) use ($id) {
-	  //     return $collection->aggregate([
-		// 			[
-		// 				// '$match' => ['photo_id' => ['$eq' => $id]],
-		// 				'$lookup' => [
-		// 										 'from' => 'users',
-		// 										 'localField' => 'followed_id',
-		// 										 'foreignField'=> '_id',
-		// 										 'as' => 'users',
-		// 										 'pipeline'     => [
-    //                          [
-    //                              '$match' => [
-    //                                  'following_id' =>  '$$id'
-    //                              ]
-    //                          ]
-    //                      ],
-		// 									 ]
-		// 			],
-		//
-		// 		]);
-		//  }));
-
-		// $friendship = User::raw((function($collection) {
-		// 		return $collection->aggregate([
-		// 			[
-		// 			 '$lookup' => [
-		// 					'from' => 'friendship',
-		// 					'localField' => '_id',
-		// 					'foreignField'=> 'following_id',
-		// 					'as' => 'following'
-		// 				]
-		// 			]
-		// 		]);
-	 // }))->where('_id', $id);
-
-	 $institutions = FollowInstitution::raw((function($collection) use ($id) {
-			 return $collection->aggregate([
-				 [
-					'$lookup' => [
-						 'from' => 'institutions',
-						 'localField' => 'following_user_id',
-						 'foreignField'=> '_id',
-						 'as' => 'institution'
-					 ],
-				],
-				[
-					'$match' => [
-						'following_user_id' => $id,
-						'institution._id' => [
-							'$exists'=> true
-						]
-					]
-				],
+		 $institutions = FollowInstitution::raw((function($collection) use ($id) {
+				 return $collection->aggregate([
 					 [
-						 '$project' => [
-					     'institution.name' => 1
-					   ]
-					]
-			 ]);
-	}));  //deu certo
-
-	$users = Follow::raw((function($collection) use ($id) {
-			return $collection->aggregate([
-				[
-				 '$lookup' => [
-						'from' => 'users',
-						'localField' => 'followed_id',
-						'foreignField'=> '_id',
-						'as' => 'user'
+						'$lookup' => [
+							 'from' => 'institutions',
+							 'localField' => 'following_user_id',
+							 'foreignField'=> '_id',
+							 'as' => 'institution'
+						 ],
 					],
-			 ],
-			 [
-				 '$match' => [
-					 'following_id' => $id,
-					 'user._id' => [
-						 '$exists'=> true
-					 ]
-				 ]
-			 ],
 					[
-						'$project' => [
-							'user.name' => 1,
-							'user.photo' => 1,
+						'$match' => [
+							'following_user_id' => $id,
+							'institution._id' => [
+								'$exists'=> true
+							]
 						]
-				 ]
-			]);
- }));  //deu certo
+					],
+						 [
+							 '$project' => [
+						     'institution.name' => 1
+						   ]
+						]
+				 ]);
+		}));
+
+		$users = Follow::raw((function($collection) use ($id) {
+				return $collection->aggregate([
+					[
+					 '$lookup' => [
+							'from' => 'users',
+							'localField' => 'followed_id',
+							'foreignField'=> '_id',
+							'as' => 'user'
+						],
+				 ],
+				 [
+					 '$match' => [
+						 'following_id' => $id,
+						 'user._id' => [
+							 '$exists'=> true
+						 ]
+					 ]
+				 ],
+						[
+							'$project' => [
+								'user.name' => 1,
+								'user.photo' => 1,
+							]
+					 ]
+				]);
+	 	}));
+
+		if(array_key_exists('limit', $request->query->all())) {
+			$limit = $request->query->all()['limit'];
+			$users = $users->take($limit);
+		}
 
 		 return \Response::json(['users' => $users, 'institutions' => $institutions], 200);
-		//
-		//
-		//  return (\Response::json(DB::collection('friendship')->get()->toArray()));
-		//
-		// $users = [];
-		// $institutions = [];
-		// // dd(DB::collection('friendship')->get());
-		//
-		// // dd(DB::collection('friendship')->where('following_id', $id)->get());
-		//
-		// if(array_key_exists('limit', $request->query->all())) {
-		// 	$limit = $request->query->all()['limit'];
-		// 	$followeds = DB::collection('friendship')->where('following_id', $id)->take($limit)->get(['followed_id'])->toArray();
-		// }else {
-		// 	$followeds = DB::collection('friendship')->where('following_id', $id)->get(['followed_id'])->toArray();
-		// }
-		//
-		// foreach($followeds as &$followed){
-		// 	$user = User::where('_id', $followed['followed_id'])->get(['name', 'photo']);
-		// 	$institution = Institution::where('_id', $followed['followed_id'])->get(['name', 'photo']);
-		//
-		// 	if($user->isNotEmpty()) {
-		// 		array_push($users, $user->first());
-		// 	}
-		//
-		// 	if($institution->isNotEmpty()) {
-		// 		array_push($institutions, $institution->first());
-		// 	}
-		//
-		// }
-
-		return \Response::json(['users' => $users, 'institutions' => $institutions]);
 	}
 
 	public function follow(Request $request, $id) {
