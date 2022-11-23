@@ -101,6 +101,8 @@ class UsersController extends Controller {
       'verify_code' => $verify_code
       ]);
 
+      $user->update(['id' => $user->_id]);
+
       EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia"], "Web");
 
         //send email to user created

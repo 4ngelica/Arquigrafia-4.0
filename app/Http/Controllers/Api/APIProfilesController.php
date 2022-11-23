@@ -53,26 +53,78 @@ class APIProfilesController extends Controller {
 					 '$lookup' => [
 							'from' => 'users',
 							'localField' => 'following_id',
-							'foreignField'=> '_id',
+							'foreignField'=> 'id',
 							'as' => 'user'
 						],
 				 ],
 				 [
 					 '$match' => [
 						 'followed_id' => $id,
-						 'user._id' => [
+						 'user.id' => [
 							 '$exists'=> true
-						 ]
+						 ],
 					 ]
 				 ],
 						[
 							'$project' => [
+								'user.id' => 1,
 								'user.name' => 1,
 								'user.photo' => 1,
 							]
 					 ]
 				]);
 		}));
+
+		// $users = Follow::raw((function($collection) use ($id) {
+		// 		return $collection->aggregate([
+		// 			[ '$lookup'=> [
+		// 				'from'=> 'user',
+		// 				'let'=> [ 'following_id'=> '_id' ],
+		// 				'pipeline'=> [
+		// 					[ '$addFields'=> [ 'following_id'=> [ '$toObjectId'=> '$following_id' ]]],
+		// 					[ '$match'=> [ '$expr'=> [ '$eq'=> [ '$following_id', '$$following_id' ] ] ] ]
+		// 				],
+		// 				'as'=> 'user'
+		// 			]]
+		// 		]);
+		// }));
+
+		// $users = Follow::raw((function($collection) use ($id) {
+		// 		return $collection->aggregate([
+		// 			[
+		// 				 '$addFields'=> [ 'following_id'=> [ '$toString'=> '$_id' ]],
+		// 			],
+		// 			[ '$lookup'=> [
+		// 			  'from'=> 'users',
+		// 			  // 'let'=> [ 'following_id'=> '$following_id' ],
+		// 				'localField' => 'following_id',
+		// 				'foreignField'=> 'following_id',
+		// 			  // 'pipeline'=> [
+		// 			  //    '$match'=> [ 'followed_id' => $id]
+		// 			  // ],
+		// 			  'as'=> 'user'
+		// 			]],
+		// 			// [
+		// 			//  '$match' => [
+		// 			// 	 'followed_id' => $id,
+		// 			// 	 'user._id' => [
+		// 			// 		 '$exists'=> true
+		// 			// 	 ],
+		// 			//  ]
+		// 		 // ],
+		//
+		// 				[
+		// 					'$project' => [
+		// 						'user._id' => 1,
+		// 						'user.name' => 1,
+		// 						'user.photo' => 1,
+		// 					]
+		// 			 ]
+		// 		]);
+		// }));
+
+
+		// dd(DB::collection('users')->where('_id' ,'6361033925868b0fc40e3252')->first());
 
 		if(array_key_exists('limit', $request->query->all())) {
 			$limit = $request->query->all()['limit'];
@@ -101,6 +153,32 @@ class APIProfilesController extends Controller {
 	}
 
 	public function getFollowing(Request $request, $id) {
+		$users = Follow::raw((function($collection) use ($id) {
+				return $collection->aggregate([
+					[
+					 '$lookup' => [
+							'from' => 'users',
+							'localField' => 'followed_id',
+							'foreignField'=> 'id',
+							'as' => 'user'
+						],
+				 ],
+				 [
+					 '$match' => [
+						 'following_id' => $id,
+						 'user.id' => [
+							 '$exists'=> true
+						 ]
+					 ]
+				 ],
+						[
+							'$project' => [
+								'user.name' => 1,
+								'user.photo' => 1,
+							]
+					 ]
+				]);
+		}));
 
 		 $institutions = FollowInstitution::raw((function($collection) use ($id) {
 				 return $collection->aggregate([
@@ -108,14 +186,14 @@ class APIProfilesController extends Controller {
 						'$lookup' => [
 							 'from' => 'institutions',
 							 'localField' => 'following_user_id',
-							 'foreignField'=> '_id',
+							 'foreignField'=> 'id',
 							 'as' => 'institution'
 						 ],
 					],
 					[
 						'$match' => [
 							'following_user_id' => $id,
-							'institution._id' => [
+							'institution.id' => [
 								'$exists'=> true
 							]
 						]
@@ -128,33 +206,6 @@ class APIProfilesController extends Controller {
 				 ]);
 		}));
 
-		$users = Follow::raw((function($collection) use ($id) {
-				return $collection->aggregate([
-					[
-					 '$lookup' => [
-							'from' => 'users',
-							'localField' => 'followed_id',
-							'foreignField'=> '_id',
-							'as' => 'user'
-						],
-				 ],
-				 [
-					 '$match' => [
-						 'following_id' => $id,
-						 'user._id' => [
-							 '$exists'=> true
-						 ]
-					 ]
-				 ],
-						[
-							'$project' => [
-								'user.name' => 1,
-								'user.photo' => 1,
-							]
-					 ]
-				]);
-	 	}));
-
 		if(array_key_exists('limit', $request->query->all())) {
 			$limit = $request->query->all()['limit'];
 			$users = $users->take($limit);
@@ -164,19 +215,42 @@ class APIProfilesController extends Controller {
 	}
 
 	public function follow(Request $request, $id) {
-		$logged_user = User::find($request->user_id);
-		$user = User::find($id);
+		// $logged_user = User::find($request->user_id);
+		// $following_id = $logged_user->_id;
+		// if($id)
+		// $user = User::find($id);
+		// $followed_id = $id;
+		// $friendship = DB::collection('friendship')->where('following_id', $logged_user->_id)->where('followed_id', $id)->first();
+		// dd(DB::collection('friendship'));
+		// dd(User::find('637d6a69525c0fc4000bab52'));
+
+		// 637d2affe5334bc7f601db02
+		// return \Response::json(DB::collection('friendship')->get());
+		// $user = User::find(['_id'=> new \MongoDB\BSON\ObjectId('36')]);
+		// if (strlen($followed_id) == 24){
+		// 	$followed_id = new \MongoDB\BSON\ObjectId($followed_id);
+		// }
+		//
+		// if (strlen($following_id) == 24){
+		// 	$following_id = new \MongoDB\BSON\ObjectId($following_id);
+		// }
 		// $logged_user->f->attach($user_id);
 
 		// DB::collection('friendship')->
 
-		$friendship = DB::collection('friendship')->where('following_id', $request->user_id);
 
-		// $friendship = DB::collection('friendship')->insert(['following_id' => $request->user_id, 'followed_id' => $id]);
+
+		$friendship = DB::collection('friendship')->where('following_id', $request->user_id)->where('followed_id', $id)->first();
+		// dd($friendship);
+		if($friendship) {
+			return \Response::json(['msg' => 'Usuário já é seguido'], 400);
+		}
+
+		$friendship = DB::collection('friendship')->insert(['following_id' => $request->user_id, 'followed_id' => $id]);
 
 		// dd($logged_user->following()->save($user));
-		dd($friendship);
+		// dd($friendship);
 
-		return \Response::json();
+		return \Response::json(['msg' => 'Usuário seguido'], 200);
 	}
 }
