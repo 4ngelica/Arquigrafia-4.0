@@ -66,7 +66,7 @@
           </button>
         </div>
         <div class="d-flex flex-row flex-wrap">
-          <a :href="'/users/' + user._id" v-for="(user, index) in following" :key="index">
+          <a :href="'/users/' + user.id" v-for="(user, index) in following" :key="index">
             <img v-if="user.photo" :src="user.photo" class="photo-following">
             <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-following">
           </a>
@@ -86,7 +86,7 @@
           </button>
         </div>
         <div class="d-flex flex-row flex-wrap">
-          <a :href="'/users/' + user._id" v-for="(user, index) in followers" :key="index">
+          <a :href="'/users/' + user.id" v-for="(user, index) in followers" :key="index">
             <img v-if="user.photo" :src="user.photo" class="photo-followers">
             <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
           </a>
@@ -135,10 +135,10 @@
         <h3 class="fw-bold">Imagens interpretadas</h3>
       </div>
       <hr>
-        <carousel v-if="evaluations.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
-            <div v-for="(evaluation, index) in evaluations" :key="index">
-              <a :href="'/evaluations/' + evaluation.photo_id + '/viewEvaluation/' + user._id">
-                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
+        <carousel v-if="evaluatedPhotos.length > 1" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
+            <div v-for="(photo, index) in evaluatedPhotos" :key="index">
+              <a :href="'/evaluations/' + photo.id + '/viewEvaluation/' + user._id">
+                <img :src="'/arquigrafia-images/' + photo.id + '_view.jpg'" class="photo-carousel">
               </a>
             </div>
         </carousel>
@@ -164,14 +164,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clear()"></button>
           </div>
           <div class="modal-body">
-            <div v-if="allFollowers" :href="'/users/' + user._id" v-for="(user, index) in allFollowers" class="d-flex">
+            <div v-if="allFollowers" :href="'/users/' + user.id" v-for="(user, index) in allFollowers" class="d-flex m-1">
               <img v-if="user.photo" :src="user.photo" class="photo-following">
               <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
               <p>{{user.name}}</p>
               <button v-on:click="follow(user.id)" class="btn btn-primary ms-auto">Seguir</button>
               <!-- <button v-on:click="unfollow(user.id)" class="btn btn-primary ms-auto">Deixar de seguir</button> -->
             </div>
-              <div v-if="allFollowing" :href="'/users/' + user._id" v-for="(user, index) in allFollowing" class="d-flex m-1">
+              <div v-if="allFollowing" :href="'/users/' + user.id" v-for="(user, index) in allFollowing" class="d-flex m-1">
                 <img v-if="user.photo" :src="user.photo" class="photo-following">
                 <img v-else="user.photo"  src="/img/avatar-48.png" class="photo-followers">
                 <p>{{user.name}}</p>
@@ -201,24 +201,23 @@ export default {
       following: [],
       allFollowers: [],
       allFollowing: [],
+      evaluatedPhotos: [],
     }
   },
   methods: {
-    get () {
-      fetch(`/images/${count}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then(data => {
-        this.photos.push(...data);
-        // this.loading = false;
-      })
-      .catch(err => {
-        // this.loading = false;
+    getEvaluations () {
+      window.axios.get("/api/profile/" + this.$props.user.id + "/evaluatedPhotos").then((response) => {
+
+        response.data.evaluations.forEach((item, i) => {
+          this.evaluatedPhotos.push(item.photo[0]);
+        });
+
+      }).catch((error) => {
+        console.log('Erro ao buscar fotos interpretadas')
       });
     },
     getFollowers(query_param = '') {
-      window.axios.get("/api/profile/" + this.$props.user._id + "/followers" + query_param).then((response) => {
+      window.axios.get("/api/profile/" + this.$props.user.id + "/followers" + query_param).then((response) => {
 
         if(query_param){
           if(response.data.users.length){
@@ -238,7 +237,7 @@ export default {
       });
     },
     getFollowing(query_param = '') {
-      window.axios.get("/api/profile/" + this.$props.user._id + "/following" + query_param).then((response) => {
+      window.axios.get("/api/profile/" + this.$props.user.id + "/following" + query_param).then((response) => {
 
         if(query_param) {
           if(response.data.users.length){
@@ -284,7 +283,7 @@ export default {
       this.allFollowing =[];
     },
     follow(id) {
-        window.axios.get("/friends/follow/" + this.$props.user._id).then((response) => {
+        window.axios.get("/friends/follow/" + this.$props.user.id).then((response) => {
           console.log(response);
 
         }).catch((error) => {
@@ -292,7 +291,7 @@ export default {
         });
     },
     unfollow(id) {
-      window.axios.get("/friends/unfollow/" + this.$props.user._id).then((response) => {
+      window.axios.get("/friends/unfollow/" + this.$props.user.id).then((response) => {
         console.log(response);
 
       }).catch((error) => {
@@ -305,6 +304,7 @@ export default {
     // this.get();
     this.getFollowers('?limit=8');
     this.getFollowing('?limit=8');
+    this.getEvaluations();
   }
 };
 

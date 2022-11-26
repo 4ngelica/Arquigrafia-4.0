@@ -61,7 +61,7 @@ Route::post('follow/{id}', [APIProfilesController::class, 'follow']);
 Route::post('unfollow/{id}', [APIProfilesController::class, 'unfollow']);
 
 // Route::get('profile/{id}/following', 'modules\api\controllers\APIProfilesController@getFollowing');
-// Route::get('profile/{id}/evaluatedPhotos', 'modules\api\controllers\APIProfilesController@getUserEvaluations');
+Route::get('profile/{id}/evaluatedPhotos', [APIProfilesController::class, 'getUserEvaluations']);
 // Route::get('profile/{id}/moreEvaluatedPhotos', 'modules\api\controllers\APIProfilesController@getMoreUserEvaluations');
 // /* Controlador de avaliações */
 // Route::get('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@retrieveEvaluation');

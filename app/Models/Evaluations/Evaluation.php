@@ -9,12 +9,12 @@ use Jenssegers\Mongodb\Eloquent\Model as Model;
 class Evaluation extends Model {
 
 	protected $connection = 'mongodb';
-	protected $collection = 'evaluations';
+	protected $collection = 'binomial_evaluation';
 
 	protected $softDelete = true;
-	protected $fillable = ['photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];
+	protected $fillable = ['id', 'photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];
 
-	protected $table = 'binomial_evaluation';
+	// protected $table = 'binomial_evaluation';
 
 	public $timestamps = false;
 
@@ -59,7 +59,7 @@ class Evaluation extends Model {
 		$result = \DB::table('binomial_evaluation')
 				->select('areArchitecture')
 				->where('photo_id', $photoId)
-				->where('user_id',$userId)->first();	
+				->where('user_id',$userId)->first();
 		if($result != null && $result[0] != null && $result[0]->areArchitecture == 'yes'){
 				return true;
 		}else{
