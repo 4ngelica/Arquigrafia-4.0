@@ -28,46 +28,46 @@ class APIEvaluationController extends Controller {
         return \Response::json($result);
 	}
 
-	public function storeEvaluation(Request $request, $photoId, $userId) {
-		$input = $request->all();
-		// $input = $input["params"]["data"];
+	public function storeEvaluation(Request $request, $photoId) {
 
-		$evaluations =  Evaluation::where("user_id",
-        $userId)->where("photo_id", $photoId)->orderBy("binomial_id", "asc")->get();
-        $binomials = Binomial::all();
-        $evaluation_sentence = "";
-        if ($evaluations->isEmpty()) {
+		$binomials = Binomial::all();
+
+		// $evaluations = Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get();
+
+
+		// dd($evaluations->count());
+
+		// foreach ($evaluations as $post) {
+		//     $post->delete();
+		// }
+
+		// dd('ok');
+		$evaluations = Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get();
+
         	foreach ($binomials as $binomial) {
-        		$newEvaluation = Evaluation::create([
+
+        		$newEvaluation = Evaluation::updateOrCreate(
+							[
+								'binomial_id' => $binomial->binomial_id,
+								'user_id'=> $request->user_id,
+								'photo_id'=> $photoId
+							],
+							[
             		'photo_id'=> $photoId,
-            		'evaluationPosition'=> $input[$binomial->id],
-            		'binomial_id'=> $binomial->id,
-            		'user_id'=> $userId,
-            		'knownArchitecture'=>$input["knownArchitecture"],
-            		'areArchitecture'=>$input["areArchitecture"]
+            		'evaluationPosition'=> $request->input("binomial_$binomial->binomial_id"),
+            		'binomial_id'=> $binomial->binomial_id,
+            		'user_id'=> $request->user_id,
+            		'knownArchitecture'=>$request->knownArchitecture,
+            		'areArchitecture'=>$request->areArchitecture
           		]);
-                $evaluation_sentence = $evaluation_sentence . $binomial->firstOption . "-" . $binomial->secondOption . ": " . $input[$binomial->id] . ", ";
+
+						$newEvaluation->update(['id' => $newEvaluation->_id ]);
          	}
 
-            /* Registro de logs */
-            // EventLogger::printEventLogs($photoId, 'insert_evaluation',
-                                        // ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
-        }
-        else {
-        	foreach ($evaluations as $evaluation) {
-        		$evaluation->knownArchitecture = $input["knownArchitecture"];
-          		$evaluation->areArchitecture = $input["areArchitecture"];
-          		$evaluation->evaluationPosition = $input['evaluationPosition'];
-          		$evaluation->save();
-                // $evaluation_sentence = $evaluation_sentence . Binomial::find($evaluation->binomial_id)->firstOption . "-" . Binomial::find($evaluation->binomial_id)->secondOption . ": " . $input[$evaluation->binomial_id] . ", ";
-        	}
+						return \Response::json(Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get());
 
-            /* Registro de logs */
-            // EventLogger::printEventLogs($photoId, 'edit_evaluation',
-                                        // ['evaluation' => $evaluation_sentence, 'user' => $userId], 'mobile');
         }
-		\Response::json($input);
-	}
+
 
     public function averageEvaluationValues($photoId, $userId) {
         $result["binomials"] = Binomial::all()->keyBy('id');

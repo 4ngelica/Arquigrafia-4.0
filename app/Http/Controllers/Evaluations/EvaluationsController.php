@@ -36,22 +36,22 @@ class EvaluationsController extends Controller {
       return \Redirect::to('/home');
 	}
 
-  public function evaluate($photoId )
-  {
-      if (Session::has('institutionId') ) {
-        return \Redirect::to('/home');
-      }
-
-      if(isset($_SERVER['QUERY_STRING'])) parse_str($_SERVER['QUERY_STRING'], $query);
-      if(isset($f)) {
-        if($f == "sb") $eventContent['object_source'] = 'pelo botão abaixo da imagem';
-        elseif($f == "c") $eventContent['object_source'] = 'pelo botão abaixo do gráfico';
-        elseif($f == "g") $eventContent['object_source'] = 'pelo gráfico';
-      } else $eventContent['object_source'] = 'diretamente';
-      EventLogger::printEventLogs(null, 'access_evaluation_page', $eventContent, 'Web');
-
-      return static::getEvaluation($photoId, Auth::user()->id, true);
-    }
+  // public function evaluate($photoId )
+  // {
+  //     if (Session::has('institutionId') ) {
+  //       return \Redirect::to('/home');
+  //     }
+	//
+  //     if(isset($_SERVER['QUERY_STRING'])) parse_str($_SERVER['QUERY_STRING'], $query);
+  //     if(isset($f)) {
+  //       if($f == "sb") $eventContent['object_source'] = 'pelo botão abaixo da imagem';
+  //       elseif($f == "c") $eventContent['object_source'] = 'pelo botão abaixo do gráfico';
+  //       elseif($f == "g") $eventContent['object_source'] = 'pelo gráfico';
+  //     } else $eventContent['object_source'] = 'diretamente';
+  //     EventLogger::printEventLogs(null, 'access_evaluation_page', $eventContent, 'Web');
+	//
+  //     return static::getEvaluation($photoId, Auth::user()->id, true);
+  //   }
 
 
 
@@ -68,6 +68,15 @@ class EvaluationsController extends Controller {
 			$tags = $photo->tags;
 
 			return view('new_front.evaluation.show', compact(['photo', 'user', 'tags']));
+	 }
+
+	 public function evaluate($photoId)
+	 {
+			$photo = Photo::find($photoId);
+			$user = Auth::user();
+			$tags = $photo->tags;
+
+			return view('new_front.evaluation.edit', compact(['photo', 'user', 'tags']));
 	 }
 
    public function showSimilarAverage($photoId) {
