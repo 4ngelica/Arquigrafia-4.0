@@ -53,18 +53,22 @@ class APIProfilesController extends Controller {
 						 ],
 					 ]
 				 ],
-						[
-							'$project' => [
-								'photo_id' => 1,
-								'photo.id' => 1,
-								'photo.name' => 1,
-							]
-					 ],
+				[
+					'$project' => [
+						'photo_id' => 1,
+						'photo.id' => 1,
+						'photo.name' => 1,
+					]
+				],
 				]);
 		}));
 
 		$evaluations = $evaluations->unique('photo_id');
+
+		// $evaluations = Evaluation::where('user_id', $id)->get()->unique('photo_id');
+
 		return \Response::json(['evaluations'=>array_values($evaluations->toArray())]);
+		// return \Response::json(['evaluations'=> $evaluations]);
 	}
 
 	public function getMoreUserEvaluations($id) {

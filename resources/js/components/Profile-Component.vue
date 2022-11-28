@@ -207,12 +207,13 @@ export default {
   methods: {
     getEvaluations () {
       window.axios.get("/api/profile/" + this.$props.user.id + "/evaluatedPhotos").then((response) => {
+        // console.log((response.data.evaluations))
 
         response.data.evaluations.forEach((item, i) => {
           this.evaluatedPhotos.push(item.photo[0]);
         });
-
       }).catch((error) => {
+        // console.log(error)
         console.log('Erro ao buscar fotos interpretadas')
       });
     },

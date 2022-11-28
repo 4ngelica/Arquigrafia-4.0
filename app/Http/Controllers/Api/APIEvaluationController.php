@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use lib\log\EventLogger;
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -29,6 +30,11 @@ class APIEvaluationController extends Controller {
 	}
 
 	public function storeEvaluation(Request $request, $photoId) {
+		// dd(Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get());
+		// dd(User::find($request->user_id)->evaluations);
+
+		return \Response::json(['eu' => User::find($request->user_id)->evaluations]);
+
 
 		$binomials = Binomial::all();
 
