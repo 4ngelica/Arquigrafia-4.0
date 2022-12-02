@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Log;
 use Session;
 use App\lib\date\Date;
 use File;
+use Illuminate\Support\Facades\Http;
+
 
 class PhotosController extends Controller {
   protected $date;
@@ -59,6 +61,21 @@ class PhotosController extends Controller {
     $tags = $photo->tags;
     $likes = $photo->likes->count();
     $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
+    $license = json_encode(Photo::licensePhoto($photo));
+    $latLng = self::getLatLng($photo);
+    $incompleteFields = [];
+    foreach ($photo->toArray() as $key => $value) {
+      if (!$value) {
+        array_push($incompleteFields, $key);
+      }
+    }
+    // dd(implode(', ', $incompleteFields));
+
+    $incompleteFields = json_encode($incompleteFields);
+
+    // dd($incompleteFields);
+
+    // dd($latLng);
 
     if (Auth::user()) {
       $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
@@ -73,7 +90,18 @@ class PhotosController extends Controller {
 
     // dd($authLike);
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike']));
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'incompleteFields']));
+  }
+
+  public static function getLatLng($photo){
+
+    $address = ($photo->country ? $photo->country . '+' : '') . ($photo->country ? $photo->country . '+' : '') . ($photo->state ? $photo->state . '+' : '') . ($photo->street ? $photo->street . '+' : '') . ($photo->city ? $photo->city . '+' : '') . ($photo->district ? $photo->district : '');
+    $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='. config('general.google_maps_key'));
+
+    $body = json_decode($response->body());
+    $latLng = [$body->results[0]->geometry->location->lat, $body->results[0]->geometry->location->lng];
+
+    return json_encode($latLng);
   }
 
   // upload form

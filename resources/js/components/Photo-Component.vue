@@ -27,28 +27,28 @@
             <button type="button" name="button">Voltar</button>
           </div>
           <div v-if="auth" class="col-12 col-md-8 d-flex justify-content-md-center">
-            <ul class="single_view_image_buttons d-flex">
-              <li class="album-button"><a href="#" title="Adicione aos seus álbuns"></a> </li>
-              <li class="download-button"><a href="#" title="Faça o download" target="_blank"></a></li>
-              <li class="evaluate-button"><a href="#" title="Registre suas impressões sobre" ></a></li>
-              <li class="like-button" v-on:click="like()"><a href="#" title="Curtir"></a></li>
-              <li class="dislike-button" v-on:click="dislike()"><a href="#" title="Dislike"></a></li>
-              <li class="denounce-button"><a href="#" title="Denunciar imagem"></a></li>
+            <ul class="single_view_image_buttons d-flex justify-content-around p-0">
+              <li class="album-button px-2"><a href="#" title="Adicione aos seus álbuns" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></a> </li>
+              <li class="download-button px-2"><a :href="'/arquigrafia-images/'+ photo._id + '_view.jpg'" :download="photo._id + '_view.jpg'" title="Faça o download" target="_blank"></a></li>
+              <li class="evaluate-button px-2"><a href="#" title="Registre suas impressões sobre" ></a></li>
+              <li class="like-button px-2" v-on:click="like()"><a href="#" title="Curtir"></a></li>
+              <li class="dislike-button px-2" v-on:click="dislike()"><a href="#" title="Dislike"></a></li>
+              <li class="denounce-button px-2"><a href="#" title="Denunciar imagem"></a></li>
             </ul>
           </div>
           <div v-else="auth" class="col-12 col-md-8">
             Faça o <a href="/users/login">login</a> para fazer o download e comentar as imagens.
           </div>
           <div class="col-12 col-md-2 d-flex justify-content-md-end">
-            <ul class="single_view_social_network_buttons d-flex">
+            <ul class="single_view_social_network_buttons d-flex p-0 justify-content-around">
+              <li class="twitter"><a href="#"></a></li>
               <li class="google"><a href="#"></a></li>
               <li class="facebook"><a href="#"></a></li>
-              <li class="twitter"><a href="#"></a></li>
             </ul>
           </div>
         </div>
         <div class="tags">
-          <h3 class="fw-bold">Tags</h3>
+          <h3 class="fw-bold">Tags:</h3>
           <ul :v-if="tags">
             <li v-for="(tag, index) in tags" :key="index"> {{tag.name}}</li>
           </ul>
@@ -57,9 +57,14 @@
           <h3 class="fw-bold pb-4">Comentários</h3>
           <form v-if="auth" @submit.prevent="addComment">
             <div class="d-flex flex-wrap">
-              <img :src="auth.photo" alt="" width="60" height="60">
-              <h3 class="px-2 d-flex">{{auth.name}}</h3>
-              <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label>
+              <img v-if="auth.photo" :src="auth.photo" alt="" width="48" height="48">
+              <img v-else src="/img/avatar-48.png" alt="" width="48" height="48">
+              <!-- <h3 class="px-2 d-flex">{{auth.name}}</h3>
+              <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label> -->
+              <div class="px-2">
+                <h3 class="d-flex fw-bold">{{auth.name}}</h3>
+                <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label>
+              </div>
             </div>
             <textarea class="form-control my-2" id="exampleFormControlTextarea1" rows="3" v-model="formData.text"></textarea>
             <button type="submit" name="button">COMENTAR</button>
@@ -69,7 +74,8 @@
           <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
           <div v-if="this.comments.length > 0">
             <div v-for="(comment, index) in comments" :key="index" class="d-flex flex-wrap my-4">
-              <img v-if="comment.user" :src="comment.user.photo" alt="" width="60" height="60">
+              <img v-if="comment.user && comment.user.photo" :src="comment.user.photo" alt="" width="60" height="60">
+              <img v-else src="/img/avatar-48.png" alt="" width="48" height="48">
               <div class="px-2 d-flex flex-column">
                 <div class="d-flex">
                   <h3 v-if="comment.user" >{{comment.user.name}}</h3>
@@ -78,7 +84,7 @@
                 <p>{{comment.text}}</p>
               </div>
               <div class="d-flex ms-auto">
-                <button class="ml-auto me-2" type="button" name="button" v-on:click="likeComment(comment, index)">Curtir</button>
+                <button v-if="auth" class="ml-auto me-2" type="button" name="button" v-on:click="likeComment(comment, index)">Curtir</button>
                 <button v-if="auth._id == comment.user._id" class="ml-auto" type="button" name="button" v-on:click="deleteComment(comment, index)">Deletar</button>
               </div>
             </div>
@@ -100,9 +106,11 @@
           </div>
         </div>
         <!-- Photo information -->
-        <div class="info mb-2">
-          <i></i>
-          <h3 class="border-bottom" >Informações</h3>
+        <div class="info my-4">
+          <div class="d-flex border-bottom">
+            <i></i>
+            <h3>Informações</h3>
+          </div>
           <h4 v-if="photo.description">Descrição:</h4>
           <p v-if="photo.description">{{photo.description}}</p>
 
@@ -129,25 +137,26 @@
           <p v-if="photo.country">{{photo.country}}</p>
 
           <div v-if="photo.institution_id" class="institution">
-            <h4>Essas informações foram definidas pelo Acervo da Biblioteca da FAUUSP.</h4>
-            <p>Se você tem alguma informação adicional sobre esta imagem, por favor, envie um email para maticon_bibfau@usp.br</p>
+            <h4>Essas informações foram definidas por {{insitution.name}}.</h4>
+            <p>Se você tem alguma informação adicional sobre esta imagem, por favor, envie um email para {{insitution.email}}</p>
           </div>
 
           <div v-if="photo.institution_id == null && photo.type !== 'video'" class="institution">
             <div class="modal-wrapper">
               <div class="title2">Você conhece mais informações sobre esta arquitetura?</div>
-              <div class="title1">
-                Por exemplo:
+              <div class="title1 mb-2">
+                <p>Por exemplo:</p>
+                <p>{{incomplete_fields}}</p>
               </div>
-              <div class="modal-button OpenModal">
+              <div class="modal-button OpenModal mb-4">
                 <a v-if="auth" href="#" data-origin="button">Ajude a completar dados!</a>
-                <a v-else href="#" data-origin="button">Faça o login e contribua com mais informações sobre esta imagem!</a>
+                <a v-else href="#" data-origin="button">Faça o <a href="users/login">login</a> e contribua com mais informações sobre esta imagem!</a>
               </div>
             </div>
-            <div class="modal-wrapper">
+            <!-- <div class="modal-wrapper">
               <div class="title1">A revisão desta imagem está temporariamente bloqueada até que a análise de sugestões feitas por membros do Arquigrafia seja concluída.</div>
-            </div>
-            <div class="modal-wrapper">
+            </div> -->
+            <!-- <div class="modal-wrapper">
               <div class="title2">Essas informações foram definidas por membros do Arquigrafia.</div>
               <div class="title1">
                 <p style="text-align: justify;">
@@ -155,36 +164,41 @@
                   envie um email para <a href="mailto:arquigrafiabrasil@gmail.com">arquigrafiabrasil@gmail.com</a>
                 </p>
               </div>
-            </div>
+            </div> -->
           </div>
 
-          <h4>Licença:</h4>
+          <!-- <div v-else="photo.institution_id !== null && photo.type !== 'video'" class="institution">
+            instituição
+          </div> -->
+
+          <h4 class="mb-2">Licença:</h4>
           <a class="tooltip_license"
-            :href="'http://creativecommons.org/licenses/'+ user.name +'/3.0/deed.pt_BR'" target="_blank" >
-            <img :src="'img/ccIcons/' + user.name + '88x31.png'" id="ccicons"
+            :href="'http://creativecommons.org/licenses/'+ license[0] +'/3.0/deed.pt_BR'" target="_blank" >
+            <img :src="'/img/ccIcons/' + license[0] + '88x31.png'" id="ccicons"
               alt="Creative Commons License" />
             <span>
-              <strong>Você é proprietário(a) desta imagem</strong>
-              <strong>O proprietário desta imagem "{{photo.imageAuthor}}":</strong>
-              <strong>O proprietário desta imagem "{{photo.imageAuthor}}":</strong>
-              <br/>
+              <strong v-if="user.id == auth.id">Você é proprietário(a) desta imagem</strong>
+              <strong>O proprietário desta imagem:</strong>
+              <p>"{{license[1]}}"</p>
             </span>
           </a>
 
-          <h4>Localização:</h4>
-          <!-- <div id="map_canvas" class="single_view_map" style="width:300px; height:250px;">
-            <gmap-map :center="center" :zoom="12" style="width:300px;  height: 250px;">
-                  <gmap-marker
-                    :key="index"
-                    v-for="(m, index) in markers"
-                    :position="m.position"
-                    @click="center=m.position"
-                  ></gmap-marker>
-                </gmap-map>
-          </div> -->
+          <h4 class="mt-4">Localização:</h4>
+          <GmapMap
+                :center='center'
+                :zoom='12'
+                style='width:100%;  height: 250px;'
+                :position="center"
+              />
 
-          <h4>Interpretações da arquitetura:</h4>
-          <img src="/img/GraficoFixo.png" />
+          <h4 class="mt-4">Interpretações da arquitetura:</h4>
+          <img src="/img/GraficoFixo.png"/>
+          <p v-if="auth" style="text-align: justify;">
+            oi
+          </p>
+          <p v-else style="text-align: justify;">
+            Faça o <a href="users/login">Login</a> e seja o primeiro a registrar impressões sobre a Fachada de casa
+          </p>
         </div>
       </div>
     </div>
@@ -195,19 +209,41 @@
       <span v-if="auth">comentariossss</span>
       <span v-else>Faça o <a href="users/login">Login</a> e comente sobre a Residência do arquiteto Paulo Mendes da Rocha</span>
     </div> -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Adicione aos seus álbuns</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="clear()"></button>
+          </div>
+          <div class="modal-body">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </template>
 
 <script>
 
+let mapsKey = process.env.MIX_GOOGLE_MAPS_KEY;
+
 // import VueGoogleMap from 'vuejs-google-maps';
+import * as VueGoogleMaps from 'vue2-google-maps';
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: mapsKey,
+    libraries: 'places',
+  }
+});
+
 // import 'vuejs-google-maps/dist/vuejs-google-maps.css';
 // var likeButton = document.querySelector('.like-button');
 // var dislikeButton = document.querySelector('.dislike-button');
 
 export default {
-  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like'],
+  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like', 'lat_lng', 'license', 'incomplete_fields'],
   data () {
     return {
       photo_likes: this.$props.likes,
@@ -215,9 +251,13 @@ export default {
       comments: [],
       formData: {
         text: '',
-      }
+      },
+      center: { lat: this.$props.lat_lng[0], lng: this.$props.lat_lng[1] }
     }
   },
+  // components: {
+  //   GoogleMap
+  // },
   methods: {
     getLikes () {
       var likeButton = document.querySelector('.like-button');
@@ -290,7 +330,10 @@ export default {
     deleteComment(comment, index) {
       // console.log(comment, index)
       // console.log(comment._id)
-      window.axios.delete('/api/comments/' + comment._id).then(response => {
+      window.axios.delete('/api/comments/' + comment._id,     {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json',
+    }).then(response => {
         this.comments.splice(index, 1);
       }).catch(err => {
 
@@ -298,7 +341,12 @@ export default {
     },
   },
   mounted () {
-    this.getLikes();
+    if (this.$props.auth) {
+      this.getLikes();
+    }
+    console.log(mapsKey)
+
+
     this.getComments();
   }
 };
