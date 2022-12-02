@@ -84,16 +84,16 @@ class PhotosController extends Controller {
       $authLike = 0;
     }
 
-    // dd($authLike);
-
     return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields']));
   }
 
   public static function getLatLng($photo){
 
-    $address = ($photo->country ? $photo->country . '+' : '') . ($photo->country ? $photo->country . '+' : '') . ($photo->state ? $photo->state . '+' : '') . ($photo->street ? $photo->street . '+' : '') . ($photo->city ? $photo->city . '+' : '') . ($photo->district ? $photo->district : '');
-    $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='. config('general.google_maps_key'));
+    $address = [$photo->country, $photo->state, $photo->street, $photo->city, $photo->district];
+    $address = (implode('+', $address));
+    $address = (str_replace(' ', '', $address));
 
+    $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='. config('general.google_maps_key'));
     $body = json_decode($response->body());
     $latLng = [$body->results[0]->geometry->location->lat, $body->results[0]->geometry->location->lng];
 

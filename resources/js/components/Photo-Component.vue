@@ -350,8 +350,6 @@ export default {
     if (this.$props.auth) {
       this.getLikes();
     }
-    console.log(mapsKey)
-
 
     this.getComments();
   }
