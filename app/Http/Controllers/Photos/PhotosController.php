@@ -19,6 +19,7 @@ use App\Models\Collaborative\Like;
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
 use App\Models\Gamification\Gamified;
+use App\Models\Moderation\PhotoAttributeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -69,13 +70,8 @@ class PhotosController extends Controller {
         array_push($incompleteFields, $key);
       }
     }
-    // dd(implode(', ', $incompleteFields));
 
-    $incompleteFields = json_encode($incompleteFields);
-
-    // dd($incompleteFields);
-
-    // dd($latLng);
+    $suggestionFields = json_encode(Photo::getIncompleteFields($photo));
 
     if (Auth::user()) {
       $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
@@ -90,7 +86,7 @@ class PhotosController extends Controller {
 
     // dd($authLike);
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'incompleteFields']));
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields']));
   }
 
   public static function getLatLng($photo){

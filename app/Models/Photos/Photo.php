@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\lib\metadata\Exiv2;
 use Jenssegers\Mongodb\Eloquent\Model as Model;
+use App\Models\Moderation\PhotoAttributeType;
 use DateTime;
 use Session;
 
@@ -411,6 +412,65 @@ class Photo extends Model {
 		}
 
 		return $license;
+
+	}
+
+	public static function getIncompleteFields($photo) {
+
+		$incompleteFields = [];
+		$completeFields = [];
+		$incompleteFieldsString = [];
+
+		foreach (PhotoAttributeType::all()->toArray() as $key => $value) {
+
+			if ($photo->{$value['attribute_type']} == null && $value['attribute_type'] !== 'authors' ) {
+				array_push($incompleteFields, $value['attribute_type']);
+			}elseif ($value['attribute_type'] == 'authors' && $photo->project_author == null) {
+				array_push($incompleteFields, $value['attribute_type']);
+			}elseif ($value['attribute_type'] == 'authors' && $photo->project_author !== null) {
+				array_push($completeFields, [$value['attribute_type'] => $photo->project_author]);
+			}
+			else{
+				array_push($completeFields, [$value['attribute_type'] => $photo->{$value['attribute_type']}]);
+			}
+		};
+
+		foreach ($incompleteFields as $value) {
+			switch ($value) {
+				case 'city':
+					array_push($incompleteFieldsString, 'Cidade');
+					break;
+				case 'country':
+					array_push($incompleteFieldsString, 'País');
+					break;
+				case 'description':
+					array_push($incompleteFieldsString, 'Descrição');
+					break;
+				case 'district':
+					array_push($incompleteFieldsString, 'Bairro');
+					break;
+				case 'imageAuthor':
+					array_push($incompleteFieldsString, 'Autor da imagem');
+					break;
+				case 'state':
+					array_push($incompleteFieldsString, 'Estado');
+					break;
+				case 'street':
+					array_push($incompleteFieldsString, 'Rua');
+					break;
+				case 'name':
+					array_push($incompleteFieldsString, 'Nome');
+					break;
+				case 'authors':
+					array_push($incompleteFieldsString, 'Autor do Projeto');
+					break;
+				case 'workDate':
+					array_push($incompleteFieldsString, 'País');
+					break;
+			}
+		}
+
+		return ['incompleteFields' => $incompleteFields, 'completeFields' => $completeFields, 'incompleteFieldsString' => implode(', ', $incompleteFieldsString)];
 
 	}
 

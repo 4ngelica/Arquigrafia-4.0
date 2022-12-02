@@ -71,7 +71,7 @@
             <br>
             <small>Cada usuário é responsável por seus próprios comentários. O Arquigrafia não se responsabiliza pelos comentários postados, mas apenas por tornar indisponível no site o conteúdo considerado infringente ou danoso por determinação judicial (art.19 da Lei 12.965/14).</small>
           </form>
-          <span v-else>Faça o <a href="users/login">Login</a> e comente sobre {{photo.name}}</span>
+          <span v-else>Faça o <a href="/users/login">Login</a> e comente sobre {{photo.name}}</span>
           <div v-if="this.comments.length > 0">
             <div v-for="(comment, index) in comments" :key="index" class="d-flex flex-wrap my-4">
               <img v-if="comment.user && comment.user.photo" :src="comment.user.photo" alt="" width="60" height="60">
@@ -130,27 +130,33 @@
           <p v-if="photo.workDate">{{photo.workDate}}</p>
 
           <h4 v-if="photo.city || photo.state || photo.street || photo.country || photo.district">Endereço:</h4>
-          <p v-if="photo.city">{{photo.city}}</p>
-          <p v-if="photo.street">{{photo.street}}</p>
-          <p v-if="photo.district">{{photo.district}}</p>
-          <p v-if="photo.state">{{photo.state}}</p>
-          <p v-if="photo.country">{{photo.country}}</p>
+          <p v-if="photo.street && photo.district && photo.city" class="mb-0">{{photo.street}}, {{photo.district}} - {{photo.city}}</p>
+          <p v-else-if="photo.street && photo.district && !photo.city" class="mb-0">{{photo.street}}, {{photo.district}}</p>
+          <p v-else-if="photo.street && !photo.district && photo.city" class="mb-0">{{photo.street}} - {{photo.city}}</p>
+          <p v-else-if="!photo.street && photo.district && photo.city" class="mb-0">{{photo.district}} - {{photo.city}}</p>
+          <p v-else-if="photo.street && !photo.district && !photo.city" class="mb-0">{{photo.street}}</p>
+          <p v-else-if="!photo.street && !photo.district && photo.city" class="mb-0">{{photo.city}}</p>
+          <p v-else="!photo.street && !photo.district && !photo.city" class="mb-0">{{photo.district}}</p>
 
-          <div v-if="photo.institution_id" class="institution">
+          <p v-if="photo.state && photo.country" class="mb-0">{{photo.state}} - {{photo.country}}</p>
+          <p v-else-if="photo.state && !photo.country" class="mb-0">{{photo.state}}</p>
+          <p v-else="!photo.state && photo.country" class="mb-0">{{photo.country}}</p>
+
+
+          <div v-if="photo.institution_id" class="institution mt-4">
             <h4>Essas informações foram definidas por {{insitution.name}}.</h4>
             <p>Se você tem alguma informação adicional sobre esta imagem, por favor, envie um email para {{insitution.email}}</p>
           </div>
 
-          <div v-if="photo.institution_id == null && photo.type !== 'video'" class="institution">
+          <div v-if="photo.institution_id == null && photo.type !== 'video'" class="institution mt-4">
             <div class="modal-wrapper">
-              <div class="title2">Você conhece mais informações sobre esta arquitetura?</div>
+              <div class="title2 fw-bold">Você conhece mais informações sobre esta arquitetura?</div>
               <div class="title1 mb-2">
-                <p>Por exemplo:</p>
-                <p>{{incomplete_fields}}</p>
+                <p>Por exemplo: {{suggestion_fields.incompleteFieldsString}}?</p>
               </div>
               <div class="modal-button OpenModal mb-4">
                 <a v-if="auth" href="#" data-origin="button">Ajude a completar dados!</a>
-                <a v-else href="#" data-origin="button">Faça o <a href="users/login">login</a> e contribua com mais informações sobre esta imagem!</a>
+                <a v-else href="/users/login" data-origin="button">Faça o <a href="/users/login">login</a> e contribua com mais informações sobre esta imagem!</a>
               </div>
             </div>
             <!-- <div class="modal-wrapper">
@@ -197,7 +203,7 @@
             oi
           </p>
           <p v-else style="text-align: justify;">
-            Faça o <a href="users/login">Login</a> e seja o primeiro a registrar impressões sobre a Fachada de casa
+            Faça o <a href="/users/login">Login</a> e seja o primeiro a registrar impressões sobre a Fachada de casa
           </p>
         </div>
       </div>
@@ -243,7 +249,7 @@ Vue.use(VueGoogleMaps, {
 // var dislikeButton = document.querySelector('.dislike-button');
 
 export default {
-  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like', 'lat_lng', 'license', 'incomplete_fields'],
+  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like', 'lat_lng', 'license', 'suggestion_fields'],
   data () {
     return {
       photo_likes: this.$props.likes,
