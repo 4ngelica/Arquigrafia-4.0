@@ -14,6 +14,7 @@ use App\Models\Users\User;
 use App\Models\Gamification\Badge;
 use App\Models\Institutions\Institution;
 use App\Models\Collaborative\Tag;
+use App\Models\Collaborative\TagAssignments;
 use App\Models\Collaborative\Comment;
 use App\Models\Collaborative\Like;
 use App\Models\Evaluations\Evaluation;
@@ -56,6 +57,38 @@ class PhotosController extends Controller {
     if (!$photo) {
       return redirect('/home');
     }
+
+    $tags = TagAssignments::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+          [
+           '$lookup' => [
+              'from' => 'tags',
+              'localField' => 'tag_id',
+              'foreignField'=> 'id',
+              'as' => 'tag'
+            ]
+         ],
+         // [
+         //   '$match' => [
+         //     'tag_id' => $photo->id,
+         //     'tag.id' => [
+         //       '$exists'=> true
+         //     ],
+         //   ]
+         // ],
+          [
+            '$project' => [
+              'tag.name' => 1,
+            ]
+         ]
+       ]);
+    }))->where('photo_id', $id);
+
+    // TagAssignments
+    // dd($tags);
+    // dd(Tag::all());
+
+    // dd(DB::collection('tag_assignments')->get());
 
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();

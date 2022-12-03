@@ -4,3 +4,71 @@
     padding: 0;
     margin: 0 auto;
 }
+
+
+.container-login h2{
+  line-height: 1.5em;
+  color: #555;
+  font-size: 14px;
+}
+
+.container-login h1{
+  font-weight: bold;
+  font-size: 2em;
+  color: #000;
+}
+
+.container-login label {
+  line-height: 1.5em;
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 0.5em;
+}
+
+.container-login input{
+  border: solid 1px #ddd;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin: -5px 0 10px;
+}
+
+.container-login .login {
+  background: #fff;
+  text-transform: uppercase;
+  max-width: 100px;
+  color: #000;
+  border: solid 1px #ddd;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 7px 20px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.container-login .institutional-login {
+  background: #fff;
+  text-transform: uppercase;
+  max-width: 200px;
+  color: #000;
+  border: solid 1px #ddd;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 7px 20px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.container-login button:hover {
+  color: #000;
+  background: #fff;
+  border: solid 1px #9b9b9b;
+}
+
+.container-login button:focus-within {
+  background: #fff;
+  border: solid 1px #9b9b9b;
+}
