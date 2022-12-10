@@ -29,6 +29,7 @@ Vue.component('login-component', require('./components/Login-Component.vue').def
 Vue.component('album-component', require('./components/Album-Component.vue').default);
 Vue.component('user-albums-component', require('./components/User-Albums-Component.vue').default);
 Vue.component('footer-component', require('./components/Footer-Component.vue').default);
+Vue.component('contributions-component', require('./components/Contributions-Component.vue').default);
 
 
 
