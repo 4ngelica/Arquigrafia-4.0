@@ -420,6 +420,8 @@ class Photo extends Model {
 		$incompleteFields = [];
 		$completeFields = [];
 		$incompleteFieldsString = [];
+		$incompleteFormData = [];
+		$completeFormData = [];
 
 		foreach (PhotoAttributeType::all()->toArray() as $key => $value) {
 
@@ -429,9 +431,11 @@ class Photo extends Model {
 				array_push($incompleteFields, $value['attribute_type']);
 			}elseif ($value['attribute_type'] == 'authors' && $photo->project_author !== null) {
 				array_push($completeFields, [$value['attribute_type'] => $photo->project_author]);
+				array_push($completeFormData, [$value['attribute_type'] => self::$fields_data['authors']]);
 			}
 			else{
 				array_push($completeFields, [$value['attribute_type'] => $photo->{$value['attribute_type']}]);
+				array_push($completeFormData, [$value['attribute_type'] => self::$fields_data[$value['attribute_type']]]);
 			}
 		};
 
@@ -439,38 +443,48 @@ class Photo extends Model {
 			switch ($value) {
 				case 'city':
 					array_push($incompleteFieldsString, 'Cidade');
+					array_push($incompleteFormData, [ 'city' => self::$fields_data['city']]);
 					break;
 				case 'country':
 					array_push($incompleteFieldsString, 'País');
+					array_push($incompleteFormData, ['country' => self::$fields_data['country']]);
 					break;
 				case 'description':
 					array_push($incompleteFieldsString, 'Descrição');
+					array_push($incompleteFormData, ['description' => self::$fields_data['description']]);
 					break;
 				case 'district':
 					array_push($incompleteFieldsString, 'Bairro');
+					array_push($incompleteFormData, ['district' => self::$fields_data['district']]);
 					break;
 				case 'imageAuthor':
 					array_push($incompleteFieldsString, 'Autor da imagem');
+					array_push($incompleteFormData, ['imageAuthor' => self::$fields_data['imageAuthor']]);
 					break;
 				case 'state':
 					array_push($incompleteFieldsString, 'Estado');
+					array_push($incompleteFormData, ['state' => self::$fields_data['state']]);
 					break;
 				case 'street':
 					array_push($incompleteFieldsString, 'Rua');
+					array_push($incompleteFormData, ['street' => self::$fields_data['street']]);
 					break;
 				case 'name':
 					array_push($incompleteFieldsString, 'Nome');
+					array_push($incompleteFormData, ['name' => self::$fields_data['name']]);
 					break;
 				case 'authors':
 					array_push($incompleteFieldsString, 'Autor do Projeto');
+					array_push($incompleteFormData, ['authors' => self::$fields_data['authors']]);
 					break;
 				case 'workDate':
-					array_push($incompleteFieldsString, 'País');
+					array_push($incompleteFieldsString, 'Data da obra');
+					array_push($incompleteFormData, ['workDate' => self::$fields_data['workDate']]);
 					break;
 			}
 		}
 
-		return ['incompleteFields' => $incompleteFields, 'completeFields' => $completeFields, 'incompleteFieldsString' => implode(', ', $incompleteFieldsString)];
+		return ['incompleteFields' => $incompleteFields, 'completeFields' => $completeFields, 'incompleteFieldsString' => implode(', ', $incompleteFieldsString), 'incompleteFormData' => $incompleteFormData, 'completeFormData' => $completeFormData];
 
 	}
 
