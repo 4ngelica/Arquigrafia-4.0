@@ -150,7 +150,7 @@
                 <p>Por exemplo: {{suggestion_fields.incompleteFieldsString}}?</p>
               </div>
               <div class="modal-button OpenModal mb-4">
-                <a v-if="auth" href="#" data-origin="button">Ajude a completar dados!</a>
+                <a v-if="auth" href="#" data-origin="button" data-bs-toggle="modal" data-bs-target="#contributions">Ajude a completar dados!</a>
                 <a v-else href="/users/login" data-origin="button">Faça o <a href="/users/login">login</a> e contribua com mais informações sobre esta imagem!</a>
               </div>
             </div>
@@ -224,6 +224,30 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="contributions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Sugestões</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="" action="index.html" method="post">
+              <div class="" v-if="suggestionsForm" v-for="(suggestionField, index) in suggestionsForm" :key="index">
+                <label v-if="suggestionField.information" :for="suggestionField.field">{{suggestionField.information}}</label>
+                <input v-if="suggestionField.information" type="text" :name="suggestionField.field" :placeholder="suggestionField.name" v-model="suggestionsForm[index].value">
+                <label v-if="suggestionField.validation" :for="suggestionField.field">{{suggestionField.validation}}</label>
+                <input v-if="suggestionField.validation" type="text" :name="suggestionField.field" :placeholder="suggestionField.name" v-model="suggestionsForm[index].value">
+              </div >
+              <button type="button" class="btn btn-primary" v-on:click="submitSuggestionForm()">
+                Enviar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -231,10 +255,7 @@
 <script>
 
 let mapsKey = process.env.MIX_GOOGLE_MAPS_KEY;
-
-// import VueGoogleMap from 'vuejs-google-maps';
 import * as VueGoogleMaps from 'vue2-google-maps';
-// import {gmapApi} from 'vue2-google-maps'
 
 Vue.use(VueGoogleMaps, {
   load: {
@@ -243,10 +264,6 @@ Vue.use(VueGoogleMaps, {
   }
 });
 
-// import 'vuejs-google-maps/dist/vuejs-google-maps.css';
-// var likeButton = document.querySelector('.like-button');
-// var dislikeButton = document.querySelector('.dislike-button');
-
 export default {
   props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like', 'lat_lng', 'license', 'suggestion_fields'],
   data () {
@@ -254,10 +271,11 @@ export default {
       photo_likes: this.$props.likes,
       authLike: this.$props.auth_like,
       comments: [],
+      suggestionsForm: this.$props.suggestion_fields.formData,
+      center: { lat: this.$props.lat_lng[0], lng: this.$props.lat_lng[1] },
       formData: {
-        text: '',
-      },
-      center: { lat: this.$props.lat_lng[0], lng: this.$props.lat_lng[1] }
+        text: ''
+      }
     }
   },
   methods: {
@@ -282,7 +300,6 @@ export default {
         }
 
       }).catch((error) => {
-                // console.log(error)
         console.log('erro')
       });
 
@@ -319,19 +336,14 @@ export default {
       formData.append('text', this.formData.text)
       formData.append('user_id', this.$props.auth._id)
 
-      // formData.append('text', this.formData.text)
 
       window.axios.post('/api/comments/' + this.$props.photo._id, formData).then(response => {
-        // console.log(response.data)
-        // console.log(this.comments)
         this.comments.push(response.data);
       }).catch(err => {
 
       });
     },
     deleteComment(comment, index) {
-      // console.log(comment, index)
-      // console.log(comment._id)
       window.axios.delete('/api/comments/' + comment._id,     {
         'Access-Control-Allow-Origin': '*',
         'Content-type': 'application/json',
@@ -341,6 +353,12 @@ export default {
 
       });
     },
+    submitSuggestionForm (){
+      console.log(this.suggestionsForm)
+    },
+    nextSuggestionItem(){
+      console.log('next')
+    }
   },
   mounted () {
     if (this.$props.auth) {

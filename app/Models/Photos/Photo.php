@@ -81,47 +81,69 @@ class Photo extends Model {
 		'city'        => ['information' => 'Qual é a cidade desta obra?',
 					      'validation'  => 'Esta cidade está correta?',
 					      'name'        => 'Cidade',
-					      'type'        => 'string'],
+					      'type'        => 'string',
+								'field' 			=> 'city',
+								'value'				=> null],
 		'country'     => ['information' => 'Qual é o país desta obra?',
 						  'validation'  => 'Este país está correto?',
 						  'name'        => 'País',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'country',
+							'value'				=> null],
 		'dataCriacao' => ['information' => 'Qual é a data desta imagem?',
 						  'validation'  => 'A data desta imagem está correta?',
 						  'name'        => 'Data da Imagem',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'dataCriacao',
+							'value'				=> null],
 		'description' => ['information' => 'Como você descreveria esta imagem?',
 						  'validation'  => 'A descrição desta imagem está correta?',
 						  'name'        => 'Descrição',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'description',
+							'value'				=> null],
 		'district'    => ['information' => 'Qual é o bairro desta obra?',
 						  'validation'  => 'O bairro desta obra está correto?',
 						  'name'        => 'Bairro',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'district',
+							'value'				=> null],
 		'imageAuthor' => ['information' => 'Quem é o autor desta imagem?',
 						  'validation'  => 'Este é o autor correto desta imagem?',
 						  'name'        => 'Autor',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'imageAuthor',
+							'value'				=> null],
 		'name'        => ['information' => 'Qual é o nome desta obra?',
 						  'validation'  => 'Este é o nome correto desta obra?',
 						  'name'        => 'Nome',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'name',
+							'value'				=> null],
 		'state'         => ['information' => 'Em qual estado do país está esta arquitetura?',
 						  'validation'  => 'Este é o estado correto desta arquitetura?',
 						  'name'        => 'Estado',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'state',
+							'value'				=> null],
 		'street'      => ['information' => 'Qual é o endereço desta obra?',
 						  'validation'  => 'Este é o endereço correto desta obra?',
 						  'name'        => 'Rua',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'street',
+							'value'				=> null],
 		'authors'  => ['information' => 'Qual é o nome do autor deste projeto? (Havendo mais de um, separe por ";")',
 						  'validation'  => 'Este é o autor deste projeto?',
 						  'name'        => 'Autor do Projeto',
-						  'type'        => 'array_strings'],
+						  'type'        => 'array_strings',
+							'field' 			=> 'authors',
+							'value'				=> null],
 		'workDate'    => ['information' => 'Quando foi construída esta obra?',
 						  'validation'  => 'Esta é a data em que esta obra foi construída?',
 						  'name'        => 'Data da Obra',
-						  'type'        => 'string']
+						  'type'        => 'string',
+							'field' 			=> 'workDate',
+							'value'				=> null]
 	];
 
 	// public static	$information_questions = [
@@ -431,11 +453,15 @@ class Photo extends Model {
 				array_push($incompleteFields, $value['attribute_type']);
 			}elseif ($value['attribute_type'] == 'authors' && $photo->project_author !== null) {
 				array_push($completeFields, [$value['attribute_type'] => $photo->project_author]);
-				array_push($completeFormData, [$value['attribute_type'] => self::$fields_data['authors']]);
+				unset(self::$fields_data['authors']['information']);
+				self::$fields_data['authors']['value'] = $photo->authors;
+				array_push($completeFormData, self::$fields_data['authors']);
 			}
 			else{
 				array_push($completeFields, [$value['attribute_type'] => $photo->{$value['attribute_type']}]);
-				array_push($completeFormData, [$value['attribute_type'] => self::$fields_data[$value['attribute_type']]]);
+				unset(self::$fields_data[$value['attribute_type']]['information']);
+				self::$fields_data[$value['attribute_type']]['value'] = $photo->{$value['attribute_type']};
+				array_push($completeFormData, self::$fields_data[$value['attribute_type']]);
 			}
 		};
 
@@ -443,48 +469,60 @@ class Photo extends Model {
 			switch ($value) {
 				case 'city':
 					array_push($incompleteFieldsString, 'Cidade');
-					array_push($incompleteFormData, [ 'city' => self::$fields_data['city']]);
+					unset(self::$fields_data['city']['validation']);
+					array_push($incompleteFormData, self::$fields_data['city']);
 					break;
 				case 'country':
 					array_push($incompleteFieldsString, 'País');
-					array_push($incompleteFormData, ['country' => self::$fields_data['country']]);
+					unset(self::$fields_data['country']['validation']);
+					array_push($incompleteFormData, self::$fields_data['country']);
 					break;
 				case 'description':
 					array_push($incompleteFieldsString, 'Descrição');
-					array_push($incompleteFormData, ['description' => self::$fields_data['description']]);
+					unset(self::$fields_data['description']['validation']);
+					array_push($incompleteFormData, self::$fields_data['description']);
 					break;
 				case 'district':
 					array_push($incompleteFieldsString, 'Bairro');
-					array_push($incompleteFormData, ['district' => self::$fields_data['district']]);
+					unset(self::$fields_data['district']['validation']);
+					array_push($incompleteFormData, self::$fields_data['district']);
 					break;
 				case 'imageAuthor':
 					array_push($incompleteFieldsString, 'Autor da imagem');
-					array_push($incompleteFormData, ['imageAuthor' => self::$fields_data['imageAuthor']]);
+					unset(self::$fields_data['imageAuthor']['validation']);
+					array_push($incompleteFormData, self::$fields_data['imageAuthor']);
 					break;
 				case 'state':
 					array_push($incompleteFieldsString, 'Estado');
-					array_push($incompleteFormData, ['state' => self::$fields_data['state']]);
+					unset(self::$fields_data['state']['validation']);
+					array_push($incompleteFormData, self::$fields_data['state']);
 					break;
 				case 'street':
 					array_push($incompleteFieldsString, 'Rua');
-					array_push($incompleteFormData, ['street' => self::$fields_data['street']]);
+					unset(self::$fields_data['street']['validation']);
+					array_push($incompleteFormData, self::$fields_data['street']);
 					break;
 				case 'name':
 					array_push($incompleteFieldsString, 'Nome');
-					array_push($incompleteFormData, ['name' => self::$fields_data['name']]);
+					unset(self::$fields_data['name']['validation']);
+					array_push($incompleteFormData, self::$fields_data['name']);
 					break;
 				case 'authors':
 					array_push($incompleteFieldsString, 'Autor do Projeto');
-					array_push($incompleteFormData, ['authors' => self::$fields_data['authors']]);
+					unset(self::$fields_data['authors']['validation']);
+					array_push($incompleteFormData, self::$fields_data['authors']);
 					break;
 				case 'workDate':
 					array_push($incompleteFieldsString, 'Data da obra');
-					array_push($incompleteFormData, ['workDate' => self::$fields_data['workDate']]);
+					unset(self::$fields_data['workDate']['validation']);
+					array_push($incompleteFormData, self::$fields_data['workDate']);
 					break;
 			}
 		}
 
-		return ['incompleteFields' => $incompleteFields, 'completeFields' => $completeFields, 'incompleteFieldsString' => implode(', ', $incompleteFieldsString), 'incompleteFormData' => $incompleteFormData, 'completeFormData' => $completeFormData];
+		// dd(array_merge($incompleteFormData, $completeFormData));
+
+		return ['incompleteFields' => $incompleteFields, 'completeFields' => $completeFields, 'incompleteFieldsString' => implode(', ', $incompleteFieldsString), 'incompleteFormData' => $incompleteFormData, 'completeFormData' => $completeFormData, 'formData' => array_merge($incompleteFormData, $completeFormData)];
 
 	}
 
