@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Users\User;
+use App\Models\Photos\Photo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Moderation\Suggestion;
@@ -39,5 +40,32 @@ class APISuggestionController extends Controller {
 			return \Response::json('Sugestões enviadas', 200);
 
   }
+
+	public function actionSuggestion(Request $request, $photoId) {
+
+
+
+
+		// if (Suggestion::where('photo_id', $photoId)->count()) {
+		// 	return \Response::json('Sugestões bloqueadas', 500);
+		// }
+		//
+		$fields = $request->all();
+		$suggestion = Suggestion::find($fields['suggestion_id']);
+		$photo = Photo::find($photoId);
+		// dd($fields, Photo::find($photoId), Suggestion::find($fields['suggestion_id']));
+
+		if(strval($fields['option']) == 1) {
+			$photo->update([$fields['field'] => $fields['value']]);
+			$suggestion->update(['accepted' => true]);
+
+			return \Response::json('Sugestão aceita', 200);
+		}
+
+			$suggestion->update(['accepted' => false]);
+			return \Response::json('Sugestão negada', 200);
+		}
+
+
 
 }

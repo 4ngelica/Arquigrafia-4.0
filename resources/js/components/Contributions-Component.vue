@@ -55,7 +55,6 @@
         </div>
       </div>
 
-
       <div class="tab-pane fade edition-tab mt-4" id="profile" role="tabpanel" aria-labelledby="profile-tab">
         <h2 class="fw-bold">Suas Edições</h2>
         <ul>
