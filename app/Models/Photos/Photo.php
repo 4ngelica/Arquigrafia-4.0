@@ -83,82 +83,102 @@ class Photo extends Model {
 					      'name'        => 'Cidade',
 					      'type'        => 'string',
 								'field' 			=> 'city',
-								'value'				=> null],
+								'value'				=> null,
+								'attribute_type'	=> 1
+							],
 		'country'     => ['information' => 'Qual é o país desta obra?',
 						  'validation'  => 'Este país está correto?',
 						  'name'        => 'País',
 						  'type'        => 'string',
 							'field' 			=> 'country',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 2
+						],
 		'dataCriacao' => ['information' => 'Qual é a data desta imagem?',
 						  'validation'  => 'A data desta imagem está correta?',
 						  'name'        => 'Data da Imagem',
 						  'type'        => 'string',
 							'field' 			=> 'dataCriacao',
-							'value'				=> null],
+							'value'				=> null
+						],
 		'description' => ['information' => 'Como você descreveria esta imagem?',
 						  'validation'  => 'A descrição desta imagem está correta?',
 						  'name'        => 'Descrição',
 						  'type'        => 'string',
 							'field' 			=> 'description',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 3
+						],
 		'district'    => ['information' => 'Qual é o bairro desta obra?',
 						  'validation'  => 'O bairro desta obra está correto?',
 						  'name'        => 'Bairro',
 						  'type'        => 'string',
 							'field' 			=> 'district',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 4
+						],
 		'imageAuthor' => ['information' => 'Quem é o autor desta imagem?',
 						  'validation'  => 'Este é o autor correto desta imagem?',
 						  'name'        => 'Autor',
 						  'type'        => 'string',
 							'field' 			=> 'imageAuthor',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 5
+						],
 		'name'        => ['information' => 'Qual é o nome desta obra?',
 						  'validation'  => 'Este é o nome correto desta obra?',
 						  'name'        => 'Nome',
 						  'type'        => 'string',
 							'field' 			=> 'name',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 8
+						],
 		'state'         => ['information' => 'Em qual estado do país está esta arquitetura?',
 						  'validation'  => 'Este é o estado correto desta arquitetura?',
 						  'name'        => 'Estado',
 						  'type'        => 'string',
 							'field' 			=> 'state',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 6
+						],
 		'street'      => ['information' => 'Qual é o endereço desta obra?',
 						  'validation'  => 'Este é o endereço correto desta obra?',
 						  'name'        => 'Rua',
 						  'type'        => 'string',
 							'field' 			=> 'street',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 7
+						],
 		'authors'  => ['information' => 'Qual é o nome do autor deste projeto? (Havendo mais de um, separe por ";")',
 						  'validation'  => 'Este é o autor deste projeto?',
 						  'name'        => 'Autor do Projeto',
 						  'type'        => 'array_strings',
 							'field' 			=> 'authors',
-							'value'				=> null],
+							'value'				=> null,
+							'attribute_type'	=> 9
+						],
 		'workDate'    => ['information' => 'Quando foi construída esta obra?',
 						  'validation'  => 'Esta é a data em que esta obra foi construída?',
 						  'name'        => 'Data da Obra',
 						  'type'        => 'string',
 							'field' 			=> 'workDate',
-							'value'				=> null]
+							'value'				=> null,
+							'attribute_type'	=> 10
+						]
 	];
 
-	// public static	$information_questions = [
-	// 	'city' => 'Qual é a cidade da obra?',
-	// 	'country' => 'Qual é o país da obra?',
-	// 	'dataCriacao' => 'Qual é a data desta imagem?',
-	// 	'description' => 'Qual é a descrição para a imagem?',
-	// 	'district' => 'Qual é o bairro da obra?',
-	// 	'imageAuthor' => 'Quem é o autor desta imagem?',
-	// 	'name' => 'Qual é o nome desta obra?',
-	// 	'state' => 'Qual é o Estado desta arquitetura?',
-	// 	'street' => 'Qual é a rua desta obra?',
-	// 	'workAuthor' => 'Quem é o autor da obra?',
-	// 	'workDate' => 'Quando foi construída a obra?'
-	// ];
+	public static	$attribute_types = [
+		'1' => 'Cidade',
+		'2' => 'País',
+		'3' => 'Descrição',
+		'4' => 'Bairro',
+		'5' => 'Autor da imagem',
+		'6' => 'Estado',
+		'7' => 'Rua',
+		'8' => 'Nome',
+		'9' => 'Autor do projeto',
+		'10' => 'Data da obra'
+	];
 
 	protected $date;
 

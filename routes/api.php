@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\APIAuthorsController;
 use App\Http\Controllers\Api\APILogInController;
 use App\Http\Controllers\Api\APIProfilesController;
 use App\Http\Controllers\Api\APIEvaluationController;
+use App\Http\Controllers\Api\APISuggestionController;
 use App\Http\Controllers\Api\APICommentsController;
 
 
@@ -67,6 +68,7 @@ Route::get('profile/{id}/evaluatedPhotos', [APIProfilesController::class, 'getUs
 // /* Controlador de avaliações */
 // Route::get('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@retrieveEvaluation');
 Route::post('evaluations/{photoId}/evaluate', [APIEvaluationController::class, 'storeEvaluation']);
+Route::post('suggestions/{photoId}/store', [APISuggestionController::class, 'storeSuggestion']);
 // Route::get('photos/{photoId}/averageEvaluation/{userId}', 'modules\api\controllers\APIEvaluationController@averageEvaluationValues');
 // /* Controlador de busca */
 // Route::get('recent', 'modules\api\controllers\APIFeedController@loadRecentPhotos');

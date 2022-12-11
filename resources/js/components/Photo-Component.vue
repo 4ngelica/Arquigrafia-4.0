@@ -233,16 +233,32 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form class="" action="index.html" method="post">
+            <form class="suggestions-modal" action="index.html" method="post">
               <div class="" v-if="suggestionsForm" v-for="(suggestionField, index) in suggestionsForm" :key="index">
-                <label v-if="suggestionField.information" :for="suggestionField.field">{{suggestionField.information}}</label>
-                <input v-if="suggestionField.information" type="text" :name="suggestionField.field" :placeholder="suggestionField.name" v-model="suggestionsForm[index].value">
-                <label v-if="suggestionField.validation" :for="suggestionField.field">{{suggestionField.validation}}</label>
-                <input v-if="suggestionField.validation" type="text" :name="suggestionField.field" :placeholder="suggestionField.name" v-model="suggestionsForm[index].value">
+                <div class="d-flex flex-column">
+                  <label v-if="suggestionField.information && suggestionStep == index" :for="suggestionField.field">{{suggestionField.information}}</label>
+                  <input v-if="suggestionField.information && suggestionStep == index" type="text" :name="suggestionField.field" :placeholder="suggestionField.name" v-model="suggestionsForm[index].value">
+                </div>
+
+                <div class="d-flex flex-column">
+                  <label v-if="suggestionField.validation && suggestionStep == index" :for="suggestionField.field">{{suggestionField.validation}}</label>
+                  <input v-if="suggestionField.validation && suggestionStep == index" type="text" :name="suggestionField.field" :placeholder="suggestionField.name" v-model="suggestionsForm[index].value">
+                </div>
+
+                <div v-if="suggestionStep == index" class="d-flex my-4">
+                  <button v-if="index > 0" type="button" class="btn btn-primary me-auto" v-on:click="changeSuggestionStep('previous',index)">
+                    Anterior
+                  </button>
+
+                  <button v-if="index + 1 < suggestionsForm.length" type="button" class="btn btn-primary ms-auto" v-on:click="changeSuggestionStep('next', index)">
+                    Próximo
+                  </button>
+
+                  <button v-if="suggestionsForm.length == index + 1" type="button" class="btn btn-primary ms-auto" v-on:click="submitSuggestionForm()">
+                    Enviar
+                  </button>
+                </div>
               </div >
-              <button type="button" class="btn btn-primary" v-on:click="submitSuggestionForm()">
-                Enviar
-              </button>
             </form>
           </div>
         </div>
@@ -275,7 +291,8 @@ export default {
       center: { lat: this.$props.lat_lng[0], lng: this.$props.lat_lng[1] },
       formData: {
         text: ''
-      }
+      },
+      suggestionStep: 0
     }
   },
   methods: {
@@ -354,10 +371,38 @@ export default {
       });
     },
     submitSuggestionForm (){
-      console.log(this.suggestionsForm)
+      let formData = new FormData()
+
+      formData.append('user_id', this.$props.auth._id)
+
+      _.each(this.suggestionsForm, (value, key) => {
+        if (value.information) {
+          formData.append(value.field, JSON.stringify([value.value, 'edition', value.attribute_type]))
+        }
+
+        if (value.validation) {
+          formData.append(value.field, JSON.stringify([value.value, 'review', value.attribute_type]))
+        }
+
+      })
+
+
+
+
+      window.axios.post('/api/suggestions/' + this.$props.photo._id + '/store', formData).then(response => {
+
+      }).catch(err => {
+
+      });
     },
-    nextSuggestionItem(){
-      console.log('next')
+    changeSuggestionStep(action, index){
+      if(action == 'next'){
+        return this.suggestionStep = index + 1;
+      }
+
+      if(action == 'previous'){
+        return this.suggestionStep = index - 1;
+      }
     }
   },
   mounted () {
