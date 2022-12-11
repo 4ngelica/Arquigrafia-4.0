@@ -3,10 +3,10 @@
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" v-on:click="changeTab(reviews)">Revisões</button>
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" v-on:click="changeTab(reviews, 'reviews')">Revisões</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false" v-on:click="changeTab(editions)">Edições</button>
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false" v-on:click="changeTab(editions, 'editions')">Edições</button>
       </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -103,11 +103,6 @@
     </div>
   </div>
 
-
-
-  <!-- Sua sugestão 'R. 24 de Maio, 109 - República, São Paulo - SP, 01041-001' para o campo 'Rua' na imagem 'Sesc 24_36' foi enviada para a revisão do autor da imagem 'Lero Lero FAUUSP'.
-  11:12 - 03/09/2022 -->
-
 </template>
 
 <script>
@@ -134,21 +129,14 @@ export default {
   methods: {
     suggestionsFilter(selected) {
       this.suggestions = selected;
-      console.log(selected)
     },
-    changeTab(selected) {
+    changeTab(selected, id) {
       this.suggestions = selected;
-
-      // console.log(id)
-      // $('input:checkbox').removeAttr('checked');
-      // $('#'+id).attr('checked', true);
-      // document.querySelectorAll('.form-check-input').removeAttribute("checked");
-      // document.getElementById(id).setAttribute("checked", '');
+      document.getElementById(id).click();
     },
   },
   mounted () {
-    // console.log(Object.keys(this.$props.reviews).length, Object.keys(this.$props.editions).length, Object.keys(this.$props.accepted_editions).length, Object.keys(this.$props.refused_editions).length)
-    // console.log(this.$props.accepted_reviews)
+
   }
 };
 
