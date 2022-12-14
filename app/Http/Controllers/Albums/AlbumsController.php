@@ -66,23 +66,13 @@ class AlbumsController extends Controller {
 	}
 
 	public function show($id) {
-		$result = Cache::remember('showAlbum_'. $id, 60 * 5, function() use ($id) {
+		$album = Album::find($id);
 
-			$album = Album::find($id);
+		if (is_null($album)) {
+			return redirect()->to('/home');
+		}
 
-			if (is_null($album)) {
-				return redirect()->to('/home');
-			}
-
-			$user = $album->user;
-
-			$photos = $album->photos;
-			$other_albums = Album::where($id, '!=', '_id')->where('user_id', $user->id)->get();
-
-			$albumInfo = ['photos' => $photos, 'album' => $album,	'user' => $user, 'other_albums' => $other_albums];
-
-			return $albumInfo;
-		});
+		$user = $album->user;
 
 		$photos = AlbumElements::raw((function($collection) use ($id) {
 						return $collection->aggregate([

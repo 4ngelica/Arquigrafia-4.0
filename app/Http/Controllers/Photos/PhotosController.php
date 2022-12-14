@@ -51,9 +51,7 @@ class PhotosController extends Controller {
 
   public function show($id)
   {
-    // EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
-
-    $result = Cache::remember('showUser'. $id, 60 * 5, function() use ($id) {
+    EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
     $photo = Photo::find($id);
     if (!$photo) {
@@ -108,11 +106,6 @@ class PhotosController extends Controller {
 
     $suggestionFields = json_encode(Photo::getIncompleteFields($photo));
 
-    return $userData = ['photo' => $photo, 'user' => $user, 'comments' => $comments, 'tags' => $tags, 'likes' => $likes];
-
-  });
-
-
     if (Auth::user()) {
       $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
 
@@ -123,7 +116,6 @@ class PhotosController extends Controller {
     }else {
       $authLike = 0;
     }
-    array_push($result, ['authLike' => $authLike]);
 
     return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields']));
   }

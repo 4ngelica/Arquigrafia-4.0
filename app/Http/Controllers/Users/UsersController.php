@@ -53,13 +53,13 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    /*$result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
+    // $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
 
       $user = User::find($id);
       $photos = $user->photos;
       $albums = $user->albums;
       $evaluations = $user->evaluations;
-      */
+
     // $following = Follow::where('following_id', 8)->get();
     // $followed = Follow::where('followed_id', 8)->get();
 
