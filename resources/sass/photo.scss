@@ -26,12 +26,38 @@
 
 .single_view_social_network_buttons {
   list-style-type: none;
+  width: 80%;
 }
+
+.single_view_image_buttons {
+  width: 40%;
+}
+
+.single_view_image_buttons a {
+  width: 24px;
+  height: 25px;
+  display: block;
+}
+
+.comments h3{
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.comments label {
+  font-size: 14px;
+  color: #555;
+}
+
+// i.info {
+//     background-position: -121px 0;
+// }
 
 .info i {
   padding: 5px 24px 0 0;
   background: url(/img/sprite.png) 180px 10px;
   background-repeat: no-repeat;
+  background-position: -121px 0;
 }
 
 .album-button {
@@ -95,4 +121,61 @@ ul {
 
 .single_view_image_buttons {
   list-style-type: none;
+}
+
+.modal-button {
+    background: url(/img/suggestions-modal/helping-hand.png) left 7px center no-repeat #eee;
+    background-size: 25px 25px;
+    float: left;
+    padding: 10px 10px 10px 40px;
+    border-radius: 10px;
+}
+
+a.tooltip_license:hover span {
+    display: inline;
+    position: absolute;
+    color: #111;
+    border: 1px solid #DCA;
+    background: #ffffff;
+}
+
+a.tooltip_license span {
+    z-index: 10;
+    display: none;
+    padding: 8px 20px;
+    margin-top: -6px;
+    margin-left: 28px;
+    width: 237px;
+    line-height: 15px;
+    font-size: 14px;
+}
+
+i#comments {
+    background: url(/img/sprite.png) -644px 0px;
+    width: 24px;
+    height: 24px;
+}
+
+i#likes {
+    background-image: url(/img/dislikeNB.png);
+    padding: 2px 10px 0px;
+    width: 20px;
+    height: 18px;
+}
+
+
+.modal-wrapper {
+    font-size: 16px;
+}
+
+.modal-wrapper .modal-button a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.modal-wrapper .modal-button:hover {
+    background: url(/img/suggestions-modal/helping-hand.png) left 7px center no-repeat #ccc;
+    background-size: 25px 25px;
+    transition: 0.2s linear;
+    cursor: pointer;
 }

@@ -1,22 +1,20 @@
 @extends('new_front.app')
 
 @section('content')
-<!--   MEIO DO SITE - ÁREA DE NAVEGAÇÃO   -->
-<div id="content" class="container">
+<div class="container d-flex flex-column flex-md-row justify-content-between project-session">
 
-  <div class="eight columns justify">
-    <!--   CONTEÚDO SOBRE O PROJETO   -->
-    <h1>O Projeto</h1>
+  <div class="project-display col-md-7 col-12">
+    <h1 class="fw-bold">O Projeto</h1>
 
     <p>A internet é comumente usada como espaço de pesquisa e trocas de conhecimento, é nesse contexto que surge o projeto Arquigrafia www.arquigrafia.org.br, um ambiente colaborativo de imagens de arquitetura na web. </p>
     <p>Nesse espaço público, aberto e gratuito o Arquigrafia empreende a construção de uma coleção de imagens digitais de edifícios e espaços urbanos do Brasil e da comunidade lusófona, a partir da colaboração de usuários particulares - estudantes, arquitetos, pesquisadores, docentes, fotógrafos, leigos interessados no tema - e usuários institucionais: bibliotecas, museus, grupos de pesquisa, institutos públicos e privados.
     </p>
 
     <p>Nascido em 2008 na Universidade de São Paulo, na Faculdade de Arquitetura e Urbanismo (FAUUSP) como um projeto multidisciplinar em parceria com pesquisadores do Instituto de Matemática e Estatística (IMEUSP), da Escola de Comunicação e Artes (ECAUSP) e da Faculdade de Direito do Largo S.Francisco (FDUSP), o Arquigrafia tem como objetivo principal contribuir de maneira complementar para o ensino e difusão da cultura arquitetônica e urbanística por meio de interações e juízos críticos sobre imagens digitais.</p>
-    <div class="project-photos clearfix">
-    <img class="left" src="img/project_photos/equipe1.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
-    <img class="left" src="img/project_photos/equipe2.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
-    <img class="left" src="img/project_photos/equipe3.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
+    <div class="project-photos d-flex flex-wrap mb-4 justify-content-between">
+      <img class="col-12 col-md-4 mb-2 mb-md-0 pe-md-1"  src="img/project_photos/equipe1.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
+      <img class="col-12 col-md-4 mb-2 mb-md-0 pe-md-1"  src="img/project_photos/equipe2.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
+      <img class="col-12 col-md-4 mb-2 mb-md-0 "  src="img/project_photos/equipe3.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
     </div>
 
     <p>Desde então, com o apoio da RNP, FAPESP, do CNPq, das Pró-reitorias de Pesquisa e de Cultura e Extensão da USP e da Diretoria da FAUUSP o projeto se constitui em um laboratório de pesquisa para todas essas áreas de conhecimento, produzindo conhecimento, desenvolvendo tecnologia e fomentando pesquisas em nível de graduação e pós-graduação e formando jovens pesquisadores.</p>
@@ -32,24 +30,23 @@
   </div>
 
   <!--   COLUNA DIREITA   -->
-  <div class="four columns">
-    <h2>Equipe</h2>
+  <div class="sidebar col-md-4 col-12 mb-5  mb-md-0">
+    <h2 class="fw-bold">Equipe</h2>
 
-    <h3>Coordenador</h3>
-    <ul>
+    <h3 class="fw-bold">Coordenador</h3>
+    <ul class="p-0 mb-0">
       <li><small><a href="http://lattes.cnpq.br/9297674836039953" target="_blank">Prof. Dr. Artur Simões Rozestraten - FAUUSP</a></small></li>
     </ul>
     <br>
 
-    <h3>Pesquisadores colaboradores</h3>
-    <ul>
+    <h3 class="fw-bold">Pesquisadores colaboradores</h3>
+    <ul class="p-0 mb-0">
       <li><small><a href="http://lattes.cnpq.br/4507073071352893" target="_blank">Prof. Dr. Marco Aurélio Gerosa - IMEUSP</a></small></li>
-<li><small><a href="http://lattes.cnpq.br/4531433505351729" target="_blank">Profa. Dra. Vania Mara Alves Lima - ECAUSP</a></small></li>
-<li><small><a href="http://lattes.cnpq.br/9499155021568732" target="_bb
-lank">Profa. Dra. Cibele Araujo C. M. dos Santos- ECAUSP</a></small></li>
+      <li><small><a href="http://lattes.cnpq.br/4531433505351729" target="_blank">Profa. Dra. Vania Mara Alves Lima - ECAUSP</a></small></li>
+      <li><small><a href="http://lattes.cnpq.br/9499155021568732" target="_blank">Profa. Dra. Cibele Araujo C. M. dos Santos- ECAUSP</a></small></li>
 
 
-<li><small><a href="http://lattes.cnpq.br/5382764179565796" target="_blank">Profa. Dra. Maria Laura Martinez - ECAUSP </a></small></li>
+      <li><small><a href="http://lattes.cnpq.br/5382764179565796" target="_blank">Profa. Dra. Maria Laura Martinez - ECAUSP </a></small></li>
       <li><small><a href="http://lattes.cnpq.br/2342739419247924" target="_blank">Prof. Dr. Fabio Kon - IMEUSP</a></small></li>
       <li><small><a href="http://lattes.cnpq.br/4574831233204082" target="_blank">Prof. Dr. Julio Roberto Katinsky - FAUUSP</a></small></li>
       <li><small><a href="http://lattes.cnpq.br/3841951853755817" target="_blank">Prof. Dr. Luiz Américo de Souza Munari - FAUUSP</a></small></li>
@@ -75,8 +72,8 @@ lank">Profa. Dra. Cibele Araujo C. M. dos Santos- ECAUSP</a></small></li>
     </ul>
     <br>
 
-    <h3>Alunos participantes</h3>
-    <ul>
+    <h3 class="fw-bold">Alunos participantes</h3>
+    <ul class="p-0 mb-0">
       <!-- DOUTORES/DOUTORANDOS -->
       <li><small><a href="http://lattes.cnpq.br/0999376629124379" target="_blank">Ana Paula Oliveira Bertholdo - Doutoranda IMEUSP</a></small></li>
       <li><small><a href="http://lattes.cnpq.br/3098839514190572" target="_blank">Aurelio Akira M. Matsui - Doutor Universidade de Tokyo</a></small></li>
@@ -153,7 +150,7 @@ lank">Profa. Dra. Cibele Araujo C. M. dos Santos- ECAUSP</a></small></li>
     <br>
 
     <h3>Parceiros de desenvolvimento</h3>
-    <ul>
+    <ul class="p-0 mb-0">
       <li><small><a href="http://lattes.cnpq.br/6686522394728149" target="_blank">Arq. Leandro Lopes - L3 Conserv. de Acervos</a></small></li>
       <li><small><a href="http://www.bench.com.br/" target="_blank">Jean Pierre Chamouton - Benchmark Design Total</a></small></li>
       <li><small><a href="http://www.rckt.com.br/" target="_blank">Pedro Emilio Guglielmo - RCKT</a></small></li>
@@ -162,8 +159,6 @@ lank">Profa. Dra. Cibele Araujo C. M. dos Santos- ECAUSP</a></small></li>
       <li><small><a href="http://www.wikimedia.org/" target="_blank">Alexandre Hannud Abdo - Wikimedia</a></small></li>
     </ul>
   </div>
-  <!--   FIM - COLUNA DIREITA   -->
 
 </div>
-<!--   FIM - MEIO DO SITE-->
 @endsection

@@ -19,12 +19,12 @@
             <input type="password" class="form-control" name="password" id="password" />
         </div>
 
-      <button type="submit" class="btn btn-primary my-4 mx-1">Login</button>
+      <button type="submit" class="btn btn-primary my-4 mx-1 login">Login</button>
       <a href="/users/forget">Esqueceu sua senha?</a>
     </div>
   </form>
 
-  <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  <button type="button" class="btn btn-primary ms-auto institutional-login" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Login institucional
   </button>
 

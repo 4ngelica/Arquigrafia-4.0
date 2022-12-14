@@ -24,9 +24,13 @@
   background: url("/img/logo.chou.2018.png") no-repeat;
   background-size: contain; }
 
-.footer-links:hover {
+.footer-links a:hover {
   text-decoration: underline;
+}
 
+.footer-logos li a {
+    display: block;
+    height: 40px;
 }
 
 /*galeria do footer*/

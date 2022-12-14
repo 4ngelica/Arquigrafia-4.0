@@ -31,9 +31,9 @@ use Session;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Event;
+use App\Models\Collaborative\Follow;
 use Illuminate\Support\Facades\Redis;
 use Cache;
-
 
 class UsersController extends Controller {
 
@@ -53,19 +53,71 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
+    /*$result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
 
       $user = User::find($id);
       $photos = $user->photos;
       $albums = $user->albums;
       $evaluations = $user->evaluations;
+      */
+    // $following = Follow::where('following_id', 8)->get();
+    // $followed = Follow::where('followed_id', 8)->get();
 
-      $profile = ['user' => $user, 'photos' => $photos, 'albums' => $albums, 'evaluations' => $evaluations];
+    $following = Follow::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+         [
+           '$match' => [
+             'following_id' => $id,
+             'followed_id' => [
+               '$exists'=> true
+             ],
+           ]
+         ],
+        ]);
+    }));
+
+    $followers = Follow::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+         [
+           '$match' => [
+             'followed_id' => $id,
+             'following_id' => [
+               '$exists'=> true
+             ],
+           ]
+         ],
+        ]);
+    }));
+
+    $followersNumber = count($followers);
+    $followingNumber = count($following);
+
+    if(Auth::user() && $user->id !== Auth::user()->id){
+      $authUser = Auth::user()->id;
+      $isFollowing = Follow::raw((function($collection) use ($id, $authUser) {
+          return $collection->aggregate([
+           [
+             '$match' => [
+               'followed_id' => $id,
+               'following_id' => $authUser
+             ]
+           ],
+          ]);
+      }));
+      $isFollowing = count($isFollowing);
+    }else{
+      $isFollowing = 0;
+    }
+
+    return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations', 'followingNumber', 'followersNumber', 'isFollowing']));
+
+      /*$profile = ['user' => $user, 'photos' => $photos, 'albums' => $albums, 'evaluations' => $evaluations];
 
       return $profile;
     });
 
-    return view('new_front.users.show')->with($result);
+    return view('new_front.users.show')->with($result);*/
+
   }
 
   // show create account form
@@ -118,6 +170,8 @@ class UsersController extends Controller {
       'login' => $login,
       'verify_code' => $verify_code
       ]);
+
+      $user->update(['id' => $user->_id]);
 
       EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia"], "Web");
 

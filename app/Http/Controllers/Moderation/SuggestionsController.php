@@ -13,6 +13,7 @@ use App\App\Models\Notifications\Notification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Response;
+use Auth;
 
 class SuggestionsController extends Controller {
 
@@ -126,22 +127,60 @@ class SuggestionsController extends Controller {
 	}
 
 	public function edit(){
-		$user = \Auth::user();
-		$photos = $user->photos->pluck('id');
-		//$photos = [1];
-		$suggestions = Suggestion::whereNull('accepted')->whereIn('photo_id', $photos)->get();
-		//dd($suggestions);
-		$final = [];
-		foreach ($suggestions as $suggestion){
-			$field = PhotoAttributeType::find($suggestion->attribute_type)->attribute_type;
-			$field_name = Photo::$fields_data[$field]['name'];
-			$photo = Photo::find($suggestion->photo->id);
-			$user = $suggestion->user;
-      $field_content = $photo->getFieldContent($field);
-			$final[] = ['suggestion' => $suggestion, 'photo' => $photo, 'field' => $field, 'field_name' => $field_name, 'user' => $user, 'field_content' => $field_content];
-		}
+		// $user = Auth::user();
+		//
+		// $photos = $user->photos->pluck('id');
+		// //$photos = [1];
+		// $suggestions = Suggestion::whereNull('accepted')->whereIn('photo_id', $photos)->get();
+		// //dd($suggestions);
+		// $final = [];
+		// foreach ($suggestions as $suggestion){
+		// 	$field = PhotoAttributeType::find($suggestion->attribute_type)->attribute_type;
+		// 	$field_name = Photo::$fields_data[$field]['name'];
+		// 	$photo = Photo::find($suggestion->photo->id);
+		// 	$user = $suggestion->user;
+    //   $field_content = $photo->getFieldContent($field);
+		// 	$final[] = ['suggestion' => $suggestion, 'photo' => $photo, 'field' => $field, 'field_name' => $field_name, 'user' => $user, 'field_content' => $field_content];
+		// }
 
-		return view('moderation.show-suggestions', ['suggestions' => $final]);
+		$user = Auth::user();
+
+		$id = $user->id;
+		// dd($id);
+
+		$suggestions = Suggestion::raw((function($collection) use ($id) {
+				return $collection->aggregate([
+					[
+					 '$lookup' => [
+							'from' => 'photos',
+							'localField' => 'photo_id',
+							'foreignField'=> 'id',
+							'as' => 'photo'
+						]
+				 ],
+				 [
+					 '$match' => [
+						 'photo.id' => [
+							 '$exists'=> true
+						 ],
+						 'photo.user_id' => $id,
+						 'accepted' => null,
+					 ]
+				 ],
+				 [
+					'$lookup' => [
+						 'from' => 'users',
+						 'localField' => 'user_id',
+						 'foreignField'=> 'id',
+						 'as' => 'user'
+					 ]
+				],
+			 ]);
+		}));
+
+		// dd($suggestions);
+
+		return view('moderation.show-suggestions', compact(['suggestions']));
 	}
 
 	public function update(Request $request){

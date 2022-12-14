@@ -27,6 +27,10 @@ class User extends Authenticatable {
 	protected $connection = 'mongodb';
 	protected $collection = 'users';
 
+	protected $casts  = [
+		'id' => 'string'
+	];
+
 	// use UserTrait, RemindableTrait;
 
 	use UserGamificationTrait;
