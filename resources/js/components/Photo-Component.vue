@@ -24,8 +24,8 @@
           <div v-if="auth" class="col-12 col-md-8 d-flex justify-content-md-center">
             <ul class="single_view_image_buttons d-flex justify-content-around p-0">
               <li class="album-button px-2"><a href="#" title="Adicione aos seus álbuns" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></a> </li>
-              <li class="download-button px-2"><a :href="'/arquigrafia-images/'+ photo._id + '_view.jpg'" :download="photo._id + '_view.jpg'" title="Faça o download" target="_blank"></a></li>
-              <li class="evaluate-button px-2"><a href="#" title="Registre suas impressões sobre" ></a></li>
+              <li class="download-button px-2"><a :href="'/arquigrafia-images/'+ photo.id + '_view.jpg'" :download="photo._id + '_view.jpg'" title="Faça o download" target="_blank"></a></li>
+              <li class="evaluate-button px-2"><a :href="'/evaluations/'+ photo.id +'/evaluate'" title="Registre suas impressões sobre" ></a></li>
               <li class="like-button px-2" v-on:click="like()"><a href="#" title="Curtir"></a></li>
               <li class="dislike-button px-2" v-on:click="dislike()"><a href="#" title="Dislike"></a></li>
               <li class="denounce-button px-2"><a href="#" title="Denunciar imagem"></a></li>
@@ -149,7 +149,7 @@
               <div class="title1 mb-2">
                 <p>Por exemplo: {{suggestion_fields.incompleteFieldsString}}?</p>
               </div>
-              <div class="modal-button OpenModal mb-4">
+              <div class="modal-button OpenModal mb-4 w-100">
                 <a v-if="auth" href="#" data-origin="button" data-bs-toggle="modal" data-bs-target="#contributions">Ajude a completar dados!</a>
                 <a v-else href="/users/login" data-origin="button">Faça o <a href="/users/login">login</a> e contribua com mais informações sobre esta imagem!</a>
               </div>
@@ -173,16 +173,19 @@
           </div> -->
 
           <h4 class="mb-2">Licença:</h4>
-          <a class="tooltip_license"
-            :href="'http://creativecommons.org/licenses/'+ license[0] +'/3.0/deed.pt_BR'" target="_blank" >
-            <img :src="'img_scenario4/ccIcons/' + license[0] + '88x31.webp'" id="ccicons"
-              alt="Creative Commons License" />
-            <span>
-              <strong v-if="user.id == auth.id">Você é proprietário(a) desta imagem</strong>
-              <strong>O proprietário desta imagem:</strong>
-              <p>"{{license[1]}}"</p>
-            </span>
-          </a>
+          <div class="w-100">
+            <a class="tooltip_license"
+              :href="'http://creativecommons.org/licenses/'+ license[0] +'/3.0/deed.pt_BR'" target="_blank" >
+              <img :src="'/img_scenario4/' + license[0] + '88x31.webp'" id="ccicons"
+                alt="Creative Commons License" />
+              <span>
+                <strong v-if="user.id == auth.id">Você é proprietário(a) desta imagem</strong>
+                <strong>O proprietário desta imagem:</strong>
+                <p>"{{license[1]}}"</p>
+              </span>
+            </a>
+          </div>
+
 
           <h4 class="mt-4">Localização:</h4>
           <GmapMap
@@ -195,9 +198,14 @@
 
           <h4 class="mt-4">Interpretações da arquitetura:</h4>
           <img src="/img_scenario4/GraficoFixo.webp"/>
-          <p v-if="auth" style="text-align: justify;">
-            oi
-          </p>
+          <div class="border">
+            <a class="w-100" :href="'/evaluations/'+ photo._id +'/evaluate'" v-if="auth" style="text-align: justify;">
+              Seja o primeiro a registrar impressões sobre {{photo.name}}
+            </a>
+          </div>
+          <a class="w-100 d-none" :href="'/evaluations/'+ photo._id +'/evaluate'" v-if="auth" style="text-align: justify;">
+            Seja o primeiro a registrar impressões sobre {{photo.name}}
+          </a>
           <p v-else style="text-align: justify;">
             Faça o <a href="/users/login">Login</a> e seja o primeiro a registrar impressões sobre a Fachada de casa
           </p>

@@ -64,17 +64,24 @@ class EvaluationsController extends Controller {
 
 	 public function viewEvaluation($photoId, $userId)
 	 {
-		 $result = Cache::remember('showEvaluation_'. $photoId, 60 * 5, function() use ($photoId, $userId) {
+		 // $result = Cache::remember('showEvaluation_'. $photoId, 60 * 5, function() use ($photoId, $userId) {
 			 	$photo = Photo::find($photoId);
 				$user = User::find($userId);
 				$tags = $photo->tags;
 
-				$evaluation = ['photo' => $photo, 'user' => $user, 'tags' => $tags];
+				// $evaluation = ['photo' => $photo, 'user' => $user, 'tags' => $tags];
 
-				return $evaluation;
-			});
+				$evaluation = Evaluation::where('user_id', $userId)->where('photo_id', $photoId)->get();
+				dd($evaluation);
 
-			return view('new_front.evaluation.show')->with($result);
+			// 	return $evaluation;
+			// });
+
+			// dd($result);
+
+			// return view('new_front.evaluation.show')->with($result);
+			return view('new_front.evaluation.show', compact(['photo', 'user', 'tags']));
+
 	 }
 
 	 public function evaluate($photoId)

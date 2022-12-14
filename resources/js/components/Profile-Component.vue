@@ -6,10 +6,10 @@
           <img v-else src="/img_scenario4/avatar-48.webp" alt="" width="60" height="60">
         <h1 class="px-2 fw-bold">{{user.name}}</h1>
       </div>
-      <div v-if="user._id !== auth._id && isFollowingUser == 1">
+      <div v-if="auth && user._id !== auth._id && isFollowingUser == 1">
         <button v-on:click="unfollow(user.id)" class="follow-button">Deixar de seguir</button>
       </div>
-      <div v-if="user._id !== auth._id && isFollowingUser == 0">
+      <div v-if="auth && user._id !== auth._id && isFollowingUser == 0">
         <button v-on:click="follow(user.id)" class="follow-button">Seguir</button>
       </div>
       <div class="d-flex flex-row align-items-center my-2">
