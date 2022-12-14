@@ -3,19 +3,19 @@
     @guest
     <div class="navbar-logo col-md-4 d-none d-md-block">
       <a class="navbar-brand" href="/home">
-        <img src="{{asset('/img/logo.chou.arquigrafia.png')}}" alt="" width="223" height="33">
+        <img src="{{asset('/img_scenario4/logo.chou.arquigrafia.webp')}}" alt="" width="223" height="33">
       </a>
     </div>
     <div class="navbar-logo col-md-4 d-md-none">
       <a class="navbar-brand" href="/home">
-        <img src="{{asset('/img/logo.chou.a2.png')}}" alt="" height="33">
+        <img src="{{asset('/img_scenario4/logo.chou.a2.webp')}}" alt="" height="33">
       </a>
     </div>
     @endguest
     @auth
     <div class="navbar-logo col-md-4 px-2">
       <a class="navbar-brand" href="/home">
-        <img src="{{asset('/img/logo.chou.a2.png')}}" alt="" height="33">
+        <img src="{{asset('/img_scenario4/logo.chou.a2.webp')}}" alt="" height="33">
       </a>
     </div>
     @endauth
@@ -80,7 +80,7 @@
             @if(Auth::user()->photo)
               <img class="nav-item dropdown rounded-circle" src="{{asset(Auth::user()->photo)}}" alt="" width="40" height="40">
             @else
-              <img class="nav-item dropdown rounded-circle" src="{{asset('/img/avatar-48.png')}}" alt="" width="40" height="40">
+              <img class="nav-item dropdown rounded-circle" src="{{asset('/img_scenario4/avatar-48.webp')}}" alt="" width="40" height="40">
             @endif
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -88,7 +88,7 @@
               @if(Auth::user()->photo)
               <img class="nav-item dropdown rounded-circle" src="{{asset(Auth::user()->photo)}}" alt="" width="60" height="60">
               @else
-              <img class="nav-item dropdown rounded-circle" src="{{asset('/img/avatar-48.png')}}" alt="" width="60" height="60">
+              <img class="nav-item dropdown rounded-circle" src="{{asset('/img_scenario4/avatar-48.webp')}}" alt="" width="60" height="60">
               @endif
               <div class="px-2">
                 <p class="m-0 font-weight-bold" >{{Auth::user()->name}}</p>

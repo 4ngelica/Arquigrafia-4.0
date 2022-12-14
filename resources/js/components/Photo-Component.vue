@@ -16,7 +16,7 @@
               <small class="d-flex"> {{this.comments.length ? this.comments.length : 0}}</small>
           </div>
         </div>
-        <img class="img-fluid" :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="" width="100%">
+        <img class="img-fluid" :src="'/arquigrafia-images-scenario4/' + photo._id + '_view.webp'" alt="" width="100%">
         <div class="d-flex flex-column flex-md-row my-3">
           <div class="col-12 col-md-2">
             <button type="button" name="button">Voltar</button>
@@ -175,7 +175,7 @@
           <h4 class="mb-2">Licença:</h4>
           <a class="tooltip_license"
             :href="'http://creativecommons.org/licenses/'+ license[0] +'/3.0/deed.pt_BR'" target="_blank" >
-            <img :src="'/img/ccIcons/' + license[0] + '88x31.png'" id="ccicons"
+            <img :src="'img_scenario4/ccIcons/' + license[0] + '88x31.webp'" id="ccicons"
               alt="Creative Commons License" />
             <span>
               <strong v-if="user.id == auth.id">Você é proprietário(a) desta imagem</strong>
@@ -193,9 +193,8 @@
               />
        </GmapMap>
 
-
           <h4 class="mt-4">Interpretações da arquitetura:</h4>
-          <img src="/img/GraficoFixo.png"/>
+          <img src="/img_scenario4/GraficoFixo.webp"/>
           <p v-if="auth" style="text-align: justify;">
             oi
           </p>

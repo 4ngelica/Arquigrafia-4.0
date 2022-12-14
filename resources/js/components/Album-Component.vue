@@ -7,7 +7,7 @@
       <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
           <div v-for="(photo, index) in photos" :key="index" class="image-item">
             <a :href="'/photos/' + photo.photo_id">
-              <img :src="'/arquigrafia-images/' + photo.photo_id + '_view.jpg'" :alt="photo.photo[0].name" class="photo-carousel">
+              <img :src="'/arquigrafia-images-scenario4/' + photo.photo_id + '_200h.webp'" :alt="photo.photo[0].name" class="photo-carousel">
               <div class="overlay"><p class="image-title">{{photo.photo[0].name}}</p></div>
             </a>
           </div>
@@ -40,7 +40,7 @@
         <carousel v-if="other_albums.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(other_album, index) in other_albums" :key="index" class="image-item">
               <a v-if="other_album.cover_id" :href="'/albums/' + other_album._id">
-                <img :src="'/arquigrafia-images/' + other_album.cover_id + '_view.jpg'" :alt="other_album.title" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + other_album.cover_id + '_200h.webp'" :alt="other_album.title" class="photo-carousel">
                 <div class="overlay"><p class="image-title">{{other_album.title}} ({{other_albums_photos[other_album.id].elements.length}})</p></div>
               </a>
               <a v-else="other_album.cover_id" :href="'/albums/' + other_album._id">
