@@ -1,0 +1,23 @@
+.suggestion-button.thumbs-up {
+    background: url(/img/suggestions-list/thumbs-up.png) left 7px center no-repeat #eee;
+    background-size: 20px 20px;
+}
+.suggestion-button {
+    float: left;
+    padding: 15px 15px 15px 30px;
+    border-radius: 10px;
+    margin-right: 5px;
+    position: relative;
+}
+
+.suggestion-button.thumbs-down {
+    background: url(/img/suggestions-list/thumbs-down.png) left 7px center no-repeat #eee;
+    background-size: 20px 20px;
+}
+.suggestion-button {
+    float: left;
+    padding: 15px 15px 15px 30px;
+    border-radius: 10px;
+    margin-right: 5px;
+    position: relative;
+}

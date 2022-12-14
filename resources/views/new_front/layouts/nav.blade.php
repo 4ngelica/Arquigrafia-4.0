@@ -43,7 +43,8 @@
         <a href="/photos/upload" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Enviar Imagem</a>
         <a href="/albums" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Meus Álbuns</a>
         <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Mensagens</a>
-        <a href="#" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Constribuições</a>
+        <a href="/contributions" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Minhas Constribuições</a>
+        <a href="/suggestions" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Sugestões</a>
         <a href="{{'/users/' . Auth::user()->_id . '/edit'}}" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Configurações</a>
         <a href="/users/logout" class="nav-btn mx-lg-1 px-1 px-lg-3 py-2 d-lg-none">Sair</a>
         <a href="/photos/upload" class="nav-item d-lg-flex d-none mx-1 px-3 py-2 align-items-center">
@@ -95,7 +96,8 @@
               </div>
             </li>
             <li><a class="dropdown-item" href="{{'/users/' . Auth::user()->_id}}">Perfil</a></li>
-            <li><a class="dropdown-item" href="/contributions">Contribuições</a></li>
+            <li><a class="dropdown-item" href="/contributions">Minhas Contribuições</a></li>
+            <li><a class="dropdown-item" href="/suggestions">Sugestões</a></li>
             <li><a class="dropdown-item" href="/albums">Meus Álbuns</a></li>
             <li><a class="dropdown-item" href="{{'/users/' . Auth::user()->_id . '/edit'}}">Configurações</a></li>
             <li><hr class="dropdown-divider"></li>

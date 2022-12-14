@@ -10,7 +10,9 @@ use App\Http\Controllers\Api\APIAuthorsController;
 use App\Http\Controllers\Api\APILogInController;
 use App\Http\Controllers\Api\APIProfilesController;
 use App\Http\Controllers\Api\APIEvaluationController;
+use App\Http\Controllers\Api\APISuggestionController;
 use App\Http\Controllers\Api\APICommentsController;
+
 
 
 
@@ -36,7 +38,7 @@ Route::resource('photos', APIPhotosController::class);
 Route::get('likes/{id}', [APIPhotosController::class, 'likes']);
 Route::get('comments/{id}', [APIPhotosController::class, 'comments']);
 Route::post('comments/{id}', [APIPhotosController::class, 'commentPhoto']);
-
+Route::delete('comments/{id}', [APIPhotosController::class, 'deleteComment']);
 
 Route::resource('users', APIUsersController::class);
 Route::resource('tags', APITagsController::class);
@@ -57,13 +59,17 @@ Route::post('logout', [APILogInController::class, 'log_out']);
 // Route::get('moreUserPhotos/{id}', 'modules\api\controllers\APIProfilesController@getMoreUserPhotos');
 Route::get('profile/{id}/followers', [APIProfilesController::class, 'getFollowers']);
 Route::get('profile/{id}/following', [APIProfilesController::class, 'getFollowing']);
+Route::post('follow/{id}', [APIProfilesController::class, 'follow']);
+Route::post('unfollow/{id}', [APIProfilesController::class, 'unfollow']);
 
 // Route::get('profile/{id}/following', 'modules\api\controllers\APIProfilesController@getFollowing');
-// Route::get('profile/{id}/evaluatedPhotos', 'modules\api\controllers\APIProfilesController@getUserEvaluations');
+Route::get('profile/{id}/evaluatedPhotos', [APIProfilesController::class, 'getUserEvaluations']);
 // Route::get('profile/{id}/moreEvaluatedPhotos', 'modules\api\controllers\APIProfilesController@getMoreUserEvaluations');
 // /* Controlador de avaliações */
 // Route::get('photos/{photoId}/evaluation/{userId}', 'modules\api\controllers\APIEvaluationController@retrieveEvaluation');
-Route::post('photos/{photoId}/evaluation/{userId}', [APIEvaluationController::class, 'storeEvaluation']);
+Route::post('evaluations/{photoId}/evaluate', [APIEvaluationController::class, 'storeEvaluation']);
+Route::post('suggestions/{photoId}/store', [APISuggestionController::class, 'storeSuggestion']);
+Route::post('suggestions/{photoId}/action', [APISuggestionController::class, 'actionSuggestion']);
 // Route::get('photos/{photoId}/averageEvaluation/{userId}', 'modules\api\controllers\APIEvaluationController@averageEvaluationValues');
 // /* Controlador de busca */
 // Route::get('recent', 'modules\api\controllers\APIFeedController@loadRecentPhotos');

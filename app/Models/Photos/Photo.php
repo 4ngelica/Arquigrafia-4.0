@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\lib\metadata\Exiv2;
 use Jenssegers\Mongodb\Eloquent\Model as Model;
+use App\Models\Moderation\PhotoAttributeType;
 use DateTime;
 use Session;
 
@@ -80,62 +81,104 @@ class Photo extends Model {
 		'city'        => ['information' => 'Qual é a cidade desta obra?',
 					      'validation'  => 'Esta cidade está correta?',
 					      'name'        => 'Cidade',
-					      'type'        => 'string'],
+					      'type'        => 'string',
+								'field' 			=> 'city',
+								'value'				=> null,
+								'attribute_type'	=> 1
+							],
 		'country'     => ['information' => 'Qual é o país desta obra?',
 						  'validation'  => 'Este país está correto?',
 						  'name'        => 'País',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'country',
+							'value'				=> null,
+							'attribute_type'	=> 2
+						],
 		'dataCriacao' => ['information' => 'Qual é a data desta imagem?',
 						  'validation'  => 'A data desta imagem está correta?',
 						  'name'        => 'Data da Imagem',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'dataCriacao',
+							'value'				=> null
+						],
 		'description' => ['information' => 'Como você descreveria esta imagem?',
 						  'validation'  => 'A descrição desta imagem está correta?',
 						  'name'        => 'Descrição',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'description',
+							'value'				=> null,
+							'attribute_type'	=> 3
+						],
 		'district'    => ['information' => 'Qual é o bairro desta obra?',
 						  'validation'  => 'O bairro desta obra está correto?',
 						  'name'        => 'Bairro',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'district',
+							'value'				=> null,
+							'attribute_type'	=> 4
+						],
 		'imageAuthor' => ['information' => 'Quem é o autor desta imagem?',
 						  'validation'  => 'Este é o autor correto desta imagem?',
 						  'name'        => 'Autor',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'imageAuthor',
+							'value'				=> null,
+							'attribute_type'	=> 5
+						],
 		'name'        => ['information' => 'Qual é o nome desta obra?',
 						  'validation'  => 'Este é o nome correto desta obra?',
 						  'name'        => 'Nome',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'name',
+							'value'				=> null,
+							'attribute_type'	=> 8
+						],
 		'state'         => ['information' => 'Em qual estado do país está esta arquitetura?',
 						  'validation'  => 'Este é o estado correto desta arquitetura?',
 						  'name'        => 'Estado',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'state',
+							'value'				=> null,
+							'attribute_type'	=> 6
+						],
 		'street'      => ['information' => 'Qual é o endereço desta obra?',
 						  'validation'  => 'Este é o endereço correto desta obra?',
 						  'name'        => 'Rua',
-						  'type'        => 'string'],
+						  'type'        => 'string',
+							'field' 			=> 'street',
+							'value'				=> null,
+							'attribute_type'	=> 7
+						],
 		'authors'  => ['information' => 'Qual é o nome do autor deste projeto? (Havendo mais de um, separe por ";")',
 						  'validation'  => 'Este é o autor deste projeto?',
 						  'name'        => 'Autor do Projeto',
-						  'type'        => 'array_strings'],
+						  'type'        => 'array_strings',
+							'field' 			=> 'authors',
+							'value'				=> null,
+							'attribute_type'	=> 9
+						],
 		'workDate'    => ['information' => 'Quando foi construída esta obra?',
 						  'validation'  => 'Esta é a data em que esta obra foi construída?',
 						  'name'        => 'Data da Obra',
-						  'type'        => 'string']
+						  'type'        => 'string',
+							'field' 			=> 'workDate',
+							'value'				=> null,
+							'attribute_type'	=> 10
+						]
 	];
 
-	// public static	$information_questions = [
-	// 	'city' => 'Qual é a cidade da obra?',
-	// 	'country' => 'Qual é o país da obra?',
-	// 	'dataCriacao' => 'Qual é a data desta imagem?',
-	// 	'description' => 'Qual é a descrição para a imagem?',
-	// 	'district' => 'Qual é o bairro da obra?',
-	// 	'imageAuthor' => 'Quem é o autor desta imagem?',
-	// 	'name' => 'Qual é o nome desta obra?',
-	// 	'state' => 'Qual é o Estado desta arquitetura?',
-	// 	'street' => 'Qual é a rua desta obra?',
-	// 	'workAuthor' => 'Quem é o autor da obra?',
-	// 	'workDate' => 'Quando foi construída a obra?'
-	// ];
+	public static	$attribute_types = [
+		'1' => 'Cidade',
+		'2' => 'País',
+		'3' => 'Descrição',
+		'4' => 'Bairro',
+		'5' => 'Autor da imagem',
+		'6' => 'Estado',
+		'7' => 'Rua',
+		'8' => 'Nome',
+		'9' => 'Autor do projeto',
+		'10' => 'Data da obra'
+	];
 
 	protected $date;
 
@@ -411,6 +454,95 @@ class Photo extends Model {
 		}
 
 		return $license;
+
+	}
+
+	public static function getIncompleteFields($photo) {
+
+		$incompleteFields = [];
+		$completeFields = [];
+		$incompleteFieldsString = [];
+		$incompleteFormData = [];
+		$completeFormData = [];
+
+		foreach (PhotoAttributeType::all()->toArray() as $key => $value) {
+
+			if ($photo->{$value['attribute_type']} == null && $value['attribute_type'] !== 'authors' ) {
+				array_push($incompleteFields, $value['attribute_type']);
+			}elseif ($value['attribute_type'] == 'authors' && $photo->project_author == null) {
+				array_push($incompleteFields, $value['attribute_type']);
+			}elseif ($value['attribute_type'] == 'authors' && $photo->project_author !== null) {
+				array_push($completeFields, [$value['attribute_type'] => $photo->project_author]);
+				unset(self::$fields_data['authors']['information']);
+				self::$fields_data['authors']['value'] = $photo->authors;
+				array_push($completeFormData, self::$fields_data['authors']);
+			}
+			else{
+				array_push($completeFields, [$value['attribute_type'] => $photo->{$value['attribute_type']}]);
+				unset(self::$fields_data[$value['attribute_type']]['information']);
+				self::$fields_data[$value['attribute_type']]['value'] = $photo->{$value['attribute_type']};
+				array_push($completeFormData, self::$fields_data[$value['attribute_type']]);
+			}
+		};
+
+		foreach ($incompleteFields as $value) {
+			switch ($value) {
+				case 'city':
+					array_push($incompleteFieldsString, 'Cidade');
+					unset(self::$fields_data['city']['validation']);
+					array_push($incompleteFormData, self::$fields_data['city']);
+					break;
+				case 'country':
+					array_push($incompleteFieldsString, 'País');
+					unset(self::$fields_data['country']['validation']);
+					array_push($incompleteFormData, self::$fields_data['country']);
+					break;
+				case 'description':
+					array_push($incompleteFieldsString, 'Descrição');
+					unset(self::$fields_data['description']['validation']);
+					array_push($incompleteFormData, self::$fields_data['description']);
+					break;
+				case 'district':
+					array_push($incompleteFieldsString, 'Bairro');
+					unset(self::$fields_data['district']['validation']);
+					array_push($incompleteFormData, self::$fields_data['district']);
+					break;
+				case 'imageAuthor':
+					array_push($incompleteFieldsString, 'Autor da imagem');
+					unset(self::$fields_data['imageAuthor']['validation']);
+					array_push($incompleteFormData, self::$fields_data['imageAuthor']);
+					break;
+				case 'state':
+					array_push($incompleteFieldsString, 'Estado');
+					unset(self::$fields_data['state']['validation']);
+					array_push($incompleteFormData, self::$fields_data['state']);
+					break;
+				case 'street':
+					array_push($incompleteFieldsString, 'Rua');
+					unset(self::$fields_data['street']['validation']);
+					array_push($incompleteFormData, self::$fields_data['street']);
+					break;
+				case 'name':
+					array_push($incompleteFieldsString, 'Nome');
+					unset(self::$fields_data['name']['validation']);
+					array_push($incompleteFormData, self::$fields_data['name']);
+					break;
+				case 'authors':
+					array_push($incompleteFieldsString, 'Autor do Projeto');
+					unset(self::$fields_data['authors']['validation']);
+					array_push($incompleteFormData, self::$fields_data['authors']);
+					break;
+				case 'workDate':
+					array_push($incompleteFieldsString, 'Data da obra');
+					unset(self::$fields_data['workDate']['validation']);
+					array_push($incompleteFormData, self::$fields_data['workDate']);
+					break;
+			}
+		}
+
+		// dd(array_merge($incompleteFormData, $completeFormData));
+
+		return ['incompleteFields' => $incompleteFields, 'completeFields' => $completeFields, 'incompleteFieldsString' => implode(', ', $incompleteFieldsString), 'incompleteFormData' => $incompleteFormData, 'completeFormData' => $completeFormData, 'formData' => array_merge($incompleteFormData, $completeFormData)];
 
 	}
 

@@ -1,15 +1,19 @@
 <template>
   <div class="user-profile">
     <div class="container-fluid mb-4">
+      <div class="container">
+        <h1>Álbum {{album.title}}</h1>
+      </div>
       <carousel v-if="photos.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:6,  dots:true} }">
-          <div v-for="(photo, index) in photos" :key="index">
-            <a :href="'/photos/' + photo._id">
-              <img :src="'/arquigrafia-images-scenario4/' + photo._id + '_200h.webp'" :alt="photo.title" class="photo-carousel">
+          <div v-for="(photo, index) in photos" :key="index" class="image-item">
+            <a :href="'/photos/' + photo.photo_id">
+              <img :src="'/arquigrafia-images-scenario4/' + photo.photo_id + '_200h.webp'" :alt="photo.photo[0].name" class="photo-carousel">
+              <div class="overlay"><p class="image-title">{{photo.photo[0].name}}</p></div>
             </a>
           </div>
       </carousel>
     </div>
-    <div class="container-md mb-4">
+    <div class="container mb-4">
         <div class="d-flex ">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
             <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
@@ -24,7 +28,7 @@
           <li>Descrição: {{ album.description ?  album.description : ''}} </li>
         </ul>
     </div>
-    <div class="container-md px-2 mb-4">
+    <div class="container mb-4">
       <div class="d-flex flex-row align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
           <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
@@ -34,11 +38,12 @@
       </div>
       <hr>
         <carousel v-if="other_albums.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
-            <div v-for="(other_albums, index) in other_albums" :key="index">
-              <a v-if="album.cover_id" :href="'/albums/' + album._id">
-                <img :src="'/arquigrafia-images-scenario4/' + album.cover_id + '_200h.webp'" :alt="album.title" class="photo-carousel">
+            <div v-for="(other_album, index) in other_albums" :key="index" class="image-item">
+              <a v-if="other_album.cover_id" :href="'/albums/' + other_album._id">
+                <img :src="'/arquigrafia-images-scenario4/' + other_album.cover_id + '_200h.webp'" :alt="other_album.title" class="photo-carousel">
+                <div class="overlay"><p class="image-title">{{other_album.title}} ({{other_albums_photos[other_album.id].elements.length}})</p></div>
               </a>
-              <a v-else="album.cover_id" :href="'/albums/' + album._id">
+              <a v-else="other_album.cover_id" :href="'/albums/' + other_album._id">
                 <p class="album-without-cover">Album sem capa</p>
               </a>
             </div>
@@ -55,7 +60,7 @@
 import carousel from 'vue-owl-carousel'
 
 export default {
-  props: ['user', 'auth', 'photos', 'album', 'other_albums'],
+  props: ['user', 'auth', 'photos', 'album', 'other_albums', 'other_albums_photos'],
   components: { carousel },
   data () {
     return {
@@ -65,6 +70,7 @@ export default {
 
   },
   mounted () {
+    console.log(this.$props.other_albums_photos)
 
   }
 };

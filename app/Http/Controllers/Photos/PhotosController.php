@@ -14,11 +14,13 @@ use App\Models\Users\User;
 use App\Models\Gamification\Badge;
 use App\Models\Institutions\Institution;
 use App\Models\Collaborative\Tag;
+use App\Models\Collaborative\TagAssignments;
 use App\Models\Collaborative\Comment;
 use App\Models\Collaborative\Like;
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
 use App\Models\Gamification\Gamified;
+use App\Models\Moderation\PhotoAttributeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -27,6 +29,7 @@ use Illuminate\Support\Facades\Log;
 use Session;
 use App\lib\date\Date;
 use File;
+use Illuminate\Support\Facades\Http;
 use Cache;
 
 class PhotosController extends Controller {
@@ -48,25 +51,60 @@ class PhotosController extends Controller {
 
   public function show($id)
   {
-    // EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
-
-    $result = Cache::remember('showUser'. $id, 60 * 5, function() use ($id) {
+    EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
     $photo = Photo::find($id);
     if (!$photo) {
       return redirect('/home');
     }
 
+    $tags = TagAssignments::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+          [
+           '$lookup' => [
+              'from' => 'tags',
+              'localField' => 'tag_id',
+              'foreignField'=> 'id',
+              'as' => 'tag'
+            ]
+         ],
+         // [
+         //   '$match' => [
+         //     'tag_id' => $photo->id,
+         //     'tag.id' => [
+         //       '$exists'=> true
+         //     ],
+         //   ]
+         // ],
+          [
+            '$project' => [
+              'tag.name' => 1,
+            ]
+         ]
+       ]);
+    }))->where('photo_id', $id);
+
+    // TagAssignments
+    // dd($tags);
+    // dd(Tag::all());
+
+    // dd(DB::collection('tag_assignments')->get());
+
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
-    $tags = DB::collection('tag_assignments')->where('photo_id', $id)->get();
+    $tags = $photo->tags;
     $likes = $photo->likes->count();
     $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
+    $license = json_encode(Photo::licensePhoto($photo));
+    $latLng = self::getLatLng($photo);
+    $incompleteFields = [];
+    foreach ($photo->toArray() as $key => $value) {
+      if (!$value) {
+        array_push($incompleteFields, $key);
+      }
+    }
 
-    return $userData = ['photo' => $photo, 'user' => $user, 'comments' => $comments, 'tags' => $tags, 'likes' => $likes];
-
-  });
-
+    $suggestionFields = json_encode(Photo::getIncompleteFields($photo));
 
     if (Auth::user()) {
       $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
@@ -78,10 +116,21 @@ class PhotosController extends Controller {
     }else {
       $authLike = 0;
     }
-    array_push($result, ['authLike' => $authLike]);
 
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields']));
+  }
 
-    return view('new_front.photos.show')->with($result);
+  public static function getLatLng($photo){
+
+    $address = [$photo->country, $photo->state, $photo->street, $photo->city, $photo->district];
+    $address = (implode('+', $address));
+    $address = (str_replace(' ', '', $address));
+
+    $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='. config('general.google_maps_key'));
+    $body = json_decode($response->body());
+    $latLng = [$body->results[0]->geometry->location->lat, $body->results[0]->geometry->location->lng];
+
+    return json_encode($latLng);
   }
 
   // upload form
