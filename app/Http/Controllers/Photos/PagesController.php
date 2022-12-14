@@ -26,12 +26,38 @@ use Illuminate\Support\Arr;
 use DateTime;
 use Session;
 use Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
+
 
 class PagesController extends Controller {
   protected $date;
 
   public function __construct(Date $date = null) {
     $this->date = $date ?: new Date;
+  }
+
+  public function faq()
+  {
+    if ( Redis::exists('faq_page') ) {
+        return Redis::get('faq_page');
+    } else {
+        $cachedData = view('faq')->render();
+        Redis::set('faq_page', $cachedData);
+        return $cachedData;
+    }
+  }
+
+  public function project()
+  {
+    if ( Redis::exists('project_page') ) {
+        return Redis::get('project_page');
+    } else {
+        $cachedData = view('project')->render();
+        Redis::set('project_page', $cachedData);
+        return $cachedData;
+    }
   }
 
   public function NovoUsersShow($id)

@@ -10,8 +10,7 @@
     <title>Arquigrafia - Seu universo de imagens de arquitetura</title>
 
     <!-- Scripts -->
-    <script>window.Laravel = {csrfToken: '{{ csrf_token() }}'}</script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+
 
 
     <!-- Fonts -->
@@ -19,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('/css/app.css') }}" rel="stylesheet"></script>
 </head>
 <body>
     <div id="app">
@@ -29,5 +28,7 @@
         </main>
         @include('new_front.layouts.footer')
     </div>
+    <script>window.Laravel = {csrfToken: '{{ csrf_token() }}'}</script>
+    <script src="{{ mix('/js/app.js') }}"></script>
 </body>
 </html>
