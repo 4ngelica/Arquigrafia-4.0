@@ -73,3 +73,18 @@
 
   }
 }
+
+.follow-button {
+  text-decoration: none;
+  text-transform: uppercase;
+  border: none;
+  background: none;
+  color: #000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.follow-button:hover {
+  color: #555;
+  text-decoration: underline;
+}

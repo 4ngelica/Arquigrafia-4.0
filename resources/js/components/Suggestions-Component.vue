@@ -1,8 +1,7 @@
 <template>
   <div class="container">
-
-    <div class="table table-responsive">
-      <caption>List of users</caption>
+    <h1>Sugestões ({{suggestions.length}})</h1>
+    <div v-if="suggestions.length > 0" class="table table-responsive">
       <thead>
         <tr>
           <th scope="col">Foto</th>
@@ -43,7 +42,6 @@
         </tr>
       </tbody>
     </div>
-
   </div>
 
 

@@ -31,6 +31,7 @@ use Session;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Event;
+use App\Models\Collaborative\Follow;
 
 class UsersController extends Controller {
 
@@ -55,7 +56,56 @@ class UsersController extends Controller {
     $albums = $user->albums;
     $evaluations = $user->evaluations;
 
-    return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations']));
+    // $following = Follow::where('following_id', 8)->get();
+    // $followed = Follow::where('followed_id', 8)->get();
+
+    $following = Follow::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+         [
+           '$match' => [
+             'following_id' => $id,
+             'followed_id' => [
+               '$exists'=> true
+             ],
+           ]
+         ],
+        ]);
+    }));
+
+    $followers = Follow::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+         [
+           '$match' => [
+             'followed_id' => $id,
+             'following_id' => [
+               '$exists'=> true
+             ],
+           ]
+         ],
+        ]);
+    }));
+
+    $followersNumber = count($followers);
+    $followingNumber = count($following);
+
+    if(Auth::user() && $user->id !== Auth::user()->id){
+      $authUser = Auth::user()->id;
+      $isFollowing = Follow::raw((function($collection) use ($id, $authUser) {
+          return $collection->aggregate([
+           [
+             '$match' => [
+               'followed_id' => $id,
+               'following_id' => $authUser
+             ]
+           ],
+          ]);
+      }));
+      $isFollowing = count($isFollowing);
+    }else{
+      $isFollowing = 0;
+    }
+
+    return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations', 'followingNumber', 'followersNumber', 'isFollowing']));
   }
 
   // show create account form

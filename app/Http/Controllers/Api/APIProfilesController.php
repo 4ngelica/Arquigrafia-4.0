@@ -192,4 +192,20 @@ class APIProfilesController extends Controller {
 
 		return \Response::json(['msg' => 'Usuário seguido'], 200);
 	}
+
+	public function unfollow(Request $request, $id) {
+
+		$friendship = DB::collection('friendship')->where('following_id', $request->user_id)->where('followed_id', $id)->get();
+
+		if(empty($friendship)) {
+			return \Response::json(['msg' => 'Usuário já não é seguido'], 400);
+		}
+
+		$friendship = Follow::where('following_id', $request->user_id)->where('followed_id', $id)->first();
+
+		$friendship->delete();
+
+
+		return \Response::json(['msg' => 'Usuário deixou de ser seguido'], 200);
+	}
 }
