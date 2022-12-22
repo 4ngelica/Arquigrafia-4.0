@@ -22,5 +22,13 @@
         "vue": "^2.6.12",
         "vue-loader": "^15.10.0",
         "vue-template-compiler": "^2.6.12"
+    },
+    "dependencies": {
+        "jquery": "^3.6.1",
+        "popper.js": "^1.16.1",
+        "vue-infinite-scroll": "^2.0.2",
+        "vue-owl-carousel": "^2.0.3",
+        "vue2-google-maps": "^0.10.7",
+        "vuejs-google-maps": "^0.2.0"
     }
 }

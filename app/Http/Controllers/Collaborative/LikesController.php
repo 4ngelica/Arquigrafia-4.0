@@ -16,6 +16,8 @@ use Auth;
 use Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\DB;
+
 
 class LikesController extends Controller {
 
@@ -55,7 +57,7 @@ class LikesController extends Controller {
 
     /* */
     try {
-      $like = Like::fromUser($user)->withLikable($photo)->first();
+      $like = DB::collection('likes')->where('likable_id', $id)->where('user_id', $user);
       $like->delete();
     } catch (Exception $e) {
       //

@@ -1,0 +1,249 @@
+.footer a{
+  color: #000;
+  text-decoration: none;
+}
+
+#footer {
+  bottom: 0;
+  clear: both;
+  margin-top: 20px;
+  font-size: 0.85em; }
+
+#footer .footer-msg {
+  width: auto; }
+
+#footer .footer-msg p {
+  display: inline-block;
+  margin-top: 0; }
+
+#footer .footer-logo {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin: 3px 8px 0 0;
+  background: url("/img/logo.chou.2018.webp") no-repeat;
+  background-size: contain; }
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-logos li a {
+    display: block;
+    height: 40px;
+}
+
+/*galeria do footer*/
+.footer_images {
+  background: #404040;
+  height: 89px;
+  overflow: hidden;
+  padding-top: 8px;
+  position: relative; }
+
+.footer_images .arrows {
+  font-size: 30px; }
+
+.footer_images .arrows {
+  color: #A6A6A6; }
+
+.footer_images .arrows:hover {
+  color: #CB9833;
+  cursor: pointer; }
+
+.footer_images #arrow-right {
+  position: absolute;
+  right: 17px;
+  top: 30px;
+  display: inline-block; }
+
+.footer_images #arrow-left {
+  position: absolute;
+  left: 17px;
+  top: 30px;
+  display: inline-block; }
+
+#images_container {
+  height: 80px;
+  width: 905px;
+  margin: auto;
+  overflow: hidden; }
+
+.images_line {
+  height: 80px;
+  width: 2715px; }
+
+a.footer_image {
+  display: block;
+  margin: 4px;
+  float: left;
+  border: none;
+  width: 105px;
+  height: 72px;
+  background: #000; }
+
+/*frase - contador de imagens*/
+.counter {
+  display: block;
+  float: left;
+  width: 100%;
+  margin: 10px 0;
+  overflow: hidden; }
+
+/*créditos*/
+#credits {
+  padding-top: 20px;
+  margin-bottom: 10px; }
+
+#credits ul {
+  margin: 0;
+  float: left;
+  width: 160px;
+  height: 160px; }
+
+#credits ul.last {
+  width: 80px;
+  margin-right: -15px; }
+
+#credits ul li {
+  display: block;
+  margin: 0 10px 4px; }
+
+#credits ul li a {
+  display: block;
+  height: 40px; }
+
+#usp {
+  background: url(/img_scenario4/logos.webp) 0 0;
+  width: 90px;
+  height: 40px;
+}
+
+#fapesp {
+  background: url(/img_scenario4/logos.webp) 0 -50px;
+  width: 90px;
+  height: 40px;
+
+}
+
+#rnp {
+  background: url(/img_scenario4/logos.webp) 0 -100px;
+  width: 90px;
+  height: 40px;
+}
+
+#cnpq {
+  background: url(/img_scenario4/logos.webp) -170px 0;
+  width: 90px;
+  height: 40px;
+}
+
+#ccsl {
+  background: url(/img_scenario4/logos.webp) -170px -50px;
+  width: 90px;
+  height: 40px;
+}
+
+#chancela {
+  background: url(/img_scenario4/logos.webp) -170px -100px;
+  width: 90px;
+  height: 50px;
+  height: 40px;
+}
+
+#fau {
+  background: url(/img_scenario4/logos.webp) -350px 0;
+  width: 70px;
+  height: 40px;
+}
+
+#ime {
+  background: url(/img_scenario4/logos.webp) -350px -50px;
+  width: 70px;
+  height: 40px;
+}
+
+#eca {
+  background: url(/img_scenario4/logos.webp) -350px -100px;
+  width: 150px;
+  height: 40px;
+}
+
+#quapa {
+  background: url(/img_scenario4/logos.webp) -525px 0;
+  width: 70px;
+  height: 40px;
+}
+
+#vitruvius {
+  background: url(/img_scenario4/logos.webp) -525px -50px;
+  width: 70px;
+  height: 40px;
+}
+
+#archdaily {
+  background: url(/img_scenario4/archdaily-brasil.webp) 0 0 no-repeat;
+  width: 80px;
+  height: 40px;
+}
+
+#benchmark {
+  background: url(/img_scenario4/logos.webp) -700px 0 no-repeat;
+  width: 55px;
+  height: 40px;
+}
+
+#brz {
+  background: url(/img_scenario4/logos.webp) -700px -50px no-repeat;
+  width: 55px;
+  height: 40px;
+}
+
+#rckt {
+  background: url(/img_scenario4/rckt.webp) 15px 0 no-repeat;
+  width: 70px;
+  margin-top: 5px;
+  height: 40px;
+}
+
+#doctela {
+  background: url(/img_scenario4/doctela.webp) 0 0 no-repeat;
+  width: 70px;
+  margin: 10px 0 0 -5px;
+  height: 40px;
+}
+
+.footer-logo {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 3px 8px 0 0;
+    background: url(/img_scenario4/logo.chou.2018.webp) no-repeat;
+    background-size: contain;
+}
+//
+// #copyright {
+//   margin: 18px 0;
+//   float: right; }
+//   /* footer */
+//   #credits ul {
+//     width: 19%;
+//     height: auto; }
+//   #credits .footer-links {
+//     text-align: left;
+//     width: 150px;
+//     height: auto;
+//     margin: 4px 31px -10px 0;
+//     border-bottom: none;
+//     border-right: 1px solid #ddd; }
+//   #credits .footer-links a {
+//     font-weight: normal;
+//     height: 23px; }
+//   #credits .footer-links li {
+//     display: block;
+//     margin-left: 0; }
+//   #credits .footer-last {
+//     clear: both;
+//     padding-top: 10px; }
+//   #credits .footer-logos {
+//     display: block; }

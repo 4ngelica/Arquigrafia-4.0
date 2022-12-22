@@ -2,9 +2,11 @@
 
 namespace App\Models\Photos;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Audio extends Model {
+  protected $connection = 'mongodb';
+  protected $collection = 'audios';
 
   protected $table = 'audios';
 

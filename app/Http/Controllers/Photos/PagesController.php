@@ -26,12 +26,61 @@ use Illuminate\Support\Arr;
 use DateTime;
 use Session;
 use Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
+
 
 class PagesController extends Controller {
   protected $date;
 
   public function __construct(Date $date = null) {
     $this->date = $date ?: new Date;
+  }
+
+  public function faq()
+  {
+    if ( Redis::exists('faq_page') ) {
+        return Redis::get('faq_page');
+    } else {
+        $cachedData = view('faq')->render();
+        Redis::set('faq_page', $cachedData);
+        return $cachedData;
+    }
+  }
+
+  public function project()
+  {
+    if ( Redis::exists('project_page') ) {
+        return Redis::get('project_page');
+    } else {
+        $cachedData = view('project')->render();
+        Redis::set('project_page', $cachedData);
+        return $cachedData;
+    }
+  }
+
+  public function NovoUsersShow($id)
+  {
+    $user = User::find($id);
+
+    return view('new_front.users.show', compact(['user']));
+  }
+
+  // public function NovoPhotosShow($id)
+  // {
+  //   $photo = Photo::find($id);
+  //   $user = $photo->user()->first();
+  //   $comments = $photo->comments()->get();
+  //
+  //   return view('new_front.photos.show', compact(['photo', 'user', 'comments']));
+  // }
+
+  public function images($count) {
+
+    $photos = Photo::all()->random($count)->toArray();
+
+    return response($photos);
   }
 
   public function main() {
@@ -48,13 +97,7 @@ class PagesController extends Controller {
   }
 
   public function home() {
-    if(Session::has('last_search'))
-      Session::forget('last_search');
 
-    if(Session::has('last_advanced_search'))
-      Session::forget('last_advanced_search');
-
-    $photos = Photo::orderByRaw("RAND()")->take(150)->get();
 
     if(Session::has('institutionId')) {
       $institution = Institution::find(Session::get('institutionId'));
@@ -64,7 +107,7 @@ class PagesController extends Controller {
 
     EventLogger::printEventLogs(null, "home", null, "Web");
 
-    return view('index', ['photos' => $photos, 'institution' => $institution ]);
+    return view('new_front.home', compact(['institution']));
   }
 
   public function panel() {
@@ -159,169 +202,196 @@ class PagesController extends Controller {
   }
 
   public function search(Request $request) {
-    if ( $request->has('bin') ) {
-      dd("oi");
+    // if ( $request->has('bin') ) {
+    //   return $this->searchBinomial(
+    //     $request->get('bin'),$request->get('opt'), $request->get('val')
+    //   );
+    // }
+    //
+    // $pageVisited = 0;
+    // $needle = trim($request->get("q"));
+    // $txtcity = $request->get("city");
+    // $type = $request->get("t");
+    // $dateFilter = null;
+    // $date = $request->get("d");
+    // $authorFilter = null;
+    //
+    // $url= null;
+    // $maxPage = 0;
+    // $photosTotal = 0;
+    // $photosPages = null;
+    // $photosAll = 0;
+    // $pageRetrieved = 1;
+    // $haveSession = 0;
+    // $pageLinked = 0;
+    //
+    // if ( $request->has('type') ) {
+    //   $authorFilter= $request->get('type');
+    // }
+    //
+    // if ($needle != "") {
+    //   if (!$request->has('pg') ){
+    //     Session::forget('CurrPage');
+    //   }
+    //   $tags = null;
+    //   $allAuthors =  null;
+    //   $query = Tag::where('name', 'LIKE', '%' . $needle . '%')->where('count', '>', 0);
+    //   $tags = $query->get();
+    //
+    //   $allAuthors = DB::table('authors')
+    //     ->join('photo_author', function($join) use ($needle)
+    //     { $join->on('authors.id', '=', 'photo_author.author_id')
+    //     ->where('name', 'LIKE', '%' . $needle . '%');
+    //     })->get();
+    //
+    //   if ($txtcity != "") {
+    //     $photos = static::streetAndCitySearch($needle,$txtcity);
+    //   } elseif ((DateTime::createFromFormat('Y-m-d', $needle) !== FALSE || DateTime::createFromFormat('Y-m-d H:i:s', $needle) !== FALSE )&& !empty($type)) {
+    //     $photos = static::dateSearch($needle,$type);
+    //   } elseif (DateTime::createFromFormat('Y', $needle) !== FALSE) {
+    //     $photos = static::yearSearch($needle,$dateFilter,$date);
+    //   } else {
+    //     $idUserList = static::userPhotosSearch($needle);
+    //
+    //     $query = Photo::where(function($query) use($needle, $idUserList) {
+    //       $query->where('name', 'LIKE', '%'. $needle .'%');
+    //       $query->orWhere('description', 'LIKE', '%'. $needle .'%');
+    //       $query->orWhere('imageAuthor', 'LIKE', '%' . $needle . '%');
+    //       $query->orWhere('country', 'LIKE', '%'. $needle .'%');
+    //       $query->orWhere('state', 'LIKE', '%'. $needle .'%');
+    //       $query->orWhere('city', 'LIKE', '%'. $needle .'%');
+    //       if ($idUserList != null && !empty($idUserList)) {
+    //         $query->orWhereIn('user_id', $idUserList);
+    //       }
+    //     });
+    //     $photos =  $query->orderBy('created_at', 'DESC')->get();
+    //   }
+    //
+    //
+    //   // se houver uma tag exatamente como a busca, pegar todas as fotos dessa tag e juntar no painel
+    //   $query = Tag::where('name', '=', $needle);
+    //   $tags = $query->get();
+    //   foreach ($tags as $tag) {
+    //     $byTag = $tag->photos;
+    //     $photos = $photos->merge($byTag);
+    //   }
+    //
+    //   if($authorFilter != null) {
+    //     $query = Author::where('name', '=', $needle);
+    //     $author = $query->get();
+    //     if($author->first()) {
+    //       $byAuthor = $author->first()->photos;
+    //       $photos = $photos->merge($byAuthor);
+    //     }
+    //   } else {
+    //     $queryAuthor = Author::where('name', 'LIKE', '%' . $needle . '%');
+    //     $authors = $queryAuthor->get();
+    //     foreach ($authors as $author) {
+    //       $byAuthor = $author->photos;
+    //       $photos = $photos->merge($byAuthor);
+    //     }
+    //   }
+    //
+    //   $query = Institution::where(function($query) use($needle) {
+    //     $query->where('name', 'LIKE', '%'. $needle .'%');
+    //     $query->orWhere('acronym', '=',  $needle);
+    //   });
+    //   $institutions = $query->get();
+    //
+    //   foreach ($institutions as $institution) {
+    //     $byInstitution = $institution->photos;
+    //     $photos = $photos->merge($byInstitution);
+    //   }
+    //
+    //   $photosAll = $photos->count();
+    //
+    //   // Searching users
+    //   $query = User::where(function($query) use($needle) {
+    //     $query->where('name', 'LIKE', '%'. $needle .'%')->where('active', '=', 'yes');
+    //   });
+    //   $users = $query->get();
+    //
+    //   if (Auth::check()) {
+    //     $user_id = Auth::user()->id;
+    //     $user_or_visitor = "user";
+    //   } else {
+    //     $user_or_visitor = "visitor";
+    //     session_start();
+    //     $user_id = session_id();
+    //   }
+    //
+    //   EventLogger::printEventLogs(NULL, 'search', ['search_query' => $needle, 'search_size' => str_word_count($needle)],'Web');
+    //
+    //   if(Session::has('CurrPage') && Session::get('CurrPage')!= 1) {
+    //     $pageRetrieved = Session::get('CurrPage');
+    //     $haveSession = 1;
+    //   }
+    //
+    //   if($photos->count() != 0) {
+    //     $photosPages = Photo::paginatePhotosSearch($photos);
+    //     $photosTotal = $photosPages->total();
+    //     $maxPage = $photosPages->lastPage();
+    //
+    //     $url = URL::to('/search'. '/paginate/other/photos/');
+    //
+    //     Session::put('last_search',
+    //       ['tags' => $tags, 'photos' => $photos, 'query'=>$needle, 'city'=>$txtcity,
+    //       'dateFilter'=>$dateFilter, 'authors' => $allAuthors,
+    //       'url' => $url,'photosTotal' => $photosTotal , 'maxPage' => $maxPage, 'page' => $pageRetrieved,
+    //       'photosAll' => $photosAll, 'pageVisited'=> $pageVisited, 'typeSearch'=> 'simples' ]);
+    //
+    //     if($request->has('pg') && $haveSession != 0 ) {
+    //       $pageVisited = 1;
+    //       Session::forget('CurrPage');
+    //     }
+    //   } else {
+    //     Session::forget('last_search');
+    //     Session::forget('CurrPage');
+    //     Session::forget('paginationSession');
+    //   }
+    //
+    //   return view('/search',['tags' => $tags, 'photos' => $photosPages,
+    //     'query'=>$needle, 'city'=>$txtcity,'dateFilter'=>$dateFilter,
+    //     'authors' => $allAuthors ,'needle' => $needle,'url' => $url,
+    //     'photosTotal' => $photosTotal , 'maxPage' => $maxPage, 'page' => $pageRetrieved,
+    //     'photosAll' => $photosAll,'pageVisited'=> $pageVisited, 'users' => $users ]);
+    // }else {
+    //   if(Session::has('last_search') && $request->has('pg')) {
+    //     return view('/search', Session::get('last_search'));
+    //   }else{// busca vazia
+    //     return view('/search',['tags' => [], 'photos' => [], 'query' => "", 'city'=>"",
+    //       'dateFilter'=>[], 'authors' =>[],
+    //       'url'=>null,'photosTotal'=> 1,'maxPage' => 1, 'page' => 1, 'photosAll' => 0 , 'pageVisited'=> $pageVisited ]);
+    //   }
+    // }
 
-      return $this->searchBinomial(
-        $request->get('bin'),$request->get('opt'), $request->get('val')
-      );
+    if($request->search) {
+      $search = $request->search;
+
+
+      $photos = Photo::query()
+        ->where('name', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->get();
+
+
+      $authors = Author::query()
+        ->where('name', 'LIKE', "%{$search}%")
+        ->get();
+
+      $users = User::query()
+        ->where('name', 'LIKE', "%{$search}%")
+        ->get();
+
+      $photosCount = $photos->count();
+      $usersCount = $users->count();
+      $authorsCount = $authors->count();
+
+      return view('new_front.search', compact(['photos', 'users', 'authors', 'search', 'photosCount', 'usersCount', 'authorsCount']));
     }
 
-    $pageVisited = 0;
-    $needle = trim($request->get("q"));
-    $txtcity = $request->get("city");
-    $type = $request->get("t");
-    $dateFilter = null;
-    $date = $request->get("d");
-    $authorFilter = null;
-
-    $url= null;
-    $maxPage = 0;
-    $photosTotal = 0;
-    $photosPages = null;
-    $photosAll = 0;
-    $pageRetrieved = 1;
-    $haveSession = 0;
-    $pageLinked = 0;
-
-    if ( $request->has('type') ) {
-      $authorFilter= $request->get('type');
-    }
-
-    if ($needle != "") {
-      if (!$request->has('pg') ){
-        Session::forget('CurrPage');
-      }
-      $tags = null;
-      $allAuthors =  null;
-      $query = Tag::where('name', 'LIKE', '%' . $needle . '%')->where('count', '>', 0);
-      $tags = $query->get();
-
-      $allAuthors = DB::table('authors')
-        ->join('photo_author', function($join) use ($needle)
-        { $join->on('authors.id', '=', 'photo_author.author_id')
-        ->where('name', 'LIKE', '%' . $needle . '%');
-        })->groupBy('authors.id')->get();
-
-      if ($txtcity != "") {
-        $photos = static::streetAndCitySearch($needle,$txtcity);
-      } elseif ((DateTime::createFromFormat('Y-m-d', $needle) !== FALSE || DateTime::createFromFormat('Y-m-d H:i:s', $needle) !== FALSE )&& !empty($type)) {
-        $photos = static::dateSearch($needle,$type);
-      } elseif (DateTime::createFromFormat('Y', $needle) !== FALSE) {
-        $photos = static::yearSearch($needle,$dateFilter,$date);
-      } else {
-        $idUserList = static::userPhotosSearch($needle);
-
-        $query = Photo::where(function($query) use($needle, $idUserList) {
-          $query->where('name', 'LIKE', '%'. $needle .'%');
-          $query->orWhere('description', 'LIKE', '%'. $needle .'%');
-          $query->orWhere('imageAuthor', 'LIKE', '%' . $needle . '%');
-          $query->orWhere('country', 'LIKE', '%'. $needle .'%');
-          $query->orWhere('state', 'LIKE', '%'. $needle .'%');
-          $query->orWhere('city', 'LIKE', '%'. $needle .'%');
-          if ($idUserList != null && !empty($idUserList)) {
-            $query->orWhereIn('user_id', $idUserList);}
-        });
-        $photos =  $query->orderBy('created_at', 'DESC')->get();
-      }
-
-
-      // se houver uma tag exatamente como a busca, pegar todas as fotos dessa tag e juntar no painel
-      $query = Tag::where('name', '=', $needle);
-      $tags = $query->get();
-      foreach ($tags as $tag) {
-        $byTag = $tag->photos;
-        $photos = $photos->merge($byTag);
-      }
-
-      if($authorFilter != null) {
-        $query = Author::where('name', '=', $needle);
-        $author = $query->get();
-        if($author->first()) {
-          $byAuthor = $author->first()->photos;
-          $photos = $photos->merge($byAuthor);
-        }
-      } else {
-        $queryAuthor = Author::where('name', 'LIKE', '%' . $needle . '%');
-        $authors = $queryAuthor->get();
-        foreach ($authors as $author) {
-          $byAuthor = $author->photos;
-          $photos = $photos->merge($byAuthor);
-        }
-      }
-
-      $query = Institution::where(function($query) use($needle) {
-        $query->where('name', 'LIKE', '%'. $needle .'%');
-        $query->orWhere('acronym', '=',  $needle);
-      });
-      $institutions = $query->get();
-
-      foreach ($institutions as $institution) {
-        $byInstitution = $institution->photos;
-        $photos = $photos->merge($byInstitution);
-      }
-
-      $photosAll = $photos->count();
-
-      // Searching users
-      $query = User::where(function($query) use($needle) {
-        $query->where('name', 'LIKE', '%'. $needle .'%')->where('active', '=', 'yes');
-      });
-      $users = $query->get();
-
-      if (Auth::check()) {
-        $user_id = Auth::user()->id;
-        $user_or_visitor = "user";
-      } else {
-        $user_or_visitor = "visitor";
-        session_start();
-        $user_id = session_id();
-      }
-
-      EventLogger::printEventLogs(NULL, 'search', ['search_query' => $needle, 'search_size' => str_word_count($needle)],'Web');
-
-      if(Session::has('CurrPage') && Session::get('CurrPage')!= 1) {
-        $pageRetrieved = Session::get('CurrPage');
-        $haveSession = 1;
-      }
-
-      if($photos->count() != 0) {
-        $photosPages = Photo::paginatePhotosSearch($photos);
-        $photosTotal = $photosPages->total();
-        $maxPage = $photosPages->lastPage();
-
-        $url = URL::to('/search'. '/paginate/other/photos/');
-
-        Session::put('last_search',
-          ['tags' => $tags, 'photos' => $photos, 'query'=>$needle, 'city'=>$txtcity,
-          'dateFilter'=>$dateFilter, 'authors' => $allAuthors,
-          'url' => $url,'photosTotal' => $photosTotal , 'maxPage' => $maxPage, 'page' => $pageRetrieved,
-          'photosAll' => $photosAll, 'pageVisited'=> $pageVisited, 'typeSearch'=> 'simples' ]);
-
-        if($request->has('pg') && $haveSession != 0 ) {
-          $pageVisited = 1;
-          Session::forget('CurrPage');
-        }
-      } else {
-        Session::forget('last_search');
-        Session::forget('CurrPage');
-        Session::forget('paginationSession');
-      }
-
-      return view('/search',['tags' => $tags, 'photos' => $photosPages,
-        'query'=>$needle, 'city'=>$txtcity,'dateFilter'=>$dateFilter,
-        'authors' => $allAuthors ,'needle' => $needle,'url' => $url,
-        'photosTotal' => $photosTotal , 'maxPage' => $maxPage, 'page' => $pageRetrieved,
-        'photosAll' => $photosAll,'pageVisited'=> $pageVisited, 'users' => $users ]);
-    }else {
-      if(Session::has('last_search') && $request->has('pg')) {
-        return view('/search', Session::get('last_search'));
-      }else{// busca vazia
-        return view('/search',['tags' => [], 'photos' => [], 'query' => "", 'city'=>"",
-          'dateFilter'=>[], 'authors' =>[],
-          'url'=>null,'photosTotal'=> 1,'maxPage' => 1, 'page' => 1, 'photosAll' => 0 , 'pageVisited'=> $pageVisited ]);
-      }
-    }
+      $search = null;
+      return view('new_front.search', compact(['search']));
 
   }
 

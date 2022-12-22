@@ -31,6 +31,9 @@ use Session;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Event;
+use App\Models\Collaborative\Follow;
+use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class UsersController extends Controller {
 
@@ -50,79 +53,85 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    // This page has a gamified variant, get the gamified variant
-    $variationId = Gamified::getGamifiedVariationId();
-    $isGamified = Gamified::isGamified($variationId);
+    // $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
 
-    // Getting user info
-    $user = User::whereid($id)->first();
-    $institutionFollowed = $user->followingInstitution;
-    $photos = $user->photos()->get()->reverse();
-    // Starting suggestions variables as a empty array
-    $acceptedSuggestions = [];
-    $waitingSuggestions = [];
-    $refusedSuggestions = [];
-    // Also, userPoints and userWaitingPoints start value is 0
-    $userPoints = 0;
-    $userWaitingPoints = 0;
-    // If you're logged in
-    if (Auth::check()) {
-      // Marking if you're following the user
-      if (Auth::user()->following) {
-        if (Auth::user()->following->contains($user->id)){
-          $follow = false;
-        }else {
-          $follow = true;
-        }
+      $user = User::find($id);
+      $photos = $user->photos;
+      $albums = $user->albums;
+      $evaluations = $user->evaluations;
 
-        // If the current user is the user that we wanna show the profile
-        if ($user->equal(Auth::user())) {
-          // Getting the acceptedSuggestions for user
-          $acceptedSuggestions = $user->suggestions()->where('accepted', '=', 1)->get();
-          foreach ($acceptedSuggestions as $suggestion) {
-            // Adding the suggestion numPoints to user points
-            $userPoints += $suggestion->numPoints();
-          }
-          // Getting waiting points for user
-          $waitingSuggestions = $user->suggestions()->where('accepted', '=', null)->get();
-          foreach ($waitingSuggestions as $suggestion) {
-            // Adding the suggestions numPoints to the waiting points
-            $userWaitingPoints += $suggestion->numPoints();
-          }
-          // Getting refused suggestions
-          $refusedSuggestions = $user->suggestions()->where('accepted', '=', 0)->get();
-        }
-      }
+    // $following = Follow::where('following_id', 8)->get();
+    // $followed = Follow::where('followed_id', 8)->get();
 
-    } else {
-      $follow = true;
-      $followInstitution = true;
+    $following = Follow::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+         [
+           '$match' => [
+             'following_id' => $id,
+             'followed_id' => [
+               '$exists'=> true
+             ],
+           ]
+         ],
+        ]);
+    }));
+
+    $followers = Follow::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+         [
+           '$match' => [
+             'followed_id' => $id,
+             'following_id' => [
+               '$exists'=> true
+             ],
+           ]
+         ],
+        ]);
+    }));
+
+    $followersNumber = count($followers);
+    $followingNumber = count($following);
+
+    if(Auth::user() && $user->id !== Auth::user()->id){
+      $authUser = Auth::user()->id;
+      $isFollowing = Follow::raw((function($collection) use ($id, $authUser) {
+          return $collection->aggregate([
+           [
+             '$match' => [
+               'followed_id' => $id,
+               'following_id' => $authUser
+             ]
+           ],
+          ]);
+      }));
+      $isFollowing = count($isFollowing);
+    }else{
+      $isFollowing = 0;
     }
 
-    $albums = $user->userAlbums;
+    return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations', 'followingNumber', 'followersNumber', 'isFollowing']));
 
-    EventLogger::printEventLogs(null, "select_user", ["target_userId" => $id], "Web");
+      /*$profile = ['user' => $user, 'photos' => $photos, 'albums' => $albums, 'evaluations' => $evaluations];
 
-    return view('/users/show',['user' => $user, 'photos' => $photos, 'follow' => $follow ?? '',
-      'evaluatedPhotos' => Photo::getEvaluatedPhotosByUser($user),
-      'lastDateUpdatePhoto' => Photo::getLastUpdatePhotoByUser($id),
-      'lastDateUploadPhoto' => Photo::getLastUploadPhotoByUser($id),
-      'albums' => $albums,
-      'institutionFollowed' => $institutionFollowed,
-      'userPoints' => $userPoints,
-      'acceptedSuggestions' => $acceptedSuggestions,
-      'userWaitingPoints' => $userWaitingPoints,
-      'waitingSuggestions' => $waitingSuggestions,
-      'refusedSuggestions' => $refusedSuggestions,
-      'gamified' => $isGamified,
-      'variationId' => $variationId
-      ]);
+      return $profile;
+    });
+
+    return view('new_front.users.show')->with($result);*/
+
   }
 
   // show create account form
   public function account()
   {
     if (Auth::check()) return Redirect::to('/home');
+
+    // if ( Redis::exists('account_page') ) {
+    //     return Redis::get('account_page');
+    // } else {
+    //     $cachedData = view('/modal/account')->render();
+    //     Redis::set('account_page', $cachedData);
+    //     return $cachedData;
+    // }
     return view('/modal/account');
   }
 
@@ -161,6 +170,8 @@ class UsersController extends Controller {
       'login' => $login,
       'verify_code' => $verify_code
       ]);
+
+      $user->update(['id' => $user->_id]);
 
       EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia"], "Web");
 
@@ -264,21 +275,15 @@ class UsersController extends Controller {
     if (Auth::check())
         return Redirect::to('/home');
 
-
-    // session_start();
-    // $fb_config = Config::get('facebook');
-    // FacebookSession::setDefaultApplication($fb_config["id"], $fb_config["secret"]);
-    // $helper = new FacebookRedirectLoginHelper(url('/users/login/fb/callback'));
-    // $fburl = $helper->getLoginUrl(array(
-    //       'scope' => 'email',
-    // ));
-
-    // $institutions = Institution::institutionsList();
-
-    // if (!Session::has('filter.login') && !Session::has('login.message')) //nao foi acionado pelo filtro, retornar para pagina anterior
-    //      Session::put('url.previous', URL::previous());
-
     return view('/modal/login');
+
+    // if ( Redis::exists('login_page') ) {
+    //     return Redis::get('login_page');
+    // } else {
+    //     $cachedData = view('/modal/login')->render();
+    //     Redis::set('login_page', $cachedData);
+    //     return $cachedData;
+    // }
   }
 
    // validacao do login
@@ -287,6 +292,7 @@ class UsersController extends Controller {
     $input = $request->all();
     $user = User::userInformation($input["login"]);
     if (isset($user)) {
+      $user = $user->first();
       $integration_message = $this->integrateAccounts($user->email);
     }
     if ($user != null && $user->oldAccount == 1)
@@ -535,7 +541,7 @@ class UsersController extends Controller {
     if ($user_id != $logged_user->id && !$following->contains($user_id)) {
       //Envio da Notificação
 
-      Event::dispatch('user.followed', array($logged_user->id, (int)$user_id));
+      // Event::dispatch('user.followed', array($logged_user->id, (int)$user_id));
 
       $logged_user->following()->attach($user_id);
 
@@ -593,12 +599,12 @@ class UsersController extends Controller {
 
     $logged_user = Auth::User();
     if ($logged_user == null) {
-      return Redirect::action('PagesController@home');
+      return Redirect::action('App\Http\Controllers\Photos\PagesController@home');
     }
     elseif ($logged_user->id == $user->id) {
       return view('users.edit')->with( ['user' => $user] );
     }
-    return Redirect::action('PagesController@home');
+    return Redirect::action('App\Http\Controllers\Photos\PagesController@home');
   }
 
   public function update(Request $request, $id) {
@@ -709,7 +715,6 @@ class UsersController extends Controller {
 
   public function institutionalLogin(Request $request) {
     Log::info("Login Institution");
-    dd($request);
     $login = $request->get('login');
     $institutionId = $request->get('institution');
     $password = $request->get('password');
@@ -729,7 +734,7 @@ class UsersController extends Controller {
         return Redirect::to('/home');
     } else {
       Log::info("Invalid access, return message");
-      return Response::json(false);
+      return \Response::json(false);
     }
   }
 

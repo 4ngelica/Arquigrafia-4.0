@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Evaluations;
 
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use App\Models\News\News as News;
 use App\lib\log\EventLogger;
 use Session;
@@ -15,6 +15,7 @@ use Input;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Cache;
 
 class EvaluationsController extends Controller {
 
@@ -36,30 +37,61 @@ class EvaluationsController extends Controller {
       return \Redirect::to('/home');
 	}
 
-  public function evaluate($photoId )
-  {
-      if (Session::has('institutionId') ) {
-        return \Redirect::to('/home');
-      }
-
-      if(isset($_SERVER['QUERY_STRING'])) parse_str($_SERVER['QUERY_STRING'], $query);
-      if(isset($f)) {
-        if($f == "sb") $eventContent['object_source'] = 'pelo botão abaixo da imagem';
-        elseif($f == "c") $eventContent['object_source'] = 'pelo botão abaixo do gráfico';
-        elseif($f == "g") $eventContent['object_source'] = 'pelo gráfico';
-      } else $eventContent['object_source'] = 'diretamente';
-      EventLogger::printEventLogs(null, 'access_evaluation_page', $eventContent, 'Web');
-
-      return static::getEvaluation($photoId, Auth::user()->id, true);
-    }
-
-
+  // public function evaluate($photoId )
+  // {
+  //     if (Session::has('institutionId') ) {
+  //       return \Redirect::to('/home');
+  //     }
+	//
+  //     if(isset($_SERVER['QUERY_STRING'])) parse_str($_SERVER['QUERY_STRING'], $query);
+  //     if(isset($f)) {
+  //       if($f == "sb") $eventContent['object_source'] = 'pelo botão abaixo da imagem';
+  //       elseif($f == "c") $eventContent['object_source'] = 'pelo botão abaixo do gráfico';
+  //       elseif($f == "g") $eventContent['object_source'] = 'pelo gráfico';
+  //     } else $eventContent['object_source'] = 'diretamente';
+  //     EventLogger::printEventLogs(null, 'access_evaluation_page', $eventContent, 'Web');
+	//
+  //     return static::getEvaluation($photoId, Auth::user()->id, true);
+  //   }
 
 
-   public function viewEvaluation($photoId, $userId)
-   {
-      return static::getEvaluation($photoId, $userId, false);
-   }
+
+
+   // public function viewEvaluation($photoId, $userId)
+   // {
+   //    return static::getEvaluation($photoId, $userId, false);
+   // }
+
+	 public function viewEvaluation($photoId, $userId)
+	 {
+		 // $result = Cache::remember('showEvaluation_'. $photoId, 60 * 5, function() use ($photoId, $userId) {
+			 	$photo = Photo::find($photoId);
+				$user = User::find($userId);
+				$tags = $photo->tags;
+
+				// $evaluation = ['photo' => $photo, 'user' => $user, 'tags' => $tags];
+
+				$evaluation = Evaluation::where('user_id', $userId)->where('photo_id', $photoId)->get();
+				dd($evaluation);
+
+			// 	return $evaluation;
+			// });
+
+			// dd($result);
+
+			// return view('new_front.evaluation.show')->with($result);
+			return view('new_front.evaluation.show', compact(['photo', 'user', 'tags']));
+
+	 }
+
+	 public function evaluate($photoId)
+	 {
+			$photo = Photo::find($photoId);
+			$user = Auth::user();
+			$tags = $photo->tags;
+
+			return view('new_front.evaluation.edit', compact(['photo', 'user', 'tags']));
+	 }
 
    public function showSimilarAverage($photoId) {
       $isOwner = false;
@@ -71,10 +103,11 @@ class EvaluationsController extends Controller {
    }
 
 	 private function getEvaluation($photoId, $userId, $isOwner) {
-	   $photo = Photo::find($photoId);
-     //dd($photo);
+
+		 $photo = Photo::find($photoId);
+
      $binomials = Binomial::all()->keyBy('id');
-     $average = Evaluation::average($photo->id);
+     $average = Evaluation::average($photo->_id);
      $evaluations = null;
      $averageAndEvaluations = null;
      $checkedKnowArchitecture = false;
@@ -93,15 +126,14 @@ class EvaluationsController extends Controller {
           }
         }
 
-        $averageAndEvaluations= Evaluation::averageAndUserEvaluation($photo->id,$userId);
-        $evaluations =  Evaluation::where("user_id",$user->id)
-                                  ->where("photo_id", $photo->id)
+        $averageAndEvaluations= Evaluation::averageAndUserEvaluation($photo->_id, $userId);
+        $evaluations =  Evaluation::where("user_id",$userId)
+                                  ->where("photo_id", $photo->_id)
                                   ->orderBy("binomial_id", "asc")->get();
 
         $checkedKnowArchitecture= Evaluation::userKnowsArchitecture($photoId,$userId);
         $checkedAreArchitecture= Evaluation::userAreArchitecture($photoId,$userId);
      }
-
       return view('evaluation.evaluate',
       [
         'photos' => $photo,

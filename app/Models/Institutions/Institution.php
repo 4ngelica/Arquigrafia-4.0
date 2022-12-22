@@ -3,15 +3,20 @@ namespace App\Models\Institutions;
 
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
+use App\Models\Users\Role;
 use Illuminate\Support\Collection as Collection;
 use Session;
 use App\Models\Institutions\Employee;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 
-class Institution extends \Eloquent {
+class Institution extends Model {
 
 	protected $fillable = ['name','country'];
 	protected $softDelete = true;
+
+	protected $connection = 'mongodb';
+	protected $collection = 'institutions';
 
 	public function employees()
 	{
@@ -74,7 +79,7 @@ class Institution extends \Eloquent {
 
  	public static function RoleOfInstitutionalUser($userId)
 	{
-		$roles = \Role::where('name', 'LIKE', '%Respon%')->first();
+		$roles = Role::where('name', 'LIKE', '%Respon%')->first();
         $query = Employee::where('user_id', '=', $userId)
                             ->where('institution_id', '=', Session::get('institutionId'))
                             ->where('role_id', '=',$roles->id)

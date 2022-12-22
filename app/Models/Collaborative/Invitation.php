@@ -2,7 +2,7 @@
 
 namespace App\Models\Collaborative;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Invitation extends Model
 {

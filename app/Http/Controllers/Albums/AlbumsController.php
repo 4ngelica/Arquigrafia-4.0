@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Albums\Album;
+use App\Models\Albums\AlbumElements;
 use App\Models\Photos\Photo;
 use App\Models\Users\User;
 use Auth;
 use Session;
 use Response;
+use Cache;
 
 
 class AlbumsController extends Controller {
@@ -65,22 +67,80 @@ class AlbumsController extends Controller {
 
 	public function show($id) {
 		$album = Album::find($id);
-		$institutionlogged = false;
+
 		if (is_null($album)) {
 			return redirect()->to('/home');
 		}
 
-		$photos = $album->photos;
-		if (!is_null($album->institution)){
-			$user = $album->institution;
-			$other_albums = Album::withInstitution($user)->except($album)->get();
-		} else {
-			$user = $album->user;
-			$other_albums = Album::with('user')->where('user_id', $user->id)->whereNull('institution_id')->where('id', '!=', $album->id)->get();
+		$user = $album->user;
 
-		}
-		if(Session::has('institutionId'))
-			$institutionlogged = true;
+		$photos = AlbumElements::raw((function($collection) use ($id) {
+						return $collection->aggregate([
+							[
+							 '$lookup' => [
+									'from' => 'photos',
+									'localField' => 'photo_id',
+									'foreignField'=> 'id',
+									'as' => 'photo'
+								],
+						 ],
+						 [
+							 '$match' => [
+								 'album_id' => $id,
+								 'photo.id' => [
+									 '$exists'=> true
+								 ],
+							 ]
+						 ],
+						[
+							'$project' => [
+								'photo_id' => 1,
+								'photo.id' => 1,
+								'photo.name' => 1,
+							]
+						],
+						]);
+				}));
+
+		$other_albums = Album::where($id, '!=', 'id')->where('user_id', $user->id)->get();
+
+		$elements = Album::raw((function($collection) use ($id) {
+						return $collection->aggregate([
+							[
+							 '$lookup' => [
+									'from' => 'album_elements',
+									'localField' => 'id',
+									'foreignField'=> 'album_id',
+									'as' => 'elements'
+								],
+						 ],
+						 [
+							'$lookup' => [
+								 'from' => 'photos',
+								 'localField' => 'elements.photo_id',
+								 'foreignField'=> 'id',
+								 'as' => 'photos'
+							 ],
+						],
+						// [
+						// 	'$match' => [
+						// 		'photos.id' => [
+						// 			'$exists'=> true
+						// 		],
+						// 	]
+						// ],
+						]);
+				}))->where('user_id', $user->id)->where($id, '!=', 'id');
+
+				// $other_albums_photos = array_values($other_albums_photos->toArray());
+
+				$other_albums_photos = [];
+				//
+				foreach ($elements as $key => $value) {
+					$other_albums_photos += [$value->id => $value];
+				}
+
+		// return \Response::json($other_albums );
 
 		return view('albums.show')
 			->with([
@@ -88,7 +148,8 @@ class AlbumsController extends Controller {
 				'album' => $album,
 				'user' => $user,
 				'other_albums' => $other_albums,
-				'institutionlogged'=> $institutionlogged
+				'other_albums_photos' => json_encode($other_albums_photos),
+				// 'institutionlogged'=> $institutionlogged
 			]);
 	}
 

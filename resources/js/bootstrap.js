@@ -1,4 +1,8 @@
 window._ = require('lodash');
+window.Vue = require('vue').default;
+window.Popper = require('popper.js');
+window.$ = window.jQuery = require('jquery');
+require('bootstrap');
 
 try {
     require('bootstrap');
@@ -11,8 +15,16 @@ try {
  */
 
 window.axios = require('axios');
-
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.baseURL = process.env.APP_URL;
+window.axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+
+
+// window.axios.defaults.headers.common['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
+axios.defaults.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
+axios.defaults.withCredentials = true;
+
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

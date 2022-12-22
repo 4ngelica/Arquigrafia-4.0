@@ -2,11 +2,14 @@
 
 namespace App\Models\Albums;
 
-use Illuminate\Database\Eloquent\Model;
+// use Jenssegers\Mongodb\Eloquent\Model as Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use Illuminate\Support\Facades\Log;
 
 class Album extends Model {
 
+	protected $connection = 'mongodb';
+	protected $collection = 'albums';
 	public $timestamps = false;
 
 	protected $fillable = ['creationDate', 'description', 'title', 'cover_id', 'user_id','institution_id'];
@@ -75,7 +78,7 @@ class Album extends Model {
 
 	public function detachPhotos($photos = array()) {
 		if ($photos instanceof Photo) {
-			$this->photos()->detach($photos->id);
+			$this->photos()->detach($photos->_id);
 		} else {
 			$this->photos()->detach($photos);
 		}
@@ -84,7 +87,7 @@ class Album extends Model {
 	public function attachPhotos($photos = array()) {
 		Log::info("log of attachPhotos");
 		if ($photos instanceof Photo) {
-			$this->photos()->attach($photos->id);
+			$this->photos()->attach($photos->_id);
 		} else {
 			$this->photos()->attach($photos);
 		}

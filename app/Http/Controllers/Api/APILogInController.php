@@ -3,22 +3,29 @@
 namespace App\Http\Controllers\Api;
 
 use lib\log\EventLogger;
+use Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Users\User;
 
 class APILogInController extends Controller {
 
-	public function verify_credentials() {
-		$input = \Input::all();
-		if(\Auth::validate(['login' => $input["login"], 'password' => $input["password"]])) {
-			$user = \User::where('login', '=', $input["login"])->first();
-			$user->mobile_token = \Hash::make(str_random(10));
-			$user->save();
+	public function verify_credentials(Request $request) {
+		$input = $request->all();
 
-			/* Registro de logs */
-			EventLogger::printEventLogs(null, 'login', ['origin' => 'aplicativo', 'user' => $user->id], 'mobile');
+		$credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-			return \Response::json(['login' => $input["login"], 'token' => $user->mobile_token, 'id' => $user->id, 'valid' => 'true', 'msg' => 'Login efetuado com sucesso.']);
-		}
-		return \Response::json(['login' => $input["login"], 'token' => '', 'id' => '', 'valid' => 'false', 'msg' => 'Usuário ou senha inválidos.']);
+				if(Auth::attempt($credentials)){
+					$user = User::where('email', $request['email'])->firstOrFail();
+					$token = $user->createToken('auth_token')->plainTextToken;
+
+					return \Response::json(['token' => $token], 200);
+				}
+
+				return \Response::json(['msg' => 'Usuário ou senha inválidos.'], 401);
 	}
 
 	public function verify_credentials_facebook() {

@@ -8,6 +8,9 @@ class Occupation extends Eloquent {
 
 	public $timestamps = false;
 
+	protected $connection = 'mongodb';
+	protected $collection = 'occupations';
+
 	protected $fillable = ['id', 'institution', 'occupation', 'user_id'];
 
 	public function user()

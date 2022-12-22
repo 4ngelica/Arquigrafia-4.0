@@ -4,10 +4,10 @@ namespace App\Models\Photos;
 
 use App\Models\Photos\Author;
 use App\Models\Photos\Photo;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use Illuminate\Support\Facades\DB;
 
-class Author extends Eloquent {
+class Author extends Model {
 
   public $timestamps = false;
 

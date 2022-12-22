@@ -35,7 +35,7 @@
     var searchQuery = '';
     var coverPage = 1;
     var maxCoverPage = {{ ceil($album->photos->count() / 48) }};
-    var album = {{ $album->id }};
+    var album = '{{ $album->_id }}';
     var covers_counter = 0;
     var which_photos = 'user';
     var update = null;

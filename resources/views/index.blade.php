@@ -33,7 +33,6 @@
 	        Atualizações:
 	      </h3>
 	    </hgroup>
-	    @include('includes.news')
 	  </div>
        </div>
      </div>

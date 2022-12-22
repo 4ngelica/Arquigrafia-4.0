@@ -5,7 +5,7 @@
 	<title>Arquigrafia - Seu universo de imagens de arquitetura</title>
 	<script src="{{ URL::to('/js/albums-covers.js') }}"></script>
 	<script src="{{ URL::to('/js/album-add-photos.js') }}"></script>
-	<link rel="stylesheet" type="text/css" href="{{ URL::to("/") }}/css/checkbox.css" />	
+	<link rel="stylesheet" type="text/css" href="{{ URL::to("/") }}/css/checkbox.css" />
 	<script>
 		var currentPage = 1;
 		var rmCurrentPage = 1;
@@ -17,7 +17,7 @@
 		var rmUrl = '{{ $rmUrl }}';
 		var coverPage = 1;
 		var maxCoverPage = {{ ceil($album->photos->count() / 48) }};
-		var album = {{ $album->id }};
+		var album = '{{ $album->_id }}';
 		var covers_counter = 0;
 		$(document).ready(function() {
 			$("#add-container").hide();
@@ -27,14 +27,14 @@
 
 @section('content')
 	<div class="container">
-				
+
 		<div class="twelve columns">
 			<h1>Edição do álbum {{ $album->title }}</h1>
 			<p>Edite seu álbum<br>
 			<small>* Os campos a seguir são obrigatórios.</small>
-			</p>			
+			</p>
 		</div>
-			
+
 		<div id="registration">
 			{{ Form::open(array('url' => 'albums/' . $album->id, 'method' => 'put')) }}
 				<div class="five columns row">
@@ -44,7 +44,7 @@
 							<div class="error">{{ $errors->first('title') }} </div>
 						</p>
 					</div>
-					
+
 					<div class="one column alpha"><p>{{ Form::label('description', 'Descrição') }}</p></div>
 					<div class="four columns omega">
 						<p>{{ Form::textarea('description', $album->description) }}</p>
@@ -62,7 +62,7 @@
 							<img id="cover-img" src="{{ URL::to('/img/registration_no_cover.png') }}">
 							{{ Form::hidden('_cover', '', ['id' => '_cover']) }}
 						@endif
-						
+
 					</div>
 					<div id="cover_btn_box" class="four columns">
 						@if ($album_photos->count() > 0)
@@ -72,10 +72,10 @@
 							@endif
 					</div>
 				</div>
-				<?php 
+				<?php
 					$photos = $album_photos;
 					$type = 'rm';
-				?>					
+				?>
 				@if ($photos->count() > 0)
 					<div class="twelve columns alpha row">
 						<h2>Imagens do álbum
@@ -83,8 +83,8 @@
 						</h2>
 						<p class="row"> Deseja remover alguma imagem? </p>
 						<div id="rm-container">
-							<div class="six columns alpha row">	
-								<a href="#" name="modal" id="rm_select_all" class="btn">Selecionar todas desta página</a>       
+							<div class="six columns alpha row">
+								<a href="#" name="modal" id="rm_select_all" class="btn">Selecionar todas desta página</a>
 								<a href="#" name="modal" id="rm_remove_all" class="btn">Retirar seleção desta página</a>
 							</div>
 							<div class="eleven columns row">
@@ -104,11 +104,11 @@
 					</div>
 				@endif
 
-				<?php 
-					$photos = $other_photos; 
+				<?php
+					$photos = $other_photos;
 					$type = 'add';
 				?>
-				
+
 				@if ($photos->count() > 0)
 					<div class="twelve columns alpha row">
 						<h2> Imagens disponíveis para adicionar ao álbum
@@ -116,8 +116,8 @@
 						</h2>
 						<p class="row">Deseja adicionar alguma imagem?</p>
 						<div id="add-container">
-							<div class="six columns alpha row">	
-								<a href="#" name="modal" id="select_all" class="btn">Selecionar todas desta página</a>       
+							<div class="six columns alpha row">
+								<a href="#" name="modal" id="select_all" class="btn">Selecionar todas desta página</a>
 								<a href="#" name="modal" id="remove_all" class="btn">Retirar seleção desta página</a>
 							</div>
 							<div class="eleven columns row">

@@ -2,11 +2,11 @@
 
 namespace App\Models\Moderation;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Suggestion extends Model {
 
-	protected $fillable = ['user_id', 'photo_id', 'attribute_type', 'text' , 'accepted', 'moderator_id'];
+	protected $fillable = ['id', 'user_id', 'photo_id', 'attribute_type', 'text' , 'accepted', 'moderator_id', 'type'];
 
 	public function photo_attribute_type() {
 		return $this->belongsTo('App\Models\Moderation\PhotoAttributeType', 'attribute_type');

@@ -6,3 +6,30 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+@import 'home';
+@import 'nav';
+@import 'profile';
+@import 'photo';
+@import 'footer';
+@import 'login';
+@import 'project';
+@import 'contributions';
+@import 'suggestions';
+
+
+body {
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;  min-width: 320px;
+  background: none;
+  min-height: 90vh;
+}
+
+.container {
+    width: 80%;
+    max-width: 1160px;
+    padding: 0;
+}
+
+main {
+  background: none;
+}

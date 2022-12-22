@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Collaborative\Tag;
 use App\Models\Collaborative\Report;
+use App\Http\Controllers\Controller;
 
 class APIReportController extends Controller {
 	/**

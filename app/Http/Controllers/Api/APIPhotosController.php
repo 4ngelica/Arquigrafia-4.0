@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use Photo;
-use lib\log\EventLogger;
-use lib\date\Date;
+use App\Models\Photos\Photo;
+use App\Models\Users\User;
+use App\Models\Photos\Author;
+use App\lib\log\EventLogger;
+use Date;
 use App\Models\Collaborative\Tag;
-use App\Models\Institution\Institution;
+use App\Models\Institutions\Institution;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Response;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\DB;
+use App\Models\Collaborative\Comment;
+use Auth;
+use Cache;
 
 class APIPhotosController extends Controller {
 
@@ -23,9 +33,14 @@ class APIPhotosController extends Controller {
 	 * @return Response
 	 */
 
-	public function index()
+	public function index(Request $request)
 	{
-		return \Response::json(\Photo::where('draft', null)->get()->toArray());
+		// dd(config('cache.default'));
+		$result = Cache::remember('index_photos', 60 * 5, function() {
+			return Photo::where('draft', null)->get()->toArray();
+		});
+
+		return \Response::json($result);
 	}
 
 
@@ -45,10 +60,10 @@ class APIPhotosController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 		/* Validação do input */
-		$input = \Input::all();
+		$input = $request->all();
 
 		$rules = array(
 			'photo_name' => 'required',
@@ -64,8 +79,8 @@ class APIPhotosController extends Controller {
 			return $validator->messages();
 		}
 
-		if (\Input::hasFile('photo') and \Input::file('photo')->isValid()) {
-        	$file = \Input::file('photo');
+		if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
+        	$file = $request->file('photo');
 
 			/* Armazenamento */
 			$photo = new Photo;
@@ -117,13 +132,13 @@ class APIPhotosController extends Controller {
 
 
 
-            if (\Input::has('work_authors')){
+            if ($request->has('work_authors')){
 
 	            $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
 	            $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
 	        }else $input["work_authors"] = '';
 
-			$author = new \Author();
+			$author = new Author();
             if (!empty($input["work_authors"])) {
 
                 $author->saveAuthors($input["work_authors"],$photo);
@@ -151,11 +166,11 @@ class APIPhotosController extends Controller {
 
       		$photo->save();
 
-      		$metadata       = \Image::make(\Input::file('photo'))->exif();
+      		$metadata       = Image::make($request->file('photo'))->exif();
   	        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
   	        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
-  	        $public_image   = \Image::make(\Input::file('photo'))->encode('jpg', 80);
-  	        $original_image = \Image::make(\Input::file('photo'));
+  	        $public_image   = Image::make($request->file('photo'))->encode('jpg', 80);
+  	        $original_image = Image::make($request->file('photo'));
 
   	        $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
 	        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
@@ -176,26 +191,26 @@ class APIPhotosController extends Controller {
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param  int  $id
+	 * @param  string  $id
 	 * @return Response
 	 */
 	public function show($id)
 	{
-		$photo = \Photo::find($id);
-		$sender = \User::find($photo->user_id);
-		$user_id = \Input::get("user_id");
-		$tags = $photo->tags->lists('name');
-		if (!is_null($photo->institution_id)) {
-			$sender = Institution::find($photo->institution_id);
+		$photo = Photo::find($id);
+
+		if(!$photo) {
+			return \Response::json(["error" => "Image not found" ], 404);
 		}
-		$license = \Photo::licensePhoto($photo);
-		$authorsList = $photo->authors->lists('name');
 
-		/* Registro de logs */
-		EventLogger::printEventLogs($id, 'select_photo', ['user' => $photo->user_id], 'mobile');
+		$license = Photo::licensePhoto($photo);
 
-		return \Response::json(["photo" => $photo, "sender" => $sender, "license" => $license,
-			"authors" => $authorsList, "tags" => $tags]);
+		if (!is_null($photo->institution_id)) {
+			$sender = $photo->institution;
+		} else {
+			$sender = $photo->user;
+		}
+
+		return \Response::json(["photo" => $photo,  "sender" => $sender], 200);
 	}
 
 
@@ -217,11 +232,10 @@ class APIPhotosController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		$photo = \Photo::find($id);
-
-		$input = \Input::all();
+		$photo = Photo::where('_id', $id)->first();
+		$input = $request->all();
 
 		if($photo->user_id != $input["user_id"]) {
 			return \Response::json(array(
@@ -288,11 +302,11 @@ class APIPhotosController extends Controller {
 		$photo->save();
 
 
-		if (\Input::has('work_authors')){
+		if ($request->has('work_authors')){
             $input["work_authors"] = str_replace(array('","'), '";"', $input["work_authors"]);
             $input["work_authors"] = str_replace(array( '"','[', ']'), '', $input["work_authors"]);
         }else $input["work_authors"] = '';
-        $author = new \Author();
+        $author = new Author();
 
         if (!empty($input["work_authors"])) {
             $author->updateAuthors($input["work_authors"],$photo);
@@ -325,19 +339,19 @@ class APIPhotosController extends Controller {
 	    }
 		//Photo e salva para gerar ID automatico
 
-        if (\Input::hasFile('photo') and \Input::file('photo')->isValid()) {
-        	$file = \Input::file('photo');
+        if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
+        	$file = $request->file('photo');
 
 			$ext = $file->getClientOriginalExtension();
 	  		$photo->nome_arquivo = $photo->id.".".$ext;
 
 
 
-	  		$metadata       = \Image::make(\Input::file('photo'))->exif();
-		        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-		        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
-		        $public_image   = \Image::make(\Input::file('photo'))->encode('jpg', 80);
-		        $original_image = \Image::make(\Input::file('photo'));
+	  		$metadata       = \Image::make($request->file('photo'))->exif();
+		        // $public_image   = \Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
+		        // $original_image = \Image::make($request->file('photo'))->rotate($angle);
+		        $public_image   = \Image::make($request->file('photo'))->encode('jpg', 80);
+		        $original_image = \Image::make($request->file('photo'));
 
 		    $public_image->widen(600)->save(public_path().'/arquigrafia-images/'.$photo->id.'_view.jpg');
 	        $public_image->heighten(220)->save(public_path().'/arquigrafia-images/'.$photo->id.'_200h.jpg');
@@ -362,12 +376,12 @@ class APIPhotosController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
-		$photo = \Photo::find($id);
-		$user = \User::find(\Request::input('user_id'));
+		$photo = Photo::where('_id', $id)->first();
+		$user = User::find($request->input('user_id'));
 
-		if($photo->user_id != \Request::input('user_id') || $user->mobile_token != \Request::input('token')) {
+		if($photo->user_id != $request->input('user_id') || $user->mobile_token != $request->input('token')) {
 			return \Response::json(array(
 				'code' => 403,
 				'message' => 'Usuario nao possui autorizacao para esta operacao.'));
@@ -385,4 +399,205 @@ class APIPhotosController extends Controller {
 				'code' => 200,
 				'message' => 'Operacao realizada com sucesso'));
 	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  string  $id
+	 * @return Response
+	 */
+	public function likes($id)
+	{
+		$likes = DB::collection('likes')->where('likable_id', $id)->get();
+
+		dd($likes);
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  string  $id
+	 * @return Response
+	 */
+	public function comments($id)
+	{
+		// $comments = DB::collection('comments')->raw((function($collection) {
+	   //    return $collection->aggregate([
+	   //      [
+	   //        '$lookup' => [
+	   //          'from' => 'users',
+	   //          'localField' => 'user_id',
+	   //          'foreignField'=> '_id',
+	   //          'as' => 'user'
+	   //        ]
+	   //      ]
+	   //    ]);
+		 // }));
+
+		 //official
+		//  $comments = Comment::raw((function($collection) {
+		// 		 return $collection->aggregate([
+		// 			 [
+		// 				'$lookup' => [
+		// 					 'from' => 'users',
+		// 					 'localField' => 'user_id',
+		// 					 'foreignField'=> '_id',
+		// 					 'as' => 'user'
+		// 				 ]
+		// 			 ]
+		// 		 ]);
+		// }))->where('photo_id', $id);
+
+		$comments = Comment::where('photo_id', $id)->get();
+
+		foreach($comments as &$comment){
+
+			if(!$comment->created_at && $comment->postDate){
+				$comment->dataUpload = $comment->postDate->toDateTime()->format('d/m/Y');
+			}else {
+				$comment->dataUpload = date('d/m/Y', strtotime($comment->created_at));
+
+			}
+
+			$user = User::where('_id', $comment['user_id'])->get(['name', 'photo'])->first();
+			$comment->user = $user;
+		}
+
+		//
+		//  $comments = Comment::raw((function($collection) {
+		// 		 return $collection->aggregate([
+		// 			 [
+		// 				'$lookup' => [
+		// 					 'from' => 'users',
+		// 					 'let' => ['searchId' => ['$toObjectId' => 'user_id']],
+		// 					 // 'let' => ['searchId' => ['$convert'=> ['input'=> '$user_id', 'to' => 'objectId', 'onError'=> '','onNull'=> '']]],
+		// 					 'pipeline' => [
+		// 						 [
+		// 							 '$match' => [
+		// 								 '$expr' => [
+		// 									 '_id'=> '$$searchId'
+		// 									]
+		// 								]
+		// 						 ]
+		// 					 ],
+		// 					 'as' => 'user'
+		// 				 ]
+		// 			 ]
+		// 		 ]);
+		// }));
+
+						// 	{
+            //     '$lookup': {
+            //       //searching collection name
+            //       'from': 'users',
+            //       //setting variable [searchId] where your string converted to ObjectId
+            //       'let': {"searchId": {$toObjectId: "$user_id"}},
+            //       //search query with our [searchId] value
+            //       "pipeline":[
+            //         //searching [searchId] value equals your field [_id]
+            //         {"$match": {"$expr":[ {"_id": "$$searchId"}]}}
+            //         //projecting only fields you reaaly need, otherwise you will store all - huge data loads
+            //         // {"$project":{"_id": 1}}
+						//
+            //       ],
+            //       'as': 'user'
+            //     }
+            // },
+
+		// dd($comments);
+		// dd(gettype($id), $comments->user);
+
+		// $comments = DB::collection('comments')->raw((function($collection) use ($id) {
+	  //     return $collection->aggregate([
+		// 			[
+		// 				// '$match' => ['photo_id' => ['$eq' => $id]],
+		// 				'$lookup' => [
+		// 										 'from' => 'users',
+		// 										 'localField' => 'user_id',
+		// 										 'foreignField'=> '_id',
+		// 										 'as' => 'user',
+		// 										 // '$match' => ['photo_id' => ['$eq' => $id]],
+		// 									 ]
+		// 			],
+		//
+		// 		]);
+		//  }));
+
+		// dd($comments->where('photo_id', $id));
+
+		// $tags = Photo::raw((function($collection) {
+		// 		return $collection->aggregate([
+		// 			[
+		// 			 '$lookup' => [
+		// 					'from' => 'tag_assignments',
+		// 					'localField' => 'photo_id',
+		// 					'foreignField'=> '_id',
+		// 					'as' => 'tags'
+		// 				]
+		// 			]
+		// 		]);
+	 // }))->where('_id', $id);
+
+	 // dd($tags);
+
+		return \Response::json( $comments, 200);
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function commentPhoto(Request $request, $id)
+	{
+		$input = $request->all();
+		$rules = ['text' => 'required'];
+		// dd( new MongoDB\BSON\ObjectID($input['user_id']));
+		$validator = \Validator::make($input, $rules);
+		if ($validator->fails()) {
+			 $messages = $validator->messages();
+			 return \Response::json('Error', 400);
+		} else {
+			$comment = ['text' => $input["text"], 'user_id' => $input["user_id"], 'photo_id' => $id];
+			$comment = new Comment($comment);
+			$photo = Photo::find($id);
+			if($photo) {
+				$photo->comments()->save($comment);
+			}
+			// $photo = Photo::find($id);
+			// $photo->comments()->save($comment);
+
+			// dd($comment->user->select(['name', 'photo'])->first());
+
+			$comment->dataUpload = date('d/m/Y', strtotime($comment->created_at));
+
+			// $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
+
+			// $comment = $comment->toArray();
+			$user = User::find($input["user_id"]);
+			$comment->user = ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo];
+
+			// dd($comment);
+			// $comment += ['user' => ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo]];
+
+			return \Response::json($comment, 200);
+		}
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function deleteComment($id)
+	{
+
+		$comment = Comment::find($id);
+		$comment->delete();
+
+		return \Response::json(['msg' => 'Comentário excluído'], 200);
+		}
+
 }

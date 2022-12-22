@@ -4,14 +4,19 @@ namespace App\Models\Evaluations;
 use App\Models\Evaluations\Binomial;
 use App\Models\Users\User;
 use App\Models\Photos\Photo;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
 class Evaluation extends Model {
 
-	protected $softDelete = true;
-	protected $fillable = ['photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];
+	protected $connection = 'mongodb';
+	protected $collection = 'binomial_evaluation';
+	protected $primaryKey = 'id';
 
-	protected $table = 'binomial_evaluation';
+
+	// protected $softDelete = true;
+	protected $fillable = ['id', 'photo_id','evaluationPosition','binomial_id','user_id','knownArchitecture', 'areArchitecture'];
+
+	// protected $table = 'binomial_evaluation';
 
 	public $timestamps = false;
 
@@ -44,8 +49,7 @@ class Evaluation extends Model {
 			->select('knownArchitecture')
 			->where('photo_id', $photoId)
 			->where('user_id',$userId)->first();
-
-		   if($result != null && $result->knownArchitecture == 'yes'){
+		   if($result != null && $result[0] != null && $result[0]->knownArchitecture == 'yes'){
 		   		return true;
 		   }else{
 		   		return false;
@@ -53,17 +57,17 @@ class Evaluation extends Model {
 
 	}
 
-    public static function userAreArchitecture($photoId,$userId){
-        $result = \DB::table('binomial_evaluation')
-            ->select('areArchitecture')
-            ->where('photo_id', $photoId)
-            ->where('user_id',$userId)->first();
-        if($result != null && $result->areArchitecture == 'yes'){
-            return true;
-        }else{
-            return false;
-        }
-    }
+	public static function userAreArchitecture($photoId,$userId){
+		$result = \DB::table('binomial_evaluation')
+				->select('areArchitecture')
+				->where('photo_id', $photoId)
+				->where('user_id',$userId)->first();
+		if($result != null && $result[0] != null && $result[0]->areArchitecture == 'yes'){
+				return true;
+		}else{
+				return false;
+		}
+}
 
 	public static function averageAndUserEvaluation($photoId,$userId) {
 		$avgPhotosBinomials = \DB::table('binomial_evaluation')

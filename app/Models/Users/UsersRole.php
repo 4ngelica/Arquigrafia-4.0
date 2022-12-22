@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 class UsersRole extends Eloquent {
 
+	protected $connection = 'mongodb';
+	protected $collection = 'users_roles';
+
 	protected $fillable = ['user_id','role_id'];
 
 	public static function valueUserRole($user_id){

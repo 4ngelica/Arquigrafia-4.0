@@ -2,8 +2,9 @@
 namespace App\Models\Gamification;
 use User;
 use Illuminate\Support\Collection as Collection;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 
-class Leaderboard extends \Eloquent {
+class Leaderboard extends Model {
 
   protected $fillable = ['type', 'count', 'user_id'];
 

@@ -27,6 +27,8 @@ use App\Http\Controllers\Collaborative\GroupsController;
 use App\Http\Controllers\Collaborative\LikesController;
 use App\Http\Controllers\Collaborative\ReportsController;
 use App\Http\Controllers\Collaborative\TagsController;
+use App\Http\Controllers\Gamification\QuestionsController;
+use App\Http\Controllers\Scores\ScoresController;
 use App\Http\Controllers\Drafts\DraftsController;
 
 
@@ -42,8 +44,27 @@ use App\Http\Controllers\Drafts\DraftsController;
 |
 */
 
-Route::get('/teste', [PagesController::class, 'teste']);
+//novo front
+Route::get('/images/{count}', [PagesController::class, 'images']);
+Route::get('/novaHome', [PagesController::class, 'novaHome']);
 
+// Route::prefix('/NovoSearch')->group(function () {
+//   Route::get('/', [PagesController::class, 'NovoSearch']);
+//   Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
+//   Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
+// });
+
+Route::prefix('/novoUsers')->group(function () {
+  Route::get('/{id}', [PagesController::class, 'NovoUsersShow'])->name('users.show');
+});
+
+Route::prefix('/novoPhotos')->group(function () {
+  Route::get('/{id}', [PagesController::class, 'NovoPhotosShow'])->name('photos.show');
+});
+//fim do novo front
+
+
+//front atual
 Route::get('/', [PagesController::class, 'main']);
 
 Route::get('/photos/import', [ImportsController::class, 'import']);
@@ -54,15 +75,16 @@ Route::get('/info/', function(){ return view('i'); });
 Route::get('/landing/{language?}', [PagesController::class, 'landing']);
 Route::get('/home', [PagesController::class, 'home']);
 // Route::get('/panel', [PagesController::class, 'panel']);
-Route::get('/project', function() { return view('project'); });
-Route::get('/faq', function() { return view('faq'); });
+Route::get('/faq', [PagesController::class, 'faq']);
+Route::get('/project', [PagesController::class, 'project']);
+
 Route::get('/chancela', function() { return view('chancela'); });
 Route::get('/termos', function() { return view('termos'); });
 
 /* SEARCH */
 Route::prefix('/search')->group(function () {
   Route::get('/', [PagesController::class, 'search']);
-  Route::post('/', [PagesController::class, 'search']);
+  Route::post('/', [PagesController::class, 'search'])->name('search');
   Route::get('/more', [PagesController::class, 'advancedSearch']);
 });
 
@@ -78,14 +100,15 @@ Route::prefix('/users')->group(function () {
   Route::get('/verify/',[UsersController::class, 'verifyError']);
   Route::get('/login', [UsersController::class, 'loginForm']);
   Route::post('/login', [UsersController::class, 'login']);
-  Route::post('/institutionalLogin', [UsersController::class, 'institutionalLogin']);
+  Route::post('/institutionalLogin', [UsersController::class, 'institutionalLogin'])->name('institutional.login');
   Route::get('/logout', [UsersController::class, 'logout']);
   Route::get('/forget', [UsersController::class, 'forgetForm']);
   Route::post('/forget', [UsersController::class, 'forget']);
   Route::get('/{id}', [UsersController::class, 'show']);
   Route::get('/{id}/edit', [UsersController::class, 'edit']);
-  Route::put('/{id}', [UsersController::class, 'store']);
+  // Route::put('/{id}', [UsersController::class, 'store']);
   Route::get('/', [UsersController::class, 'index']);
+  Route::post('/', [UsersController::class, 'store'])->name('register');
 });
 Route::get('/getPicture', [UsersController::class, 'getFacebookPicture']);
 
@@ -123,7 +146,8 @@ Route::get('/photos/download/{photo_id}',[PhotosController::class, 'download']);
 Route::get('/photos/completeness', [PhotosController::class, 'showCompleteness']);
 Route::get('/photos/to_complete', [PhotosController::class, 'getCompletenessPhotos']);
 
-Route::resource('/photos',PhotosController::class);
+Route::get('/photos/{id}', [PhotosController::class, 'show']);
+Route::post('/photos', [PhotosController::class, 'store']);
 
 /* SEARCH PAGE */
 Route::get('/search/paginate/other/photos', [PagesController::class, 'paginatePhotosResult']);
@@ -151,8 +175,12 @@ Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
 Route::post('/suggestions', [SuggestionsController::class, 'store']);
 Route::post('/suggestions/sent', [SuggestionsController::class, 'sendNotification']);
 Route::get('/suggestions', [SuggestionsController::class, 'edit']);
-Route::post('/suggestions', [SuggestionsController::class, 'update']);
+// Route::post('/suggestions', [SuggestionsController::class, 'update']);
+// Route::post('users/suggestions', [SuggestionsController::class, 'update']);
+
+// Route::get('/contributions', [ContributionsController::class, 'showContributions']);
 Route::get('/contributions', [ContributionsController::class, 'showContributions']);
+
 // Route::resource('/users/contributions', ContributionsController::class);
 
 
@@ -189,7 +217,7 @@ Route::get('/comments/{comment_id}/dislike', [CommentsController::class,'comment
 /* LIKE E DISLIKE */
 Route::get('/like/{id}', [LikesController::class,'photoLike']);
 Route::get('/dislike/{id}', [LikesController::class,'photoDislike']);
-Route::resource('/likes', LikesController::class);
+// Route::resource('/likes', LikesController::class);
 
 /* GRUPOS */
 Route::resource('/groups',GroupsController::class);
@@ -202,11 +230,11 @@ Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModal
 //Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');
 
 /* GAMIFICATION */
-Route::get('/photos/{id}/get/field', [QuestionsController::class,'getField']);
-Route::post('/photos/{id}/set/field', [QuestionsController::class,'setField']);
-Route::get('/rank/get', [ScoresController::class,'getRankEval']);
-Route::get('/leaderboard', [ScoresController::class,'getLeaderboard']);
-Route::get('/badges/{id}', [BadgesController::class,'show']);
+// Route::get('/photos/{id}/get/field', [QuestionsController::class,'getField']);
+// Route::post('/photos/{id}/set/field', [QuestionsController::class,'setField']);
+// Route::get('/rank/get', [ScoresController::class,'getRankEval']);
+// Route::get('/leaderboard', [ScoresController::class,'getLeaderboard']);
+// Route::get('/badges/{id}', [BadgesController::class,'show']);
 
 /* LOG */
 // Route::post('/logs', 'modules\logs\controllers\LogsController@create');

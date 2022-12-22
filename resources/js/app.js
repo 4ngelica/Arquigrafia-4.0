@@ -7,7 +7,6 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
-
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,15 +18,37 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('contributions-content', require('./components/contributions/ContributionsFilters.vue').default);
+Vue.component('home-component', require('./components/Home-Component.vue').default);
+Vue.component('search-component', require('./components/Search-Component.vue').default);
+Vue.component('profile-component', require('./components/Profile-Component.vue').default);
+Vue.component('photo-component', require('./components/Photo-Component.vue').default);
+Vue.component('evaluation-component', require('./components/Evaluation-Component.vue').default);
+Vue.component('evaluate-component', require('./components/Evaluate-Component.vue').default);
+Vue.component('user-edit-component', require('./components/User-Edit-Component.vue').default);
+Vue.component('login-component', require('./components/Login-Component.vue').default);
+Vue.component('album-component', require('./components/Album-Component.vue').default);
+Vue.component('user-albums-component', require('./components/User-Albums-Component.vue').default);
+Vue.component('footer-component', require('./components/Footer-Component.vue').default);
+Vue.component('contributions-component', require('./components/Contributions-Component.vue').default);
+Vue.component('suggestions-component', require('./components/Suggestions-Component.vue').default);
 
-contributions-content
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+ // import VueGoogleMap from 'vuejs-google-maps'
+ // import 'vuejs-google-maps/dist/vuejs-google-maps.css'
+ //
+ // Vue.use(VueGoogleMap, {
+ //     load: {
+ //         apiKey: 'AIzaSyBuBk5ghbTdpdm_nBWg6xHEzdRXdryK6rU',
+ //         libraries: ['places']
+ //     },
+ //     installComponents: true
+ // })
 
 const app = new Vue({
     el: '#app',

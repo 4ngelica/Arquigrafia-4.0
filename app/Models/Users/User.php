@@ -9,20 +9,27 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 use App\lib\date\Date;
 use App\lib\log\EventLogger;
 use Cmgmyr\Messenger\Traits\Messagable;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use App\Traits\Gamification\UserGamificationTrait;
 use App\Models\Institutions\Institution;
 use App\Models\Collaborative\Comment;
 use App\Models\Collaborative\Like;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-
-
-
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class User extends Authenticatable {
+
+	protected $connection = 'mongodb';
+	protected $collection = 'users';
+
+	protected $casts  = [
+		'id' => 'string'
+	];
 
 	// use UserTrait, RemindableTrait;
 
@@ -33,6 +40,8 @@ class User extends Authenticatable {
 	protected $fillable = ['id','name','email','password','login','verify_code'];
 
 	protected $date;
+
+	use HasApiTokens, HasFactory, Notifiable;
 
 	// public function __construct($attributes = array(), Date $date = null) {
 	// 	parent::__construct($attributes);
@@ -96,13 +105,13 @@ class User extends Authenticatable {
 	//seguidores
 	public function followers()
 	{
-		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'followed_id', 'following_id');
+		return $this->belongsToMany('App\Models\Users\User', null, 'followed_id', 'following_id');
 	}
 
 	//seguindo
 	public function following()
 	{
-		return $this->belongsToMany('App\Models\Users\User', 'friendship', 'following_id', 'followed_id');
+		return $this->belongsToMany('App\Models\Users\User', null, 'following_id', 'followed_id');
 	}
 
 	public function institutions(){
@@ -178,9 +187,8 @@ class User extends Authenticatable {
 	}
 
 	public static function userInformation($login){
-
-		$user = User::whereRaw('((login = ?) or (email = ?)) and (id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)', array($login, $login))->first();
-          return $user;
+		$user = User::where('email', $login)->orWhere('username', $login)->take(1)->get();
+    return $user;
 	}
 
 
@@ -216,9 +224,9 @@ class User extends Authenticatable {
 
 	}
 
-	public function setBirthdayAttribute($birthday) {
-		$this->attributes['birthday'] = $this->date->formatDate($birthday);
-	}
+	// public function setBirthdayAttribute($birthday) {
+	// 	$this->attributes['birthday'] = $this->date->formatDate($birthday);
+	// }
 
 	public function updateAccount($password) {
 		$this->oldAccount = 0;

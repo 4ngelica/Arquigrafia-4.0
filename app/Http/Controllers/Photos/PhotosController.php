@@ -14,11 +14,13 @@ use App\Models\Users\User;
 use App\Models\Gamification\Badge;
 use App\Models\Institutions\Institution;
 use App\Models\Collaborative\Tag;
+use App\Models\Collaborative\TagAssignments;
 use App\Models\Collaborative\Comment;
 use App\Models\Collaborative\Like;
 use App\Models\Evaluations\Evaluation;
 use App\Models\Evaluations\Binomial;
 use App\Models\Gamification\Gamified;
+use App\Models\Moderation\PhotoAttributeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -27,6 +29,8 @@ use Illuminate\Support\Facades\Log;
 use Session;
 use App\lib\date\Date;
 use File;
+use Illuminate\Support\Facades\Http;
+use Cache;
 
 class PhotosController extends Controller {
   protected $date;
@@ -47,225 +51,86 @@ class PhotosController extends Controller {
 
   public function show($id)
   {
-    // This page has a gamified variant, get the gamified variant
-    $variationId = Gamified::getGamifiedVariationId();
-    $isGamified = Gamified::isGamified($variationId);
-
-    // Getting photo by id
-    $photos = Photo::find($id);
-    // If didn't find the photo, go to home
-    if ( !isset($photos) ) {
-      return Redirect::to('/home');
-    }
-    $user = null;
-    $user = Auth::user();
-    $photo_owner = $photos->user;
-    $photo_institution = $photos->institution;
-
-    $tags = $photos->tags;
-    $binomials = Binomial::all()->keyBy('id');
-    $average = Evaluation::average($photos->id);
-    $evaluations = null;
-    $photoliked = null;
-    $follow = true;
-    $followInstitution = true;
-    $belongInstitution = false;
-    $hasInstitution = false;
-    $institution = null;
-    $currentPage = null;
-    $urlBack = URL::previous();
-
-    if (Auth::check()) {
-      if(Session::has('institutionId')){
-        $belongInstitution = Institution::belongInstitution($photos->id,Session::get('institutionId'));
-
-        $hasInstitution = Institution::belongSomeInstitution($photos->id);
-        $institution = Institution::find(Session::get('institutionId'));
-      } else{
-        $hasInstitution = Institution::belongSomeInstitution($photos->id);
-
-        if($user->followingInstitution){
-          if(!is_null($photo_institution) && $user->followingInstitution->contains($photo_institution->id)){
-
-             $followInstitution = false;
-          }}
-        }
-      $evaluations =  Evaluation::where("user_id", $user->id)->where("photo_id", $id)->orderBy("binomial_id", "asc")->get();
-
-      if($user->following){
-        if ($user->following->contains($photo_owner->id)) {
-          $follow = false;
-        }
-      }
-    }
-
     EventLogger::printEventLogs($id, "select_photo", NULL, "Web");
 
-    $license = Photo::licensePhoto($photos);
-    $authorsList = $photos->authors->pluck('name');
+    $photo = Photo::find($id);
+    if (!$photo) {
+      return redirect('/home');
+    }
 
-    $querySearch = "";
-    $typeSearch = "";
+    $tags = TagAssignments::raw((function($collection) use ($id) {
+        return $collection->aggregate([
+          [
+           '$lookup' => [
+              'from' => 'tags',
+              'localField' => 'tag_id',
+              'foreignField'=> 'id',
+              'as' => 'tag'
+            ]
+         ],
+         // [
+         //   '$match' => [
+         //     'tag_id' => $photo->id,
+         //     'tag.id' => [
+         //       '$exists'=> true
+         //     ],
+         //   ]
+         // ],
+          [
+            '$project' => [
+              'tag.name' => 1,
+            ]
+         ]
+       ]);
+    }))->where('photo_id', $id);
 
-    if(strpos(URL::previous(),'search') != false){
+    // TagAssignments
+    // dd($tags);
+    // dd(Tag::all());
 
-      if (strpos(URL::previous(),'more') !== false) {
-        if(Session::has('last_advanced_search')){
-          $lastSearch = Session::get('last_advanced_search');
-          $typeSearch = $lastSearch['typeSearch'];
-          $currentPage = $lastSearch['page'];
-        }
-      } else {
-        if(Session::has('last_search')){
-          $lastSearch = Session::get('last_search');
-          $querySearch = $lastSearch['query'];
-          $typeSearch = $lastSearch['typeSearch'];
-          $currentPage = $lastSearch['page'];
-          $urlBack = "search/";
-        }
+    // dd(DB::collection('tag_assignments')->get());
+
+    $user = $photo->user()->first();
+    $comments = $photo->comments()->get();
+    $tags = $photo->tags;
+    $likes = $photo->likes->count();
+    $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
+    $license = json_encode(Photo::licensePhoto($photo));
+    $latLng = self::getLatLng($photo);
+    $incompleteFields = [];
+    foreach ($photo->toArray() as $key => $value) {
+      if (!$value) {
+        array_push($incompleteFields, $key);
       }
     }
-    //Generating suggestion/validation data
-    $missing = array();
-    $present = array();
-    //Completeness Data
-    $completeness = ['present' => 0, 'reviewing' => 0, 'missing' => 0];
-    //Checking which fields are present or missing
-    if($photos->street == null)
-      $missing[] = 'street';
-    else
-      $present[] = 'street';
-    if($photos->city == null)
-      $missing[] = 'city';
-    else
-      $present[] = 'city';
-    if($photos->country == null)
-      $missing[] = 'country';
-    else
-      $present[] = 'country';
-    if($photos->description == null)
-      $missing[] = 'description';
-    else
-      $present[] = 'description';
-    if($photos->district == null)
-      $missing[] = 'district';
-    else
-      $present[] = 'district';
-    if($photos->imageAuthor == null)
-      $missing[] = 'imageAuthor';
-    else
-      $present[] = 'imageAuthor';
-    if($photos->state == null)
-      $missing[] = 'state';
-    else
-      $present[] = 'state';
-    if($photos->name == null)
-      $missing[] = 'name';
-    else
-      $present[] = 'name';
-    // if($photos->workDate == null)
-    //   $missing[] = 'workDate';
-    // else
-    //   $present[] = 'workDate';
-    if($photos->authors == null || sizeof($photos->authors) == 0)
-      $missing[] = 'authors';
-    else
-      $present[] = 'authors';
 
-    $final = array();
-    // Shuffling arrays
-    shuffle($missing);
-    shuffle($present);
+    $suggestionFields = json_encode(Photo::getIncompleteFields($photo));
 
-    // Setting first field to be either missing or present to alternate between both results
-    $next = '';
-    if(count($missing) > count($present))
-      $next = 'missing';
-    else
-      $next = 'present';
+    if (Auth::user()) {
+      $authLike = DB::collection('likes')->where('likable_id', $id)->where('user_id', Auth::user()->_id)->first();
 
-    $isReviewing = false;
-    // Loop for the 9 possible reords
-    for($i = 0; $i < 9; $i++){
-      // Fills array if field is missing
-      if($next == 'missing') {
-        $final[] = [
-          'type'           => 'suggestion',
-          'field_name'     => Photo::$fields_data[$missing[0]]['name'],
-          'question'       => Photo::$fields_data[$missing[0]]['information'],
-          'attribute_type' => $missing[0],
-          'field_type'     => Photo::$fields_data[$missing[0]]['type'],
-          'status'         => $photos->checkValidationFields($missing[0])
-        ];
-        array_splice($missing, 0, 1);
-      } else {
-        // Fills array if field is present
-        $final[] = [
-          'type'           => 'confirm',
-          'field_name'     => Photo::$fields_data[$present[0]]['name'],
-          'field_content'  => $photos->getFieldContent($present[0]),
-          'question'       => Photo::$fields_data[$present[0]]['validation'],
-          'attribute_type' => $present[0],
-          'field_type'     => Photo::$fields_data[$present[0]]['type'],
-          'status'         => $photos->checkValidationFields($present[0])
-        ];
-        array_splice($present, 0, 1);
+      if($authLike) {
+        $authLike = 1;
       }
 
-      if($final[count($final) - 1]['status'] == 'reviewing') {
-        $isReviewing = true;
-        $completeness['reviewing']++;
-      } elseif ($next == 'present') {
-        $completeness['present']++;
-      } else {
-        $completeness['missing']++;
-      }
-
-      if(count($missing) == 0) // If missing fields are done, stop alternation
-        $next = 'present';
-      elseif(count($present) == 0) // If present fields are done, stop alternation
-        $next = 'missing';
-      elseif($next == 'missing') // Alternate based on last record
-        $next = 'present';
-      elseif($next == 'present') // Alternate based on last record
-        $next = 'missing';
+    }else {
+      $authLike = 0;
     }
-    //Percentages calculation
-    $total = count($final);
 
-    // Getting the completeness percent
-    // This percent will be given in 10% scale (0-10-20...)
-    $completeness['missing'] = round(10 * ($completeness['missing'] / $total)) * 10;
-    $completeness['present'] = round(10 * ($completeness['present'] / $total)) * 10;
-    $completeness['reviewing'] = round(10 * ($completeness['reviewing'] / $total)) * 10;
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields']));
+  }
 
-    return view('/photos/show',
-      ['photos' => $photos, 'owner' => $photo_owner, 'follow' => $follow, 'tags' => $tags,
-      'commentsCount' => $photos->comments->count(),
-      'commentsMessage' => Comment::createCommentsMessage($photos->comments->count()),
-      'average' => $average, 'userEvaluations' => $evaluations, 'binomials' => $binomials,
-      'architectureName' => Photo::composeArchitectureName($photos->name),
-      'similarPhotos'=>Photo::photosWithSimilarEvaluation($average,$photos->id),
-      'license' => $license,
-      'belongInstitution' => $belongInstitution,
-      'hasInstitution' => $hasInstitution,
-      'ownerInstitution' => $photo_institution,
-      'institution' => $institution,
-      'authorsList' => $authorsList,
-      'followInstitution' => $followInstitution,
-      'user' => $user,
-      'querySearch' => $querySearch,
-      'currentPage' => $currentPage,
-      'typeSearch' => $typeSearch,
-      'urlBack' => $urlBack,
-      'institutionId' => $photos->institution_id,
-      'type'=> $photos->type,
-      'missing' => $final,
-      'isReviewing' => $isReviewing,
-      'completeness' => $completeness,
-      'gamified' => $isGamified,
-      'variationId' => $variationId
-    ]);
+  public static function getLatLng($photo){
+
+    $address = [$photo->country, $photo->state, $photo->street, $photo->city, $photo->district];
+    $address = (implode('+', $address));
+    $address = (str_replace(' ', '', $address));
+
+    $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='. config('general.google_maps_key'));
+    $body = json_decode($response->body());
+    $latLng = [$body->results[0]->geometry->location->lat, $body->results[0]->geometry->location->lng];
+
+    return json_encode($latLng);
   }
 
   // upload form

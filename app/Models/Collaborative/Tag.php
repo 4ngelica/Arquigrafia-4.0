@@ -4,7 +4,7 @@ namespace App\Models\Collaborative;
 use App\Models\Institutions\Institution;
 use App\Models\Photos\Photo;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Model;
 use Session;
 
 class Tag extends Model {
@@ -12,6 +12,8 @@ class Tag extends Model {
   public $timestamps = false;
 
   protected $fillable = ['name'];
+  protected $connection = 'mongodb';
+  protected $collection = 'tags';
 
   public function photos() {
     return $this->belongsToMany('App\Models\Photos\Photo', 'tag_assignments', 'tag_id', 'photo_id');

@@ -42,7 +42,10 @@ class CommentsController extends Controller {
     	} else {
       	$comment = ['text' => $input["text"], 'user_id' => Auth::user()->id];
       	$comment = new Comment($comment);
-      	$photo = Photo::find($id);
+      	$photo = Photo::where('_id', $id)->first();
+				if(!$photo) {
+					$photo = Photo::where('_id', (int)$id)->first();
+				}
       	$photo->comments()->save($comment);
 
         $user = Auth::user();

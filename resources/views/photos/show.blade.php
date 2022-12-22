@@ -25,14 +25,8 @@
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <script type="text/javascript">
   // Missing fields and questions (to show on Modal)
-  var photo = <?= json_encode($photos) ?>;
-  var user = <?= json_encode($user) ?>;
-  var missingFields = <?= json_encode($missing) ?>;
-  var isReviewing = <?= json_encode($isReviewing) ?>;
-  var completeness = <?= json_encode($completeness) ?>;
 
   // Getting if it's gamed
-  var gamed = {{ json_encode($gamified) }};
 
   $(document).ready(function(){
     //MAP AND GEOREFERENCING CREATION AND SETTING
@@ -78,9 +72,7 @@
     initialize();
   });
   </script>
-  <link rel="stylesheet" type="text/css" media="screen" href="{{ URL::to("/") }}/css/jquery.fancybox.css" />
-  <script type="text/javascript" src="{{ URL::to("/") }}/js/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="{{ URL::to("/") }}/js/photo.js"></script>
+
 @stop
 
 @section('content')
@@ -149,32 +141,9 @@
 
       <!--   BOX DE BOTOES DA IMAGEM   -->
       <div id="single_view_buttons_box" class="mb-3">
-        @if ($typeSearch == '')
           <div class="two columns">
             <a href="{{ URL::previous()}}" class='btn left'>VOLTAR</a>
           </div>
-        @elseif($typeSearch == 'advance')
-
-           <div class="two columns">
-            <a href="{{ URL::previous()}}&pg=1" class='btn left'>VOLTAR</a>
-            </div>
-        @elseif($typeSearch == 'simples')
-        <div class="first columns">
-        {{ Form::open(array('url' => $urlBack ,'id'=> 'frmDetailPhoto' ,'method' => 'post')) }}
-
-          {{ Form::hidden('q', $querySearch) }}
-          {{ Form::hidden('pg', "1") }}
-          {{ Form::hidden('typeSearch', $typeSearch) }}
-          {{ Form::hidden('visitedPage', "$currentPage") }}
-          {{ Form::hidden('urlPrev', $urlBack, array('id'  => 'urlPrev') ) }}
-
-          {{Form::submit('VOLTAR', ['class' => 'btn return-show', 'id' =>'btnBack', 'onclick' => 'return updateForm();' ])}}
-
-
-
-        {{ Form::close() }}
-        </div>
-        @endif
 
         @if (Auth::check())
           <ul id="single_view_image_buttons">
@@ -324,7 +293,7 @@
               </div>
               <div class="eleven columns omega row">
                 <small id={{"$comment->id"}}>
-                  <a href={{"/users/" . $comment->user->id}}>{{ $comment->user->name }}</a> - {{ $comment->created_at->format('d/m/Y h:i') }}
+                  <a href={{"/users/" . $comment->user->id}}>{{ $comment->user->name }}</a> - {{ $comment->created_at }}
                   <!--<img src="{{ URL::to("/") }}/img/commentNB.png" / ><small class='likes'>{{ $comment->likes->count() }}</small>-->
                 </small>
                 <p>{{ $comment->text }}</p>
@@ -343,44 +312,6 @@
       </div>
       <!-- FIM DO BOX DE COMENTARIOS -->
       <!-- msy Avaliação similar-->
-      @if (count($similarPhotos) > 0)
-        <div id="comments_block" class="eight columns row alpha omega">
-          <hgroup class="profile_block_title">
-            <h3>
-              <img src="{{ asset("img/evaluate.png") }}" width="16" height="16"/>
-              Imagens interpretadas com média similar
-            </h3>
-            <span>({{count($similarPhotos) }})
-              @if(count($similarPhotos)>1)
-                 Imagens
-              @else
-                 Imagem
-              @endif
-            </span>
-          </hgroup>
-
-           @foreach($similarPhotos as $k => $similarPhoto)
-             @if($photos->id != $similarPhoto->id)
-               @if(!Session::has('institutionId'))
-              <a  class="hovertext" href='{{"/evaluations/" . $similarPhoto->id . "/showSimilarAverage" }}'
-                class="gallery_photo" title="{{ $similarPhoto->name }}">
-                <img src="{{ URL::to("/arquigrafia-images/" . $similarPhoto->id . "_home.jpg") }}" class="gallery_photo" />
-              </a>
-              @else
-                <a  class="hovertext" href='{{"/photos/" . $similarPhoto->id  }}'
-                class="gallery_photo" title="{{ $similarPhoto->name }}">
-                <img src="{{ URL::to("/arquigrafia-images/" . $similarPhoto->id . "_home.jpg") }}" class="gallery_photo" />
-                </a>
-              @endif
-              <!--
-              <a href='{{"/photos/" . $similarPhoto->id . "/evaluate" }}' class="name">
-                <div class="innerbox">{{ $similarPhoto->name }}</div>
-              </a>-->
-             @endif
-           @endforeach
-
-        </div>
-      @endif
       <!-- -->
     </div>
     <!--   FIM - COLUNA ESQUERDA   -->
@@ -563,59 +494,39 @@
       </div>
 
       <div id="progress-bar" class="progress-bar button hidden">
-        @if ($completeness['present'] != 0)
-          <div id="completed" class="fill-bar fill-{{ $completeness['present'] }}">
-            <span>{{ $completeness['present'] }}%</span>
+          <div id="completed" class="fill-bar fill">
+            <span>%</span>
             <div class="bar-info">
               <strong>Dados completos:</strong><br />
-              Esta foto tem {{ $completeness['present'] }}% dos dados preenchidos pelo autor ou aceitos após revisão da comunidade.<br />
-              @if (!$isReviewing && $completeness['present'] != 100)
+              Esta foto tem % dos dados preenchidos pelo autor ou aceitos após revisão da comunidade.<br />
                 <a href="#" class="OpenModal" data-origin="progress-bar">Colabore com mais informações aqui</a>
-              @endif
             </div>
           </div>
-        @endif
-        @if ($completeness['reviewing'] != 0)
-          <div id="revision" class="fill-bar fill-{{ $completeness['reviewing'] }}">
-            <span>{{ $completeness['reviewing'] }}%</span>
+          <div id="revision" class="fill-bar fill">
+            <span>%</span>
             <div class="bar-info">
               <strong>Dados em revisão:</strong><br>
-              Esta foto tem {{ $completeness['reviewing'] }}% dos dados em revisão que serão validados antes de serem disponibilizados.<br />
+              Esta foto tem % dos dados em revisão que serão validados antes de serem disponibilizados.<br />
             </div>
           </div>
-        @endif
-        @if ($completeness['missing'] != 0)
-          <div id="missing" class="fill-bar black fill-{{ $completeness['missing'] }}">
-            <span>{{ $completeness['missing'] }}%</span>
+          <div id="missing" class="fill-bar black fill">
+            <span>%</span>
             <div class="bar-info">
               <strong>Dados a preencher:</strong><br>
-              Esta foto tem {{ $completeness['missing'] }}% dos dados ainda não preenchidos.<br />
-              @if (!$isReviewing)
+              Esta foto tem % dos dados ainda não preenchidos.<br />
                 <a href="#" class="OpenModal" data-origin="progress-bar">Colabore com mais informações aqui</a>
-              @endif
             </div>
           </div>
-        @endif
       </div>
 
 
       <!-- Suggestions Modal Button -->
     @if ($photos->institution == null && $photos->type != "video")
-        @if (!$isReviewing && $completeness['present'] != 100)
           <div class="modal-wrapper">
             <div class="title2">Você conhece mais informações sobre esta arquitetura?</div>
 
         		<div class="title1">
               Por exemplo:
-              @if (isset($missing))
-                @foreach($missing as $missingField)
-                  @if($missingField == end($missing))
-                    {{$missingField['field_name']}}?
-                  @else
-                    {{$missingField['field_name']}},
-                  @endif
-                @endforeach
-              @endif
             </div>
 
         		<div class="modal-button OpenModal">
@@ -627,12 +538,11 @@
                 <a href="#" data-origin="button">Ajude a completar dados!</a>
               @endif
         		</div>
+            <br>
         	</div>
-        @elseif($isReviewing)
           <div class="modal-wrapper">
             <div class="title1">A revisão desta imagem está temporariamente bloqueada até que a análise de sugestões feitas por membros do Arquigrafia seja concluída.</div>
           </div>
-        @elseif($completeness['present'] == 100)
           <div class="modal-wrapper">
             <div class="title2">Essas informações foram definidas por membros do Arquigrafia.</div>
             <div class="title1">
@@ -642,8 +552,6 @@
               </p>
             </div>
           </div>
-        @endif
-
         </br>
       @endif
 

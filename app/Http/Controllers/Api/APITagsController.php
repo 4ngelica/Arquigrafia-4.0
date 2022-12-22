@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Collaborative\Tag;
+use App\Http\Controllers\Controller;
+use Cache;
+use Illuminate\Support\Facades\Redis;
+
 
 class APITagsController extends Controller {
 	/**
@@ -12,7 +16,11 @@ class APITagsController extends Controller {
 	 */
 	public function index()
 	{
-		return \Response::json(Tag::where('type', 'Acervo')->get()->toArray());
+		$result = Cache::remember("index_tags", 60 * 5, function() {
+			return Tag::all()->toArray();
+		});
+
+		return \Response::json($result);
 	}
 
 
