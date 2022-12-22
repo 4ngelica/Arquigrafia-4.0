@@ -11,10 +11,11 @@
     </p>
 
     <p>Nascido em 2008 na Universidade de São Paulo, na Faculdade de Arquitetura e Urbanismo (FAUUSP) como um projeto multidisciplinar em parceria com pesquisadores do Instituto de Matemática e Estatística (IMEUSP), da Escola de Comunicação e Artes (ECAUSP) e da Faculdade de Direito do Largo S.Francisco (FDUSP), o Arquigrafia tem como objetivo principal contribuir de maneira complementar para o ensino e difusão da cultura arquitetônica e urbanística por meio de interações e juízos críticos sobre imagens digitais.</p>
+
     <div class="project-photos d-flex flex-wrap mb-4 justify-content-between">
-      <img class="col-12 col-md-4 mb-2 mb-md-0 pe-md-1"  src="img/project_photos/equipe1.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
-      <img class="col-12 col-md-4 mb-2 mb-md-0 pe-md-1"  src="img/project_photos/equipe2.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
-      <img class="col-12 col-md-4 mb-2 mb-md-0 "  src="img/project_photos/equipe3.jpg" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
+      <img class="col-12 col-md-4 mb-2 mb-md-0 pe-md-1"  src="img_scenario4/equipe1.webp" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
+      <img class="col-12 col-md-4 mb-2 mb-md-0 pe-md-1"  src="img_scenario4/equipe2.webp" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
+      <img class="col-12 col-md-4 mb-2 mb-md-0 "  src="img_scenario4/equipe3.webp" alt="Texto alternativo da foto" title="Reuniões e workshops internos dos membros do projeto Arquigrafia" />
     </div>
 
     <p>Desde então, com o apoio da RNP, FAPESP, do CNPq, das Pró-reitorias de Pesquisa e de Cultura e Extensão da USP e da Diretoria da FAUUSP o projeto se constitui em um laboratório de pesquisa para todas essas áreas de conhecimento, produzindo conhecimento, desenvolvendo tecnologia e fomentando pesquisas em nível de graduação e pós-graduação e formando jovens pesquisadores.</p>

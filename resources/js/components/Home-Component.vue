@@ -4,7 +4,7 @@
         <div class="image-grid">
           <div class="image-item" v-for="photo in photos">
             <a :href="'photos/' + photo._id">
-              <img :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="">
+              <img :src="'/arquigrafia-images-scenario4/' + photo._id + '_view.webp'" alt="">
               <div class="overlay">
                 <p class="image-title">{{photo.name}}</p>
               </div>

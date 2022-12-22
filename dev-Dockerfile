@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
         libgd-dev \
         openssl \
         libssl-dev \
+        libwebp-dev \
   && docker-php-ext-install zip
 
 RUN pecl install redis && docker-php-ext-enable redis
@@ -22,7 +23,7 @@ RUN pecl install imagick && docker-php-ext-enable imagick
 
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype && docker-php-ext-install gd
+RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype && docker-php-ext-install gd
 
 RUN docker-php-ext-configure exif --enable-exif && docker-php-ext-install exif
 

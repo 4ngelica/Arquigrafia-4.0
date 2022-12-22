@@ -13,6 +13,7 @@ use App\Models\Users\User;
 use Auth;
 use Session;
 use Response;
+use Cache;
 
 
 class AlbumsController extends Controller {

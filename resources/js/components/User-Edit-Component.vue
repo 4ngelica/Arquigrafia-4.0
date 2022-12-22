@@ -2,7 +2,7 @@
     <div class="container edit-profile">
       <h1>Edição de perfil do usuário</h1>
       <img v-if="user.photo" :src="user.photo" alt="" width="80" height="80">
-      <img v-else src="/img/avatar-48.png" alt="" width="80" height="80">
+      <img v-else src="/img_scenario4/avatar-48.webp" alt="" width="80" height="80">
 
       <form @submit.prevent="submit" class="my-3">
 

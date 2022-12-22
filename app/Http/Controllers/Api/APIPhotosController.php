@@ -16,6 +16,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\DB;
 use App\Models\Collaborative\Comment;
 use Auth;
+use Cache;
 
 class APIPhotosController extends Controller {
 
@@ -34,24 +35,12 @@ class APIPhotosController extends Controller {
 
 	public function index(Request $request)
 	{
-		return \Response::json(Photo::where('draft', null)->get()->toArray());
-		// if ($request->fields) {
-		// $fields =	explode(',', $request->fields);
-		//	$query = Photo::get($fields);
-		// }
-		//
-		// if ($request->random) {
-		// 	$query = $query->random(intval($request->random));
-		// }
-		//
-		// $query = $query->where('draft', null);
-		//
-		//
-		// if ($request->orderBy) {
-		// 	$query = $query->paginate(intval($request->paginate));
-		// }
-		// return Response::json($query);
+		// dd(config('cache.default'));
+		$result = Cache::remember('index_photos', 60 * 5, function() {
+			return Photo::where('draft', null)->get()->toArray();
+		});
 
+		return \Response::json($result);
 	}
 
 

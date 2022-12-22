@@ -39,7 +39,7 @@
       <ul class="footer-logos">
         <li id="quapa"><a href="http://www.quapa.fau.usp.br/quapa_desenv/default.htm" title="QUAPÁ"  target="_blank"></a></li>
         <li id="vitruvius"><a href="http://www.vitruvius.com.br/" title="Vitruvius"  target="_blank"></a></li>
-        <li id="scansystem"><a href="http://www.scansystem.com.br/" title="Scan system"  target="_blank"><img src="{{ asset('img/scan-system.png')}}" height="37" ></a></li>
+        <li id="scansystem"><a href="http://www.scansystem.com.br/" title="Scan system"  target="_blank"><img src="{{ asset('img_scenario4/scan-system.webp')}}" height="37" ></a></li>
         </ul>
     </div>
     <div class="col-md-2 d-none d-md-block">

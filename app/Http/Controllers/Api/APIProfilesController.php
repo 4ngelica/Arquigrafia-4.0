@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Institutions\Institution;
 use App\Models\Collaborative\Follow;
 use App\Models\Collaborative\FollowInstitution;
-
+use Cache;
 
 class APIProfilesController extends Controller {
 
@@ -209,3 +209,38 @@ class APIProfilesController extends Controller {
 		return \Response::json(['msg' => 'Usuário deixou de ser seguido'], 200);
 	}
 }
+
+/*// $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id, $request) {
+			$user = User::find($id);
+			$followers = $user->followers->map->only('name', '_id', 'photo');
+
+			if(array_key_exists('limit', $request->query->all())) {
+				$limit = $request->query->all()['limit'];
+				$followers = $followers->take($limit);
+			}
+			return \Response::json($followers);
+		// });
+		// dd($result);
+		// return $result;
+	}*/
+
+// 	public function getFollowing(Request $request, $id) {
+// 		// $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id, $request) {
+//
+// 			$user = User::find($id);
+// 			$users = $user->following->map->only('name', '_id', 'photo');
+// 			$institutions =  $user->followingInstitution;
+//
+// 			if(array_key_exists('limit', $request->query->all())) {
+// 				$limit = $request->query->all()['limit'];
+// 				$users = $users->take($limit);
+// 				$institutions = $institutions->take($limit);
+// 			}
+//
+// 			return \Response::json(["users" => $users, "institutions" => $institutions]);
+// 	// });
+//
+// 	// return $result;
+//
+// }
+// }

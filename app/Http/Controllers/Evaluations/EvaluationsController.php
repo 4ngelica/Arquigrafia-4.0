@@ -15,6 +15,7 @@ use Input;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Cache;
 
 class EvaluationsController extends Controller {
 
@@ -63,11 +64,24 @@ class EvaluationsController extends Controller {
 
 	 public function viewEvaluation($photoId, $userId)
 	 {
-		 	$photo = Photo::find($photoId);
-			$user = User::find($userId);
-			$tags = $photo->tags;
+		 // $result = Cache::remember('showEvaluation_'. $photoId, 60 * 5, function() use ($photoId, $userId) {
+			 	$photo = Photo::find($photoId);
+				$user = User::find($userId);
+				$tags = $photo->tags;
 
+				// $evaluation = ['photo' => $photo, 'user' => $user, 'tags' => $tags];
+
+				$evaluation = Evaluation::where('user_id', $userId)->where('photo_id', $photoId)->get();
+				dd($evaluation);
+
+			// 	return $evaluation;
+			// });
+
+			// dd($result);
+
+			// return view('new_front.evaluation.show')->with($result);
 			return view('new_front.evaluation.show', compact(['photo', 'user', 'tags']));
+
 	 }
 
 	 public function evaluate($photoId)

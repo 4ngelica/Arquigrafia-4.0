@@ -30,7 +30,7 @@ use Session;
 use App\lib\date\Date;
 use File;
 use Illuminate\Support\Facades\Http;
-
+use Cache;
 
 class PhotosController extends Controller {
   protected $date;

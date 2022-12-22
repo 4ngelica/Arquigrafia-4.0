@@ -9,7 +9,7 @@
             <h1>{{photo.name}}</h1>
           </div>
         </div>
-        <img class="img-fluid" :src="'/arquigrafia-images/' + photo._id + '_view.jpg'" alt="" width="100%">
+        <img class="img-fluid" :src="'/arquigrafia-images-scenario4/' + photo._id + '_view.webp'" alt="" width="100%">
         <div class="d-flex flex-column flex-md-row my-3">
           <div class="col-12 col-md-2">
             <button type="button" name="button">Voltar</button>
@@ -118,7 +118,7 @@
         <carousel v-if="evaluations.length > 0" :margin="5" :nav="false" :responsive="{1:{items:1.5, dots:false},600:{items:3, dots:true}, 1000:{items:5,  dots:true} }">
             <div v-for="(evaluation, index) in evaluations" :key="index">
               <a :href="'/photos/' + evaluation.photo_id">
-                <img :src="'/arquigrafia-images/' + evaluation.photo_id + '_view.jpg'" class="photo-carousel">
+                <img :src="'/arquigrafia-images-scenario4/' + evaluation.photo_id + '_200h.webp'" class="photo-carousel">
               </a>
             </div>
         </carousel>
@@ -187,6 +187,7 @@ export default {
       },
   },
   mounted () {
+    console.log(this.$props.evaluation)
   }
 };
 
