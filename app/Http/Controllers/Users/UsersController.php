@@ -53,15 +53,11 @@ class UsersController extends Controller {
 
   public function show($id)
   {
-    // $result = Cache::remember('getFollowers_'. $id, 60 * 5, function() use ($id) {
 
       $user = User::find($id);
       $photos = $user->photos;
       $albums = $user->albums;
       $evaluations = $user->evaluations;
-
-    // $following = Follow::where('following_id', 8)->get();
-    // $followed = Follow::where('followed_id', 8)->get();
 
     $following = Follow::raw((function($collection) use ($id) {
         return $collection->aggregate([
@@ -111,27 +107,12 @@ class UsersController extends Controller {
 
     return view('new_front.users.show', compact(['user', 'photos', 'albums', 'evaluations', 'followingNumber', 'followersNumber', 'isFollowing']));
 
-      /*$profile = ['user' => $user, 'photos' => $photos, 'albums' => $albums, 'evaluations' => $evaluations];
-
-      return $profile;
-    });
-
-    return view('new_front.users.show')->with($result);*/
-
   }
 
   // show create account form
   public function account()
   {
     if (Auth::check()) return Redirect::to('/home');
-
-    // if ( Redis::exists('account_page') ) {
-    //     return Redis::get('account_page');
-    // } else {
-    //     $cachedData = view('/modal/account')->render();
-    //     Redis::set('account_page', $cachedData);
-    //     return $cachedData;
-    // }
     return view('/modal/account');
   }
 
@@ -139,11 +120,9 @@ class UsersController extends Controller {
   // register of user with email
   public function store(Request $request)
   {
-    // put input into flash session for form repopulation
     $request->flash();
     $input = $request->all();
 
-    // validate data
     $rules = array(
         'name' => 'required',
         'login' => 'required|regex:/^[a-z0-9-_]{3,20}$/|unique:users',
@@ -161,8 +140,7 @@ class UsersController extends Controller {
        $email =$input["email"];
        $login =$input["login"];
        $verify_code = Str::random(30);
-       // dd($login);
-      //create user with a verify code
+
       $user = User::create([
       'name' => $name,
       'email' => $email,
@@ -175,7 +153,6 @@ class UsersController extends Controller {
 
       EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia"], "Web");
 
-        //send email to user created
        Mail::send('emails.users.verify', array('name' => $name, 'email' => $email, 'login' => $login ,'verifyCode' => $verify_code),
           function($msg) use($email) {
             $msg->to($email)
@@ -202,10 +179,8 @@ class UsersController extends Controller {
     }
 
     if (!$newUser){
-            //error
             return Redirect::to('users/verify');
       }else{
-          //update data of new user registered
           $newUser->active = 'yes';
           $newUser->verify_code = null;
           $newUser->save();
@@ -251,7 +226,6 @@ class UsersController extends Controller {
         Mail::send('emails.users.reset-password', array('user' => $user,'email' => $email,'randomPassword' => $randomPassword),
          function($message) use($email) {
                $message->to($email)
-               //->replyTo($email)
                ->subject('[Arquigrafia] - Esqueci minha senha');
          });
 
@@ -263,30 +237,17 @@ class UsersController extends Controller {
       }
       return view('/modal/forget')->with(['message'=>$message,'email'=>$email, 'existEmail'=>$existEmail]);
     }
-
-
   }
 
 
-
-  // formulário de login
   public function loginForm()
   {
     if (Auth::check())
         return Redirect::to('/home');
 
     return view('/modal/login');
-
-    // if ( Redis::exists('login_page') ) {
-    //     return Redis::get('login_page');
-    // } else {
-    //     $cachedData = view('/modal/login')->render();
-    //     Redis::set('login_page', $cachedData);
-    //     return $cachedData;
-    // }
   }
 
-   // validacao do login
   public function login(Request $request)
   {
     $input = $request->all();
@@ -327,7 +288,7 @@ class UsersController extends Controller {
 
           if (!empty($url)) {
             EventLogger::printEventLogs(null, 'login', ["origin" => "Arquigrafia"], 'Web');
-            //Redirect when user forget password
+
             if($url == URL::to('users/forget')){
               return Redirect::to('/home');
             }elseif(!empty($input["firstTime"])){
@@ -364,18 +325,14 @@ class UsersController extends Controller {
     }
   }
 
-  // formulário de login
   public function logout()
   {
     if (Auth::check()) {
       EventLogger::printEventLogs(null, 'logout', null, 'Web');
 
-      // Before logging out, we're going to save the gamified state
       $variationId = Gamified::getGamifiedVariationId();
-      // Logging out
       Auth::logout();
       Session::flush();
-      // Saving variationId on Session again
       Gamified::saveGamifiedVariationId($variationId);
 
       return Redirect::to('/home');
@@ -383,7 +340,6 @@ class UsersController extends Controller {
     return Redirect::to('/home');
   }
 
-  // facebook login NÃO ESTA SENDO USADO
   public function facebook()
   {
     $fb_config = Config::get('facebook');
@@ -396,7 +352,6 @@ class UsersController extends Controller {
     return Redirect::to($facebook->getLoginUrl($params));
   }
 
-    // facebook login callback
     public function callback()
    {
     session_start();
@@ -410,14 +365,11 @@ class UsersController extends Controller {
     try {
       $session = $helper->getSessionFromRedirect();
     } catch(FacebookRequestException $ex) {
-      // When Facebook returns an error
       dd($ex);
     } catch(\Exception $ex) {
-      // When validation fails or other local issues
       dd($ex);
     }
     if ($session) {
-      // Logged in
       $request = new FacebookRequest($session, 'GET', '/me');
       $response = $request->execute();
       $fbuser = $response->getGraphObject();
@@ -425,17 +377,14 @@ class UsersController extends Controller {
       $fbmail = $fbuser->getProperty('email');
 
       $integration_message = $this->integrateAccounts($fbmail);
-      //usuarios antigos tem campo id_facebook null, mas existe login = $fbid;
       $user = User::where('id_facebook', '=', $fbid)->orWhere('login', '=', $fbid)->first();
 
       if (!is_null($user)) {
-        // loga usuário existente
         Auth::loginUsingId($user->id);
         if(is_null($user->id_facebook)) {
           $user->id_facebook = $fbid;
           $user->save();
         }
-        // pega avatar
         $request = new FacebookRequest(
           $session,
           'GET',
@@ -483,7 +432,6 @@ class UsersController extends Controller {
         $user->save();
         Auth::loginUsingId($user->id);
 
-        // pega avatar
         $request = new FacebookRequest(
           $session,
           'GET',
@@ -531,7 +479,7 @@ class UsersController extends Controller {
   {
     $logged_user = Auth::user();
 
-    if ($logged_user == null) //futuramente, adicionar filtro de login
+    if ($logged_user == null)
        return Redirect::to('/home');
 
     $following = $logged_user->following;
@@ -539,23 +487,20 @@ class UsersController extends Controller {
 
 
     if ($user_id != $logged_user->id && !$following->contains($user_id)) {
-      //Envio da Notificação
-
-      // Event::dispatch('user.followed', array($logged_user->id, (int)$user_id));
 
       $logged_user->following()->attach($user_id);
 
       EventLogger::printEventLogs(null, 'follow', ['target_userId' => $user_id], 'Web');
     }
 
-    return Redirect::to(URL::previous()); // redirecionar para friends
+    return Redirect::to(URL::previous());
   }
 
   public function unfollow($user_id)
   {
     $logged_user = Auth::user();
 
-    if ($logged_user == null) //futuramente, adicionar filtro de login
+    if ($logged_user == null)
       return Redirect::to('/home');
 
     $following = $logged_user->following;
@@ -567,10 +512,9 @@ class UsersController extends Controller {
       EventLogger::printEventLogs(null, 'unfollow', ['target_userId' => $user_id], 'Web');
     }
 
-    return Redirect::to(URL::previous()); // redirecionar para friends
+    return Redirect::to(URL::previous());
   }
 
-  // AVATAR
   public function profile($id)
   {
     $path = public_path().'/arquigrafia-avatars/'.$id.'_view.jpg';
@@ -609,9 +553,7 @@ class UsersController extends Controller {
 
   public function update(Request $request, $id) {
     $user = User::find($id);
-    // dd($request);
 
-    // Input::flash();
     $input =  $request->only('name', 'login', 'email', 'scholarity', 'lastName', 'site', 'birthday', 'country', 'state', 'city',
       'photo', 'gender', 'institution', 'occupation', 'visibleBirthday', 'visibleEmail','old_password','user_password','user_password_confirmation');
 
@@ -681,7 +623,6 @@ class UsersController extends Controller {
         $ext = $file->getClientOriginalExtension();
 
         $user->photo = "/arquigrafia-avatars/".$user->id.".jpg";
-        //$user->save();
         $image = Image::make( $request->file('photo'))->encode('jpg', 80);
 
         $image->save(public_path().'/arquigrafia-avatars/'.$user->id.'.jpg');
@@ -760,28 +701,20 @@ class UsersController extends Controller {
   }
 
   private function integrateAccounts($email) {
-    /* Verifica quantas contas com o mesmo e-mail existem */
     $all_acc = User::where('email','=',$email)->get();
-    /* Se existir somente uma, não há o que integrar */
     if (count($all_acc) <= 1) {
       return;
     }
-    /* Pega cada conta separadamente */
     $arq_acc =  User::whereRaw('(email = ?) and (id_stoa is NULL or id_stoa != login) and (id_facebook is NULL or id_facebook != login)', array($email))->first();
     $fb_acc = User::whereRaw('(email = ?) and (id_facebook = login)', array($email))->first();
     $stoa_acc = User::whereRaw('(email = ?) and (id_stoa = login)', array($email))->first();
-    /* Existe uma conta Arquigrafia? */
     if (!is_null($arq_acc)) {
-      /* Essa conta já tem uma foto? */
       if ($arq_acc->photo == "/arquigrafia-avatars/" . $arq_acc->id . ".jpg") {
         $has_photo = true;
       }
-      /* Existe uma conta Facebook? */
       if (!is_null($fb_acc)) {
         $fb_boolean = true;
-        /* Associa as contas */
         DB::table('users')->where('id', '=', $arq_acc->id)->update(array('id_facebook' => $fb_acc->id));
-        /* Se a conta Arquigrafia não possuir foto e a conta Facebook possuir foto, pega essa foto */
         if (!isset($has_photo)) {
           if ($fb_acc->photo == "/arquigrafia-avatars/" . $fb_acc->id . ".jpg") {
             $old_filename = public_path() . $fb_acc->photo;
@@ -792,10 +725,8 @@ class UsersController extends Controller {
             }
           }
         }
-        /* Importa Photos, Comments, Evaluations, follows e followers, se existirem */
         $this->getAttributesFromTo($fb_acc, $arq_acc);
       }
-      /* Retorna uma mensagem dizendo quais contas foram integradas */
       $result = "Sua(s) conta(s): ";
       if (isset($fb_boolean)) {
         $result = $result . "Facebook";
@@ -807,7 +738,6 @@ class UsersController extends Controller {
         $result = $result . "Stoa";
       }
       $result = $result . " foi(ram) integrada(s) à sua conta Arquigrafia";
-      /* Exclui as contas paralelas do banco */
       if (isset($fb_boolean)) {
         DB::table('users')->where('id', '=', $fb_acc->id)->delete();
       }
@@ -829,7 +759,6 @@ class UsersController extends Controller {
     DB::table('notification_user')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
     DB::table('likes')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
     DB::table('occupations')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
-    // DB::table('scores')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
     DB::table('users_roles')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
     DB::table('user_badges')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
     DB::table('employees')->where('user_id', '=', $accountFrom->id)->update(array('user_id' => $accountTo->id));
@@ -846,7 +775,6 @@ class UsersController extends Controller {
             $usersAll = User::userDataToJson();
             $users = $usersAll->toJson();
 
-            //criando todo o arquivo json dos usuarios
             File::put($pathFile, $users);
         }else{
           dd("Precisa estar logado");

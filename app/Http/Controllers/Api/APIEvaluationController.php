@@ -30,24 +30,9 @@ class APIEvaluationController extends Controller {
 	}
 
 	public function storeEvaluation(Request $request, $photoId) {
-		// dd(Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get());
-		// dd(User::find($request->user_id)->evaluations);
-
-		return \Response::json(['eu' => User::find($request->user_id)->evaluations]);
-
 
 		$binomials = Binomial::all();
 
-		// $evaluations = Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get();
-
-
-		// dd($evaluations->count());
-
-		// foreach ($evaluations as $post) {
-		//     $post->delete();
-		// }
-
-		// dd('ok');
 		$evaluations = Evaluation::where("user_id", $request->user_id)->where("photo_id", $photoId)->get();
 
         	foreach ($binomials as $binomial) {

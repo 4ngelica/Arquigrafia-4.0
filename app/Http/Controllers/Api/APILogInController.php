@@ -31,30 +31,25 @@ class APILogInController extends Controller {
 	public function verify_credentials_facebook() {
 		$input = \Input::all();
 
-    // Montando os dados
     $fbid = $input["id_facebook"];
     $fbname = $input["name"];
     $fbmail = $input["email"];
     $fbImageURL = 'https://graph.facebook.com/'.$fbid.'/picture?width=200&height=200';
 
-    //usuarios antigos tem campo id_facebook null, mas existe login = $fbid;
     $user = \User::where('id_facebook', '=', $fbid)->orWhere('login', '=', $fbid)->first();
 
     if (!is_null($user)) {
-      // loga usuário existente
       \Auth::loginUsingId($user->id);
       if(is_null($user->id_facebook)) {
         $user->id_facebook = $fbid;
       }
       $user->mobile_token = \Hash::make(str_random(10));
 
-      // Pega avatar
       $image = \Image::make($fbImageURL)->save(public_path().'/arquigrafia-avatars/'.$user->id.'.jpg');
       if ($user->photo != '/arquigrafia-avatars/'.$user->id.'.jpg') {
         $user->photo = '/arquigrafia-avatars/'.$user->id.'.jpg';
       }
 
-      // Salvando usuario
       $user->save();
 
       EventLogger::printEventLogs(null, "login", ["origin" => "Facebook"], "App");
@@ -81,7 +76,6 @@ class APILogInController extends Controller {
         $user->save();
         \Auth::loginUsingId($user->id);
 
-        // Pega avatar
         $image = \Image::make($fbImageURL)->save(public_path().'/arquigrafia-avatars/'.$user->id.'.jpg');
         if ($user->photo != '/arquigrafia-avatars/'.$user->id.'.jpg') {
           $user->photo = '/arquigrafia-avatars/'.$user->id.'.jpg';
@@ -115,7 +109,6 @@ class APILogInController extends Controller {
 				$user->mobile_token = null;
 				$user->save();
 
-				/* Registro de logs */
 				EventLogger::printEventLogs(null, 'logout', ['user' => $user->id], 'mobile');
 
 				return \Response::json(['logged_out' => 'true']);

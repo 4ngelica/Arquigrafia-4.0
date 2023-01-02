@@ -35,7 +35,7 @@ import infiniteScroll from 'vue-infinite-scroll'
         if(! this.loading){
           this.loading = true;
 
-          fetch(`/images/${count}`)
+          fetch(`api/photos/random/${count}`)
           .then((res) => {
             return res.json();
           })
