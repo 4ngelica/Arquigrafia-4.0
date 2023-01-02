@@ -43,17 +43,9 @@ class APISuggestionController extends Controller {
 
 	public function actionSuggestion(Request $request, $photoId) {
 
-
-
-
-		// if (Suggestion::where('photo_id', $photoId)->count()) {
-		// 	return \Response::json('Sugestões bloqueadas', 500);
-		// }
-		//
 		$fields = $request->all();
 		$suggestion = Suggestion::find($fields['suggestion_id']);
 		$photo = Photo::find($photoId);
-		// dd($fields, Photo::find($photoId), Suggestion::find($fields['suggestion_id']));
 
 		if(strval($fields['option']) == 1) {
 			$photo->update([$fields['field'] => $fields['value']]);
