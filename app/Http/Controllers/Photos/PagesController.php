@@ -60,19 +60,13 @@ class PagesController extends Controller {
     }
   }
 
-  public function NovoUsersShow($id)
-  {
-    $user = User::find($id);
-
-    return view('new_front.users.show', compact(['user']));
-  }
-
-  // public function images($count) {
+  // public function NovoUsersShow($id)
+  // {
+  //   $user = User::find($id);
   //
-  //   $photos = Photo::all()->random($count)->toArray();
-  //
-  //   return response($photos);
+  //   return view('new_front.users.show', compact(['user']));
   // }
+
 
   public function main() {
     return view('landing');
