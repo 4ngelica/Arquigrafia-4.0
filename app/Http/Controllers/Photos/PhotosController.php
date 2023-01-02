@@ -100,10 +100,10 @@ class PhotosController extends Controller {
       $authLike = 0;
     }
 
-    $institution = Institution::find($photo->institution)->first();
-
     if(!$photo->institution){
       $institution = 0;
+    }else {
+      $institution = Institution::find($photo->institution)->first();
     }
 
     return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields', 'institution']));
