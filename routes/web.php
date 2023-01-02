@@ -44,29 +44,8 @@ use App\Http\Controllers\Drafts\DraftsController;
 |
 */
 
-//novo front
-Route::get('/images/{count}', [PagesController::class, 'images']);
-Route::get('/novaHome', [PagesController::class, 'novaHome']);
 
-// Route::prefix('/NovoSearch')->group(function () {
-//   Route::get('/', [PagesController::class, 'NovoSearch']);
-//   Route::post('/', [PagesController::class, 'NovoSearch'])->name('search');
-//   Route::get('/more', [PagesController::class, 'NovoAdvancedSearch']);
-// });
-
-Route::prefix('/novoUsers')->group(function () {
-  Route::get('/{id}', [PagesController::class, 'NovoUsersShow'])->name('users.show');
-});
-
-Route::prefix('/novoPhotos')->group(function () {
-  Route::get('/{id}', [PagesController::class, 'NovoPhotosShow'])->name('photos.show');
-});
-//fim do novo front
-
-
-//front atual
 Route::get('/', [PagesController::class, 'main']);
-
 Route::get('/photos/import', [ImportsController::class, 'import']);
 
 /* phpinfo() */
@@ -74,10 +53,8 @@ Route::get('/info/', function(){ return view('i'); });
 
 Route::get('/landing/{language?}', [PagesController::class, 'landing']);
 Route::get('/home', [PagesController::class, 'home']);
-// Route::get('/panel', [PagesController::class, 'panel']);
 Route::get('/faq', [PagesController::class, 'faq']);
 Route::get('/project', [PagesController::class, 'project']);
-
 Route::get('/chancela', function() { return view('chancela'); });
 Route::get('/termos', function() { return view('termos'); });
 
@@ -87,10 +64,6 @@ Route::prefix('/search')->group(function () {
   Route::post('/', [PagesController::class, 'search'])->name('search');
   Route::get('/more', [PagesController::class, 'advancedSearch']);
 });
-
-// Route::prefix('/search')->group(function () {
-//
-// });
 
 /* USERS */
 Route::prefix('/users')->group(function () {
@@ -106,7 +79,6 @@ Route::prefix('/users')->group(function () {
   Route::post('/forget', [UsersController::class, 'forget']);
   Route::get('/{id}', [UsersController::class, 'show']);
   Route::get('/{id}/edit', [UsersController::class, 'edit']);
-  // Route::put('/{id}', [UsersController::class, 'store']);
   Route::get('/', [UsersController::class, 'index']);
   Route::post('/', [UsersController::class, 'store'])->name('register');
 });
@@ -166,23 +138,13 @@ Route::get('/evaluations', [EvaluationsController::class, 'index']);
 Route::get('/evaluations/{photo_id}/evaluate',[EvaluationsController::class, 'evaluate']);
 Route::get('/evaluations/{photo_id}/viewEvaluation/{user_id}',[EvaluationsController::class, 'viewEvaluation']);
 Route::get('/evaluations/{photo_id}/showSimilarAverage/', [EvaluationsController::class, 'showSimilarAverage']);
-//Route::post('/evaluations/{photo_id}/saveEvaluation','App\Http\Controllers\EvaluationsController@saveEvaluation');
 Route::post('/evaluations/{photo_id}',[EvaluationsController::class, 'store']);
-// Route::resource('/evaluations',[EvaluationsController::class]);
 
 //Moderation
-
 Route::post('/suggestions', [SuggestionsController::class, 'store']);
 Route::post('/suggestions/sent', [SuggestionsController::class, 'sendNotification']);
 Route::get('/suggestions', [SuggestionsController::class, 'edit']);
-// Route::post('/suggestions', [SuggestionsController::class, 'update']);
-// Route::post('users/suggestions', [SuggestionsController::class, 'update']);
-
-// Route::get('/contributions', [ContributionsController::class, 'showContributions']);
 Route::get('/contributions', [ContributionsController::class, 'showContributions']);
-
-// Route::resource('/users/contributions', ContributionsController::class);
-
 
 // JSON Responses Routes
 Route::get('/suggestions/user_suggestions', [SuggestionsController::class, 'getUserSuggestions']);
@@ -212,7 +174,6 @@ Route::get('/tags/refreshCount', [TagsController::class,'refreshCount']);
 Route::post('/comments/{photo_id}', [CommentsController::class,'comment']);
 Route::get('/comments/{comment_id}/like', [CommentsController::class,'commentLike']);
 Route::get('/comments/{comment_id}/dislike', [CommentsController::class,'commentDislike']);
-// Route::resource('/comments', CommentsController::class);
 
 /* LIKE E DISLIKE */
 Route::get('/like/{id}', [LikesController::class,'photoLike']);
@@ -227,17 +188,6 @@ Event::subscribe('App\Http\Events\Subscriber\LikeSubscriber');
 /*REPORTs*/
 Route::post('/reports/photo', [ReportsController::class,'reportPhoto']);
 Route::get('/reports/showModalReport/{id}', [ReportsController::class,'showModalReportPhoto']);
-//Route::get('/photos/showModalReport/{id}', 'ReportController@showModalReportPhoto');
-
-/* GAMIFICATION */
-// Route::get('/photos/{id}/get/field', [QuestionsController::class,'getField']);
-// Route::post('/photos/{id}/set/field', [QuestionsController::class,'setField']);
-// Route::get('/rank/get', [ScoresController::class,'getRankEval']);
-// Route::get('/leaderboard', [ScoresController::class,'getLeaderboard']);
-// Route::get('/badges/{id}', [BadgesController::class,'show']);
-
-/* LOG */
-// Route::post('/logs', 'modules\logs\controllers\LogsController@create');
 
 /* DRAFTS */
 Route::post('/drafts/delete', [DraftsController::class,'deleteDraft']);
@@ -245,11 +195,4 @@ Route::get( '/drafts/paginate', [DraftsController::class,'paginateDrafts']);
 Route::get( '/drafts/{id}', [DraftsController::class,'getDraft']);
 Route::get( '/drafts', [DraftsController::class,'listDrafts']);
 
-
-/*Notifications*/
-// Route::get('/notifications', 'modules\notifications\controllers\NotificationsController@show');
-// Route::get('/markRead/{id}', 'modules\notifications\controllers\NotificationsController@read');
-// Route::get('/readAll',       'modules\notifications\controllers\NotificationsController@readAll');
-//
-// Route::get('/refreshBubble', 'NotificationsController@howManyUnread');
 Event::subscribe('App\Http\Events\Subscriber\NotificationSubscriber');

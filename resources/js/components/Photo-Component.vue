@@ -54,8 +54,6 @@
             <div class="d-flex flex-wrap">
               <img v-if="auth.photo" :src="auth.photo" alt="" width="48" height="48">
               <img v-else src="/img/avatar-48.png" alt="" width="48" height="48">
-              <!-- <h3 class="px-2 d-flex">{{auth.name}}</h3>
-              <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label> -->
               <div class="px-2">
                 <h3 class="d-flex fw-bold">{{auth.name}}</h3>
                 <label for="exampleFormControlTextarea1" class="form-label col-12"> Deixe seu comentário</label>
@@ -95,7 +93,6 @@
             <a :href="'/users/' + user._id">
               <img class="" :src="user.photo" alt="" width="60" height="60">
             </a>
-            <h3 class="px-2 d-flex">{{photo.imageAuthor}}</h3>
             <h3 class="px-2 d-flex">{{user.name}}</h3>
             <a class="px-2" href="#">Seguir</a>
           </div>
@@ -116,7 +113,7 @@
           <p v-if="photo.imageAuthor">{{photo.imageAuthor}}</p>
 
           <h4 v-if="photo.dataCriacao">Data da Imagem:</h4>
-          <p v-if="photo.dataCriacao">{{photo.imageAuthor}}</p>
+          <p v-if="photo.dataCriacao">{{photo.dataCriacao}}</p>
 
           <h4 v-if="photo.project_author">Autor(es) do Projeto:</h4>
           <p>{{photo.project_author}}</p>
@@ -139,8 +136,8 @@
 
 
           <div v-if="photo.institution_id" class="institution mt-4">
-            <h4>Essas informações foram definidas por {{insitution.name}}.</h4>
-            <p>Se você tem alguma informação adicional sobre esta imagem, por favor, envie um email para {{insitution.email}}</p>
+            <h4>Essas informações foram definidas por {{institution.name}}.</h4>
+            <p>Se você tem alguma informação adicional sobre esta imagem, por favor, envie um email para {{institution.email}}</p>
           </div>
 
           <div v-if="photo.institution_id == null && photo.type !== 'video'" class="institution mt-4">
@@ -154,23 +151,7 @@
                 <a v-else href="/users/login" data-origin="button">Faça o <a href="/users/login">login</a> e contribua com mais informações sobre esta imagem!</a>
               </div>
             </div>
-            <!-- <div class="modal-wrapper">
-              <div class="title1">A revisão desta imagem está temporariamente bloqueada até que a análise de sugestões feitas por membros do Arquigrafia seja concluída.</div>
-            </div> -->
-            <!-- <div class="modal-wrapper">
-              <div class="title2">Essas informações foram definidas por membros do Arquigrafia.</div>
-              <div class="title1">
-                <p style="text-align: justify;">
-                  Se você tem alguma informação adicional sobre esta imagem, por favor,
-                  envie um email para <a href="mailto:arquigrafiabrasil@gmail.com">arquigrafiabrasil@gmail.com</a>
-                </p>
-              </div>
-            </div> -->
           </div>
-
-          <!-- <div v-else="photo.institution_id !== null && photo.type !== 'video'" class="institution">
-            instituição
-          </div> -->
 
           <h4 class="mb-2">Licença:</h4>
           <div class="w-100">
@@ -288,7 +269,7 @@ Vue.use(VueGoogleMaps, {
 });
 
 export default {
-  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like', 'lat_lng', 'license', 'suggestion_fields'],
+  props: ['photo', 'auth', 'user', 'tags', 'likes', 'auth_like', 'lat_lng', 'license', 'suggestion_fields', 'institution'],
   data () {
     return {
       photo_likes: this.$props.likes,

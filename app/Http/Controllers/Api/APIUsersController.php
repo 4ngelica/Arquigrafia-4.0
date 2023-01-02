@@ -46,9 +46,7 @@ class APIUsersController extends Controller {
 	 */
 	public function store()
 	{
-		//Validação do input
 		$input = \Input::all();
-		//$input = $input['data'];
 		$rules = Array( 'name'     => 'required',
 						'email'    => 'required|email|unique:users',
 						'password' => 'required|min:6|',
@@ -78,7 +76,6 @@ class APIUsersController extends Controller {
                 ->subject('[Arquigrafia]- Cadastro de Usuário');
         });
 
-          	/* Registro de logs */
           	EventLogger::printEventLogs(null, "new_account", ["origin" => "Arquigrafia", "user" => $user->id], "mobile");
 
 			return \Response::json(['login' => $input["login"], 'token' => $user->mobile_token, 'id' => $user->id, 'valid' => 'true', 'msg' => 'Cadastro efetuado com sucesso.']);
@@ -95,26 +92,6 @@ class APIUsersController extends Controller {
 	public function show($id)
 	{
 		$user = User::find($id);
-
-
-		// $teste = User::raw(function($collection)
-		// {
-		//     return $collection->aggregate([
-		//     [
-		//       '$match' => [
-		//         'to_id' => auth()->id()
-		//       ]
-		//     ],
-    //     [
-    //         '$group' => [
-    //             '_id' => '$from_id',
-    //             'messages_count' => [
-    //                 '$sum' => 1
-    //             ]
-    //         ]
-    //     ]
-		//    ]);
-		// });
 
 		return \Response::json($user->toArray());
 	}
