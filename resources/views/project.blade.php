@@ -99,6 +99,7 @@
       <li><small><a href="http://lattes.cnpq.br/0957536683446907" target="_blank">Ana Cláudia dos Santos Martins - Graduada ECAUSP</a></small></li>
       <li><small><a href="http://lattes.cnpq.br/6652237968214791" target="_blank">Andre Felipe Costa Silva - Graduado - FTT</a></small></li>
       <li><small><a href="#" target="_blank">André Jin Teh Chou – Graduado FAUUSP</a></small></li>
+      <li><small><a href="http://lattes.cnpq.br/4265793992078036" target="_blank">Angélica Batassim Nunes - Graduada - EESCUSP</a></small></li>
       <li><small><a href="http://lattes.cnpq.br/5294488943023058" target="_blank">Beatriz Moraes de Andrade - Graduanda FAUUSP</a></small></li>
       <li><small><a href="http://lattes.cnpq.br/3715644973427707" target="_blank">Bhakta Krpa das Santos - Graduado FAUUSP</a></small></li>
       <li><small><a href="#" target="_blank">Bruna Sellin Trevelin - Graduanda Direito USP</a></small></li>

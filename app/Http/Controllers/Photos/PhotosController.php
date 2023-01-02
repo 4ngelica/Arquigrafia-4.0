@@ -37,9 +37,6 @@ class PhotosController extends Controller {
 
   public function __construct(Date $date = null)
   {
-    // Filtering if user is logged out, redirect to login page
-    // $this->beforeFilter('auth',
-    //   array( 'except' => ['index', 'show', 'showCompleteness', 'getCompletenessPhotos']));
     $this->date = $date ?: new Date;
   }
 
@@ -68,14 +65,6 @@ class PhotosController extends Controller {
               'as' => 'tag'
             ]
          ],
-         // [
-         //   '$match' => [
-         //     'tag_id' => $photo->id,
-         //     'tag.id' => [
-         //       '$exists'=> true
-         //     ],
-         //   ]
-         // ],
           [
             '$project' => [
               'tag.name' => 1,
@@ -83,12 +72,6 @@ class PhotosController extends Controller {
          ]
        ]);
     }))->where('photo_id', $id);
-
-    // TagAssignments
-    // dd($tags);
-    // dd(Tag::all());
-
-    // dd(DB::collection('tag_assignments')->get());
 
     $user = $photo->user()->first();
     $comments = $photo->comments()->get();
@@ -117,7 +100,13 @@ class PhotosController extends Controller {
       $authLike = 0;
     }
 
-    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields']));
+    $institution = Institution::find($photo->institution)->first();
+
+    if(!$photo->institution){
+      $institution = 0;
+    }
+
+    return view('new_front.photos.show', compact(['photo', 'user', 'comments', 'tags', 'likes', 'authLike', 'latLng', 'license', 'suggestionFields', 'institution']));
   }
 
   public static function getLatLng($photo){
@@ -133,7 +122,6 @@ class PhotosController extends Controller {
     return json_encode($latLng);
   }
 
-  // upload form
   public function form(Request $request)
   {
     if (Session::has('institutionId') ) {
@@ -201,7 +189,6 @@ class PhotosController extends Controller {
 
   public function store(Request $request)
   {
-      // Input::flashExcept('tags', 'photo','work_authors');
       $input = $request->all();
 
       if ($request->has('tags'))
@@ -384,7 +371,7 @@ class PhotosController extends Controller {
         }
       }
   }
-  // ORIGINAL
+
   public function download($id)
   {
     if (Auth::check()) {
@@ -495,7 +482,6 @@ class PhotosController extends Controller {
 
   public function update(Request $request,$id) {
       $photo = Photo::find($id);
-      // Input::flashExcept('tags', 'photo');
       $input = $request->all();
 
       if ($request->has('tags'))
@@ -627,7 +613,6 @@ class PhotosController extends Controller {
               $photo->video = NULL;
           }
         }
-        //update o field update_at
         $photo->touch();
         $photo->save();
 

@@ -27,20 +27,31 @@ class APIPhotosController extends Controller {
 	{
 	    $this->date = $date ?: new Date;
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
-
 	public function index(Request $request)
 	{
-		// dd(config('cache.default'));
+
 		$result = Cache::remember('index_photos', 60 * 5, function() {
 			return Photo::where('draft', null)->get()->toArray();
 		});
 
 		return \Response::json($result);
+	}
+
+	/**
+	 * Display a random listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function randomIndex($count) {
+
+		$photos = Photo::all()->random($count)->toArray();
+		return response($photos);
 	}
 
 
@@ -82,11 +93,8 @@ class APIPhotosController extends Controller {
 		if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
         	$file = $request->file('photo');
 
-			/* Armazenamento */
 			$photo = new Photo;
 
-			//if ( !empty($input["photo_aditionalImageComments"]) )
-	        //$photo->aditionalImageComments = $input["photo_aditionalImageComments"];
 	      	if($input["photo_allowCommercialUses"] == "true")
 	        	$photo->allowCommercialUses = 'YES';
 	        else
@@ -159,7 +167,6 @@ class APIPhotosController extends Controller {
                   $messages = array('tags'=>array('Inserir pelo menos uma tag'));
                   return "Tags error";
             }
-			//Photo e salva para gerar ID automatico
 
 			$ext = $file->getClientOriginalExtension();
       		$photo->nome_arquivo = $photo->id.".".$ext;
@@ -167,8 +174,6 @@ class APIPhotosController extends Controller {
       		$photo->save();
 
       		$metadata       = Image::make($request->file('photo'))->exif();
-  	        // $public_image   = \Image::make(\Input::file('photo'))->rotate($angle)->encode('jpg', 80);
-  	        // $original_image = \Image::make(\Input::file('photo'))->rotate($angle);
   	        $public_image   = Image::make($request->file('photo'))->encode('jpg', 80);
   	        $original_image = Image::make($request->file('photo'));
 
@@ -252,8 +257,6 @@ class APIPhotosController extends Controller {
 			return $validator->messages();
 		}
 
-		//if ( !empty($input["photo_aditionalImageComments"]) )
-        //$photo->aditionalImageComments = $input["photo_aditionalImageComments"];
         if($input["photo_allowCommercialUses"] == "true")
         	$photo->allowCommercialUses = 'YES';
         else
@@ -337,7 +340,6 @@ class APIPhotosController extends Controller {
 	              return "Tags error";
 	        }
 	    }
-		//Photo e salva para gerar ID automatico
 
         if ($request->hasFile('photo') and $request->file('photo')->isValid()) {
         	$file = $request->file('photo');
@@ -348,8 +350,6 @@ class APIPhotosController extends Controller {
 
 
 	  		$metadata       = \Image::make($request->file('photo'))->exif();
-		        // $public_image   = \Image::make($request->file('photo'))->rotate($angle)->encode('jpg', 80);
-		        // $original_image = \Image::make($request->file('photo'))->rotate($angle);
 		        $public_image   = \Image::make($request->file('photo'))->encode('jpg', 80);
 		        $original_image = \Image::make($request->file('photo'));
 
@@ -406,48 +406,8 @@ class APIPhotosController extends Controller {
 	 * @param  string  $id
 	 * @return Response
 	 */
-	public function likes($id)
-	{
-		$likes = DB::collection('likes')->where('likable_id', $id)->get();
-
-		dd($likes);
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  string  $id
-	 * @return Response
-	 */
 	public function comments($id)
 	{
-		// $comments = DB::collection('comments')->raw((function($collection) {
-	   //    return $collection->aggregate([
-	   //      [
-	   //        '$lookup' => [
-	   //          'from' => 'users',
-	   //          'localField' => 'user_id',
-	   //          'foreignField'=> '_id',
-	   //          'as' => 'user'
-	   //        ]
-	   //      ]
-	   //    ]);
-		 // }));
-
-		 //official
-		//  $comments = Comment::raw((function($collection) {
-		// 		 return $collection->aggregate([
-		// 			 [
-		// 				'$lookup' => [
-		// 					 'from' => 'users',
-		// 					 'localField' => 'user_id',
-		// 					 'foreignField'=> '_id',
-		// 					 'as' => 'user'
-		// 				 ]
-		// 			 ]
-		// 		 ]);
-		// }))->where('photo_id', $id);
-
 		$comments = Comment::where('photo_id', $id)->get();
 
 		foreach($comments as &$comment){
@@ -463,83 +423,6 @@ class APIPhotosController extends Controller {
 			$comment->user = $user;
 		}
 
-		//
-		//  $comments = Comment::raw((function($collection) {
-		// 		 return $collection->aggregate([
-		// 			 [
-		// 				'$lookup' => [
-		// 					 'from' => 'users',
-		// 					 'let' => ['searchId' => ['$toObjectId' => 'user_id']],
-		// 					 // 'let' => ['searchId' => ['$convert'=> ['input'=> '$user_id', 'to' => 'objectId', 'onError'=> '','onNull'=> '']]],
-		// 					 'pipeline' => [
-		// 						 [
-		// 							 '$match' => [
-		// 								 '$expr' => [
-		// 									 '_id'=> '$$searchId'
-		// 									]
-		// 								]
-		// 						 ]
-		// 					 ],
-		// 					 'as' => 'user'
-		// 				 ]
-		// 			 ]
-		// 		 ]);
-		// }));
-
-						// 	{
-            //     '$lookup': {
-            //       //searching collection name
-            //       'from': 'users',
-            //       //setting variable [searchId] where your string converted to ObjectId
-            //       'let': {"searchId": {$toObjectId: "$user_id"}},
-            //       //search query with our [searchId] value
-            //       "pipeline":[
-            //         //searching [searchId] value equals your field [_id]
-            //         {"$match": {"$expr":[ {"_id": "$$searchId"}]}}
-            //         //projecting only fields you reaaly need, otherwise you will store all - huge data loads
-            //         // {"$project":{"_id": 1}}
-						//
-            //       ],
-            //       'as': 'user'
-            //     }
-            // },
-
-		// dd($comments);
-		// dd(gettype($id), $comments->user);
-
-		// $comments = DB::collection('comments')->raw((function($collection) use ($id) {
-	  //     return $collection->aggregate([
-		// 			[
-		// 				// '$match' => ['photo_id' => ['$eq' => $id]],
-		// 				'$lookup' => [
-		// 										 'from' => 'users',
-		// 										 'localField' => 'user_id',
-		// 										 'foreignField'=> '_id',
-		// 										 'as' => 'user',
-		// 										 // '$match' => ['photo_id' => ['$eq' => $id]],
-		// 									 ]
-		// 			],
-		//
-		// 		]);
-		//  }));
-
-		// dd($comments->where('photo_id', $id));
-
-		// $tags = Photo::raw((function($collection) {
-		// 		return $collection->aggregate([
-		// 			[
-		// 			 '$lookup' => [
-		// 					'from' => 'tag_assignments',
-		// 					'localField' => 'photo_id',
-		// 					'foreignField'=> '_id',
-		// 					'as' => 'tags'
-		// 				]
-		// 			]
-		// 		]);
-	 // }))->where('_id', $id);
-
-	 // dd($tags);
-
 		return \Response::json( $comments, 200);
 	}
 
@@ -553,7 +436,6 @@ class APIPhotosController extends Controller {
 	{
 		$input = $request->all();
 		$rules = ['text' => 'required'];
-		// dd( new MongoDB\BSON\ObjectID($input['user_id']));
 		$validator = \Validator::make($input, $rules);
 		if ($validator->fails()) {
 			 $messages = $validator->messages();
@@ -565,21 +447,12 @@ class APIPhotosController extends Controller {
 			if($photo) {
 				$photo->comments()->save($comment);
 			}
-			// $photo = Photo::find($id);
-			// $photo->comments()->save($comment);
 
-			// dd($comment->user->select(['name', 'photo'])->first());
 
 			$comment->dataUpload = date('d/m/Y', strtotime($comment->created_at));
 
-			// $photo->dataUpload = date('d/m/Y', strtotime($photo->created_at));
-
-			// $comment = $comment->toArray();
 			$user = User::find($input["user_id"]);
 			$comment->user = ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo];
-
-			// dd($comment);
-			// $comment += ['user' => ['_id' => $user->_id, 'name' => $user->name, 'photo' => $user->photo]];
 
 			return \Response::json($comment, 200);
 		}
